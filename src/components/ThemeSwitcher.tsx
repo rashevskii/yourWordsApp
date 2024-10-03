@@ -5,7 +5,7 @@ import { setTheme, RootState, AppDispatch } from '../store'; // Импорт э�
 
 export const ThemeSwitcher = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const theme = useSelector((state: RootState) => state.app.theme);
+  const theme = useSelector((state: RootState) => state.appSettings.theme);
 
   const toggleTheme = () => {
     dispatch(setTheme(theme === 'light' ? 'dark' : 'light'));

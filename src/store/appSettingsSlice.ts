@@ -9,13 +9,13 @@ interface IAppState {
 
 // Начальное состояние
 const initialState: IAppState = {
-  isAuthenticated: true,
+  isAuthenticated: false,
   theme: 'light',
   language: 'ru',
 };
 
 // Слайс для обработки стейта
-export const appSlice = createSlice({
+const appSettingsSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
@@ -35,4 +35,6 @@ export const appSlice = createSlice({
 });
 
 // Экспорт экшенов для использования в компонентах
-export const { setAuthentication, setTheme, setLanguage } = appSlice.actions;
+export const { setAuthentication, setTheme, setLanguage } = appSettingsSlice.actions;
+
+export default appSettingsSlice.reducer;

@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
 } from 'react-native';
 import {
@@ -15,26 +14,34 @@ import {
 import { 
   RootState,
 } from './src/store';
+import {
+  NavigationContainer
+} from '@react-navigation/native';
+import { 
+  AppStack, 
+  AuthStack 
+} from './src/navigations';
+import { globalStyles } from './src/styles';
 
-function App(): React.JSX.Element {
+export const App: React.FC = () => {
   const isDarkMode = useColorScheme() === 'dark';
-  const isAuth = useSelector((state: RootState) => state.app.isAuthenticated);
+  const isAuth = useSelector((state: RootState) => state.appSettings.isAuthenticated);
+  console.log("isAuth", isAuth);
+  
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView style={globalStyles.baseContainer}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      {isAuth ? (
-        <Text>Authentificated</Text>
-      ) : (
-        <Text>Not Authentificated</Text>
-      )}
+      <NavigationContainer>
+        {isAuth ? <AppStack /> : <AuthStack />}
+      </NavigationContainer>
     </SafeAreaView>
   );
 }
@@ -42,5 +49,3 @@ function App(): React.JSX.Element {
 const styles = StyleSheet.create({
   
 });
-
-export default App;

@@ -14,7 +14,7 @@ export const CircleComponent: FC<CircleComponentProps> = ({ fill }) => {
         <Circle 
           cx="50"
           cy="50"
-          r="46"
+          r="36"
           fill={fill}
         />
       </Svg>

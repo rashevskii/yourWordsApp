@@ -21,8 +21,7 @@ export const WelcomeSteps: FC<WelcomeStepsProps> = ({ activeMarker }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginVertical: 15,
+    marginTop: 25,
     marginHorizontal: 40,
     flexDirection: "row",
     justifyContent: "space-around"

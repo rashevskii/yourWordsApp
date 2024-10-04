@@ -1,10 +1,10 @@
 import React from "react";
-import Ukrain from "../../assets/icons/ukraine.svg";
+import Ukraine from "../../assets/icons/ukraine.svg";
 import { globalStyles } from "../../styles";
 
-export const UkrainIcon = () => {
+export const UkraineIcon = () => {
   const { width, height } = globalStyles.baseFlagsIconSize;
   return (
-    <Ukrain width={width} height={height} />
+    <Ukraine width={width} height={height} />
   );
 }

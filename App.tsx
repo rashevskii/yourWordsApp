@@ -22,22 +22,18 @@ import {
   AuthStack 
 } from './src/navigations';
 import { globalStyles } from './src/styles';
+import { useTheme } from './src/hooks';
 
 export const App: React.FC = () => {
+  const theme = useTheme();
   const isDarkMode = useColorScheme() === 'dark';
   const isAuth = useSelector((state: RootState) => state.appSettings.isAuthenticated);
-  console.log("isAuth", isAuth);
-  
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
 
   return (
     <SafeAreaView style={globalStyles.baseContainer}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+        backgroundColor={theme.colors.background}
       />
       <NavigationContainer>
         {isAuth ? <AppStack /> : <AuthStack />}

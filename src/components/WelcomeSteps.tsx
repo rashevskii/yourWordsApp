@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 import { CircleComponent } from "./CircleComponent";
 
 interface WelcomeStepsProps {
@@ -8,7 +8,7 @@ interface WelcomeStepsProps {
 
 export const WelcomeSteps: FC<WelcomeStepsProps> = ({ activeMarker }) => {
   return (
-    <View style={styles.container}>
+    <View style={ styles.container }>
       <CircleComponent fill={activeMarker === 0 ? "pink" : "grey"} />
       <CircleComponent fill={activeMarker === 1 ? "pink" : "grey"} />
       <CircleComponent fill={activeMarker === 2 ? "pink" : "grey"} />

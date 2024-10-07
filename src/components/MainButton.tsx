@@ -1,9 +1,9 @@
 import React from "react";
 import { 
-  Pressable, 
   StyleSheet, 
   Text, 
   TextStyle, 
+  TouchableOpacity, 
   ViewStyle 
 } from "react-native";
 import { useTheme } from "../hooks";
@@ -18,9 +18,13 @@ interface IMainButtonProps {
 export const MainButton = ({ text, style, textStyle, onPress }: IMainButtonProps) => {
   const theme = useTheme();
   return (
-    <Pressable style={[styles.button, { backgroundColor: theme.colors.button }, style]} onPress={onPress}>
+    <TouchableOpacity style={[
+      styles.button, 
+      { backgroundColor: theme.colors.button }, 
+      style
+    ]} onPress={onPress}>
       <Text style={[styles.text, { color: theme.colors.text }, textStyle]}>{text}</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 }
 
@@ -37,5 +41,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     letterSpacing: 5
-  }
+  },
 });

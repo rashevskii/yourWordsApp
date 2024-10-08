@@ -1,12 +1,16 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SelectLanguages } from '../screens';
-import { WelcomeScreen } from '../screens';
+import { 
+  WelcomeScreen,
+  AdditionalLanguageScreen, 
+  MainLanguageScreen
+ } from '../screens';
 import { useTheme } from '../hooks';
 
 export type AuthStackParamList = {
-  SelectLanguages: undefined;
   Welcome: undefined;
+  MainLanguage: undefined;
+  AdditionLanguage: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -22,8 +26,13 @@ export const AuthStack = () => {
         options={{ headerShown: false }} 
       />
       <Stack.Screen 
-        name="SelectLanguages" 
-        component={SelectLanguages}
+        name="MainLanguage" 
+        component={MainLanguageScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="AdditionLanguage" 
+        component={AdditionalLanguageScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

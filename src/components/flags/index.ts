@@ -1,4 +1,4 @@
-export * from "./DanmarkIcon";
+export * from "./DenmarkIcon";
 export * from "./FinlandIcon";
 export * from "./NorwayIcon";
 export * from "./RussiaIcon";

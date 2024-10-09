@@ -3,3 +3,5 @@ export * from "./WelcomeScreen";
 export * from "./MainLanguageScreen";
 export * from "./AdditionalLanguageScreen";
 export * from "./NativeLanguageScreen";
+export * from "./SetNotificationScreen";
+export * from "./RatePlanScreen";

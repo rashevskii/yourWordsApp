@@ -10,6 +10,7 @@ import { RouteProp } from "@react-navigation/native";
 import { MainButton, SelectableLanguage, WelcomeSteps } from "../../components";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import { globalStyles } from "../../styles";
+import { setNativeLanguge } from "../../store";
 
 type NativeLanguageNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'NativeLanguage'>;
 type NativeLanguageRouteProp = RouteProp<AuthStackParamList, 'NativeLanguage'>;
@@ -34,8 +35,8 @@ export const NativeLanguageScreen: FC<NativeLanguageProps> = ({ navigation }) =>
   }
 
   const onNext = () => {
-    // dispatch(setNativeLanguage(selectedLanguage as UILanguagesType));
-    // navigation.navigate("MainLanguage");
+    dispatch(setNativeLanguge(selectedLanguage as UILanguagesType));
+    navigation.navigate("SetNotification");
   }
   return (
     <View style={[ globalStyles.baseContainer, { backgroundColor: colors.background }]}>

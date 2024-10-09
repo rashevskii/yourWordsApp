@@ -4,7 +4,9 @@ import {
   WelcomeScreen,
   AdditionalLanguageScreen, 
   MainLanguageScreen,
-  NativeLanguageScreen
+  NativeLanguageScreen,
+  SetNotificationScreen,
+  RatePlanScreen
  } from '../screens';
 import { useTheme } from '../hooks';
 
@@ -13,6 +15,8 @@ export type AuthStackParamList = {
   MainLanguage: undefined;
   AdditionalLanguage: undefined;
   NativeLanguage: undefined;
+  SetNotification: undefined;
+  RatePlan: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -40,6 +44,16 @@ export const AuthStack = () => {
       <Stack.Screen 
         name="NativeLanguage" 
         component={NativeLanguageScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="SetNotification" 
+        component={SetNotificationScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="RatePlan" 
+        component={RatePlanScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

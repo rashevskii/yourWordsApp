@@ -35,7 +35,7 @@ const appSettingsSlice = createSlice({
     setMainLanguage: (state, action: PayloadAction<LanguagesType>) => {
       state.mainLanguage = action.payload;
     },
-    setAdditionaLanguage: (state, action: PayloadAction<LanguagesType>) => {
+    setAdditionaLanguage: (state, action: PayloadAction<LanguagesType | null>) => {
       state.additionalLanguage = action.payload;
     },
     setNativeLanguge: (state, action: PayloadAction<UILanguagesType>) => {

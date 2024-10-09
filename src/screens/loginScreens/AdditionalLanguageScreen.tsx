@@ -41,6 +41,8 @@ export const AdditionalLanguageScreen: FC<AdditionalLanguageProps> = ({ navigati
   }
 
   const onSkip = () => {
+    setSelectedLanguage(null);
+    dispatch(setAdditionaLanguage(null));
     navigation.navigate("NativeLanguage");
   }
 
@@ -69,7 +71,7 @@ export const AdditionalLanguageScreen: FC<AdditionalLanguageProps> = ({ navigati
         }
       </View>
       <View style={styles.buttonContainer}>
-        <MainButton text={t("Next")} onPress={onNext} disabled={!selectedLanguage.length} />
+        <MainButton text={t("Next")} onPress={onNext} disabled={!selectedLanguage || !selectedLanguage.length} />
         <MainButton text={t("Skip")} onPress={onSkip} />
       </View>
     </View>

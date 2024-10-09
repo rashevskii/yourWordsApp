@@ -12,36 +12,36 @@ import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, setAdditionaLanguage } from "../../store";
 
-type AdditionalLanguageNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'AdditionLanguage'>;
-type AdditionalLanguageRouteProp = RouteProp<AuthStackParamList, 'AdditionLanguage'>;
+type AdditionalLanguageNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'AdditionalLanguage'>;
+type AdditionalLanguageRouteProp = RouteProp<AuthStackParamList, 'AdditionalLanguage'>;
 
 interface AdditionalLanguageProps {
   navigation: AdditionalLanguageNavigationProp;
   route: AdditionalLanguageRouteProp;
 }
 
-export const AdditionalLanguageScreen: FC<AdditionalLanguageProps> = ({ navigation, route }) => {
+export const AdditionalLanguageScreen: FC<AdditionalLanguageProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const { mainLanguage } = useSelector((state: RootState) => state.appSettings);
+  const { mainLanguage, additionalLanguage } = useSelector((state: RootState) => state.appSettings);
   const dispatch = useDispatch();
-  const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState(additionalLanguage);
 
   const onBack = () => {
     navigation.goBack();
   } 
 
   const onPressLanguage = (key: LanguagesType | UILanguagesType) => {
-    setSelectedLanguage(key);
+    setSelectedLanguage(key as LanguagesType);
   }
 
   const onNext = () => {
-    // dispatch(setAdditionaLanguage(selectedLanguage as LanguagesType));
-    // navigation.navigate("MainLanguage");
+    dispatch(setAdditionaLanguage(selectedLanguage as LanguagesType));
+    navigation.navigate("NativeLanguage");
   }
 
   const onSkip = () => {
-    // navigation.navigate("MainLanguage");
+    navigation.navigate("NativeLanguage");
   }
 
   return (
@@ -51,7 +51,7 @@ export const AdditionalLanguageScreen: FC<AdditionalLanguageProps> = ({ navigati
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
           <ArrowLeft width={40} height={40} />
         </TouchableOpacity>
-        <Text style={[styles.selectText, { color: colors.text }]}>{t("Select language")}</Text>
+        <Text style={[styles.selectText, { color: colors.text }]}>{t("Select additional language")}</Text>
       </View>
       <View style={styles.languagesContainer}>
         {

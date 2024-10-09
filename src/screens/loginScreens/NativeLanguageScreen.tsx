@@ -1,36 +1,29 @@
 import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { 
-  StyleSheet, 
-  Text, 
-  TouchableOpacity, 
-  View 
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../hooks";
-import { globalStyles } from "../../styles";
+import { useDispatch } from "react-redux";
+import { LanguagesType, listOfUILanguages, UILanguagesType } from "../../data";
+import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
+import { AuthStackParamList } from "../../navigations";
+import { RouteProp } from "@react-navigation/native";
 import { MainButton, SelectableLanguage, WelcomeSteps } from "../../components";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
-import { AuthStackParamList } from "../../navigations";
-import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
-import { RouteProp } from "@react-navigation/native";
-import { LanguagesType, listOfLanguages, UILanguagesType } from "../../data";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, setMainLanguage } from "../../store";
+import { globalStyles } from "../../styles";
 
-type MainLanguageNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'MainLanguage'>;
-type MainLanguageRouteProp = RouteProp<AuthStackParamList, 'MainLanguage'>;
+type NativeLanguageNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'NativeLanguage'>;
+type NativeLanguageRouteProp = RouteProp<AuthStackParamList, 'NativeLanguage'>;
 
-interface MainLanguageProps {
-  navigation: MainLanguageNavigationProp;
-  route: MainLanguageRouteProp;
+interface NativeLanguageProps {
+  navigation: NativeLanguageNavigationProp;
+  route: NativeLanguageRouteProp;
 }
 
-export const MainLanguageScreen: FC<MainLanguageProps> = ({ navigation }) => {
+export const NativeLanguageScreen: FC<NativeLanguageProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const dispatch = useDispatch();
-  const { mainLanguage } = useSelector((state: RootState) => state.appSettings);
-  const [selectedLanguage, setSelectedLanguage] = useState(mainLanguage || "");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
 
   const onBack = () => {
     navigation.goBack();
@@ -41,22 +34,21 @@ export const MainLanguageScreen: FC<MainLanguageProps> = ({ navigation }) => {
   }
 
   const onNext = () => {
-    dispatch(setMainLanguage(selectedLanguage as LanguagesType));
-    navigation.navigate("AdditionalLanguage");
+    // dispatch(setNativeLanguage(selectedLanguage as UILanguagesType));
+    // navigation.navigate("MainLanguage");
   }
-
   return (
     <View style={[ globalStyles.baseContainer, { backgroundColor: colors.background }]}>
-      <WelcomeSteps activeMarker={1} />
+      <WelcomeSteps activeMarker={3} />
       <View style={styles.arrowTextContainer}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
           <ArrowLeft width={40} height={40} />
         </TouchableOpacity>
-        <Text style={[styles.selectText, { color: colors.text }]}>{t("Select language")}</Text>
+        <Text style={[styles.selectText, { color: colors.text }]}>{t("Select native language")}</Text>
       </View>
       <View style={styles.languagesContainer}>
         {
-          listOfLanguages.map(
+          listOfUILanguages.map(
             ({ key, icon, engName, translatedName }) => <SelectableLanguage 
               langKey={key}
               key={key}
@@ -64,7 +56,7 @@ export const MainLanguageScreen: FC<MainLanguageProps> = ({ navigation }) => {
               engName={engName} 
               transletedName={translatedName} 
               selected={key === selectedLanguage}
-              onPress={onPressLanguage} />
+              onPress={onPressLanguage}/>
             )
         }
       </View>

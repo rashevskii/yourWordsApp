@@ -3,14 +3,16 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { 
   WelcomeScreen,
   AdditionalLanguageScreen, 
-  MainLanguageScreen
+  MainLanguageScreen,
+  NativeLanguageScreen
  } from '../screens';
 import { useTheme } from '../hooks';
 
 export type AuthStackParamList = {
   Welcome: undefined;
   MainLanguage: undefined;
-  AdditionLanguage: undefined;
+  AdditionalLanguage: undefined;
+  NativeLanguage: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -31,8 +33,13 @@ export const AuthStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen 
-        name="AdditionLanguage" 
+        name="AdditionalLanguage" 
         component={AdditionalLanguageScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="NativeLanguage" 
+        component={NativeLanguageScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

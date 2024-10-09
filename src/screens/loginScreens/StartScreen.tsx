@@ -3,7 +3,15 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { globalStyles } from "../../styles";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../hooks";
-import { FinlandIcon, MainButton, NorwayIcon, RussiaIcon, SwedenIcon, UkIcon, UkraineIcon } from "../../components";
+import { 
+  FinlandIcon, 
+  MainButton, 
+  NorwayIcon, 
+  RussiaIcon, 
+  SwedenIcon, 
+  UkIcon, 
+  UkraineIcon 
+} from "../../components";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { AuthStackParamList } from "../../navigations";
 import { RouteProp } from "@react-navigation/native";

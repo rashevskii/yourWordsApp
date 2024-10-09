@@ -28,6 +28,7 @@ export const AdditionalLanguageScreen: FC<AdditionalLanguageProps> = ({ navigati
   const [selectedLanguage, setSelectedLanguage] = useState(additionalLanguage);
 
   const onBack = () => {
+    dispatch(setAdditionaLanguage(null));
     navigation.goBack();
   } 
 

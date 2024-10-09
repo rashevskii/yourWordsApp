@@ -8,6 +8,8 @@ import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/n
 import { AuthStackParamList } from "../../navigations";
 import { RouteProp } from "@react-navigation/native";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
+import { useDispatch } from "react-redux";
+import { setAuthentication } from "../../store";
 
 type StartNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Start'>;
 type StartRouteProp = RouteProp<AuthStackParamList, 'Start'>;
@@ -20,13 +22,14 @@ interface StartProps {
 export const StartScreen: FC<StartProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const dispatch = useDispatch();
 
   const onBack = () => {
     navigation.goBack();
   } 
 
   const onPressStart = () => {
-
+    dispatch(setAuthentication(true));
   }
 
   return (

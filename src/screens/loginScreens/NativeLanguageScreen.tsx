@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../hooks";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LanguagesType, listOfUILanguages, UILanguagesType } from "../../data";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { AuthStackParamList } from "../../navigations";
@@ -10,7 +10,7 @@ import { RouteProp } from "@react-navigation/native";
 import { MainButton, SelectableLanguage, WelcomeSteps } from "../../components";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import { globalStyles } from "../../styles";
-import { setNativeLanguge } from "../../store";
+import { RootState, setNativeLanguge } from "../../store";
 
 type NativeLanguageNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'NativeLanguage'>;
 type NativeLanguageRouteProp = RouteProp<AuthStackParamList, 'NativeLanguage'>;
@@ -23,15 +23,17 @@ interface NativeLanguageProps {
 export const NativeLanguageScreen: FC<NativeLanguageProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const { nativeLanguage } = useSelector((state: RootState) => state.appSettings);
   const dispatch = useDispatch();
-  const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState(nativeLanguage);
 
   const onBack = () => {
+    dispatch(setNativeLanguge(null));
     navigation.goBack();
   } 
 
   const onPressLanguage = (key: LanguagesType | UILanguagesType) => {
-    setSelectedLanguage(key);
+    setSelectedLanguage(key as UILanguagesType);
   }
 
   const onNext = () => {
@@ -62,7 +64,7 @@ export const NativeLanguageScreen: FC<NativeLanguageProps> = ({ navigation }) =>
         }
       </View>
       <View style={styles.buttonContainer}>
-        <MainButton text={t("Next")} onPress={onNext} disabled={!selectedLanguage.length} />
+        <MainButton text={t("Next")} onPress={onNext} disabled={!selectedLanguage || !selectedLanguage.length} />
       </View>
     </View>
   );

@@ -30,14 +30,15 @@ export const MainLanguageScreen: FC<MainLanguageProps> = ({ navigation }) => {
   const { colors } = useTheme();
   const dispatch = useDispatch();
   const { mainLanguage } = useSelector((state: RootState) => state.appSettings);
-  const [selectedLanguage, setSelectedLanguage] = useState(mainLanguage || "");
+  const [selectedLanguage, setSelectedLanguage] = useState(mainLanguage);
 
   const onBack = () => {
+    dispatch(setMainLanguage(null));
     navigation.goBack();
   } 
 
   const onPressLanguage = (key: LanguagesType | UILanguagesType) => {
-    setSelectedLanguage(key);
+    setSelectedLanguage(key as LanguagesType);
   }
 
   const onNext = () => {
@@ -69,7 +70,7 @@ export const MainLanguageScreen: FC<MainLanguageProps> = ({ navigation }) => {
         }
       </View>
       <View style={styles.buttonContainer}>
-        <MainButton text={t("Next")} onPress={onNext} disabled={!selectedLanguage.length} />
+        <MainButton text={t("Next")} onPress={onNext} disabled={!selectedLanguage || !selectedLanguage.length} />
       </View>
     </View>
   );

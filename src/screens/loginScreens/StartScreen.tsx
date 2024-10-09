@@ -3,60 +3,57 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { globalStyles } from "../../styles";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../hooks";
-import { MainButton, WelcomeSteps } from "../../components";
+import { FinlandIcon, MainButton, NorwayIcon, RussiaIcon, SwedenIcon, UkIcon, UkraineIcon } from "../../components";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { AuthStackParamList } from "../../navigations";
 import { RouteProp } from "@react-navigation/native";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
-import RingingBell from "../../assets/icons/bell-ring.svg";
-import { useDispatch } from "react-redux";
-import { setReminder } from "../../store";
 
-type SetNotificationNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'SetNotification'>;
-type SetNotificationRouteProp = RouteProp<AuthStackParamList, 'SetNotification'>;
+type StartNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Start'>;
+type StartRouteProp = RouteProp<AuthStackParamList, 'Start'>;
 
-interface SetNotificationProps {
-  navigation: SetNotificationNavigationProp;
-  route: SetNotificationRouteProp;
+interface StartProps {
+  navigation: StartNavigationProp;
+  route: StartRouteProp;
 }
 
-export const SetNotificationScreen: FC<SetNotificationProps> = ({ navigation }) => {
+export const StartScreen: FC<StartProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const dispatch = useDispatch();
 
   const onBack = () => {
     navigation.goBack();
   } 
 
-  const onPressYes = () => {
-    dispatch(setReminder(true));
-    navigation.navigate("Start");
-  }
+  const onPressStart = () => {
 
-  const onPressNo = () => {
-    dispatch(setReminder(false));
-    navigation.navigate("Start");
   }
 
   return (
     <View style={[ globalStyles.baseContainer, { backgroundColor: colors.background }]}>
-      <WelcomeSteps activeMarker={4} />
       <View style={styles.arrowTextContainer}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
           <ArrowLeft width={40} height={40} />
         </TouchableOpacity>
       </View>
       <View>
-        <RingingBell width={250} height={250} style={styles.icon} />
-        <Text style={[styles.textReminder, { color: colors.text }]}>{t("Reminder")}</Text>
-        <Text style={[styles.text, { color: colors.text }]}>{t("Do you want to receive reminders")}</Text>
+        <View style={styles.iconsContainer}>
+          <View><FinlandIcon iconWidth={45} iconHeight={45} /></View>
+          <View style={styles.row}>
+            <SwedenIcon style={styles.icon} iconWidth={45} iconHeight={45} />
+            <UkraineIcon style={styles.icon} iconWidth={45} iconHeight={45} />
+          </View>
+          <View style={styles.row}>
+            <NorwayIcon style={styles.icon} iconWidth={45} iconHeight={45} />
+            <UkIcon style={styles.icon} iconWidth={45} iconHeight={45} />
+            <RussiaIcon style={styles.icon} iconWidth={45} iconHeight={45} />
+          </View>
+        </View>
+        <Text style={[styles.textStart, { color: colors.text }]}>{t("Time to start")}</Text>
+        <Text style={[styles.text, { color: colors.text }]}>{t("Learn your first words right now")}</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <MainButton text={t("Yes")} onPress={onPressYes} />
-        <TouchableOpacity style={styles.btnNo} onPress={onPressNo}>
-          <Text style={[styles.btnText, { color: colors.text }]}>{t("No thanks")}</Text>
-        </TouchableOpacity>
+        <MainButton text={t("Start")} onPress={onPressStart} />
       </View>
     </View>
   );
@@ -78,12 +75,12 @@ const styles = StyleSheet.create({
     left: 0,
     width: "100%"
   },
-  textReminder: {
+  textStart: {
     textAlign: "center", 
     fontSize: 26, 
     fontWeight: "bold", 
     marginTop: 30, 
-    marginBottom: 30
+    marginBottom: 10
   },
   text: {
     textAlign: "center", 
@@ -91,16 +88,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     paddingHorizontal: 15
   },
-  btnText: {
-    textAlign: "center", 
-    fontSize: 24, 
-    fontWeight: "bold"
-  },
-  btnNo: {
-    paddingVertical: 15
+  iconsContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 100
   },
   icon: {
-    alignSelf: "center", 
-    marginTop: 50
+    marginHorizontal: 15,
+    marginVertical: 5
+  },
+  row: {
+    flexDirection: "row"
   }
 });

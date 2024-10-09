@@ -5,3 +5,4 @@ export * from "./AdditionalLanguageScreen";
 export * from "./NativeLanguageScreen";
 export * from "./SetNotificationScreen";
 export * from "./RatePlanScreen";
+export * from "./StartScreen";

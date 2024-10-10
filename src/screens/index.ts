@@ -1,2 +1,2 @@
-export * from "./HomeScreen"
+export * from "./tabs"
 export * from "./loginScreens";

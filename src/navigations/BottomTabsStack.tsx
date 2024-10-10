@@ -1,39 +1,29 @@
 import React, { FC } from 'react';
-import { HomeScreen } from '../screens';
+import { 
+  AchievenessScreen, 
+  DictionaryScreen, 
+  HomeScreen, 
+  TrainingsScreen 
+} from '../screens';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { TabBarComponent } from '../components';
 
 export type BottomTabsParamList = {
   Home: undefined;
+  Dictionary: undefined;
+  Trainings: undefined;
+  Achieveness: undefined;
 };
 
 const Tab = createBottomTabNavigator<BottomTabsParamList>();
 
 export const BottomTabs: FC = () => {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: string = '';
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
-          } else if (route.name === 'Settings') {
-            iconName = focused ? 'settings' : 'settings-outline';
-          }
-
-          // Возвращаем иконку для каждой вкладки
-          return <Icon name={iconName} size={size} color={color} />;
-        },
-      })}
-      // tabBarOptions={{
-      //   activeTintColor: 'tomato',
-      //   inactiveTintColor: 'gray',
-      // }}
-    >
+    <Tab.Navigator tabBar={props => <TabBarComponent {...props} />}>
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Dictionary" component={DictionaryScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Trainings" component={TrainingsScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Achieveness" component={AchievenessScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 };

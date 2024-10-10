@@ -9,7 +9,6 @@ import {
   RatePlanScreen,
   StartScreen
  } from '../screens';
-import { useTheme } from '../hooks';
 
 export type AuthStackParamList = {
   Welcome: undefined;
@@ -24,7 +23,6 @@ export type AuthStackParamList = {
 const Stack = createStackNavigator<AuthStackParamList>();
 
 export const AuthStack = () => {
-  const theme = useTheme();
 
   return (
     <Stack.Navigator>

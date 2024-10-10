@@ -2,12 +2,8 @@ import React from 'react';
 import {
   SafeAreaView,
   StatusBar,
-  StyleSheet,
   useColorScheme,
 } from 'react-native';
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
 import { 
   useSelector 
 } from 'react-redux';
@@ -18,7 +14,7 @@ import {
   NavigationContainer
 } from '@react-navigation/native';
 import { 
-  AppStack, 
+  MainStack, 
   AuthStack 
 } from './src/navigations';
 import { globalStyles } from './src/styles';
@@ -36,12 +32,8 @@ export const App: React.FC = () => {
         backgroundColor={theme.colors.background}
       />
       <NavigationContainer>
-        {isAuth ? <AppStack /> : <AuthStack />}
+        {isAuth ? <MainStack /> : <AuthStack />}
       </NavigationContainer>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  
-});

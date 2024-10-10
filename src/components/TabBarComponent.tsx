@@ -4,6 +4,7 @@ import DictionaryIcon from "../assets/icons/letter-w.svg";
 import TrainingsIcon from "../assets/icons/hat-graduation.svg";
 import AchievenessIcon from "../assets/icons/diagram.svg";
 import { 
+  StyleSheet,
   Text, 
   TouchableOpacity, 
   View 
@@ -30,9 +31,11 @@ export interface TabBarComponentProps {
 export const TabBarComponent: FC<TabBarComponentProps> = ({ state, descriptors, navigation }) => {
   const { t } = useTranslation();
   return (
-    <View style={{ flexDirection: "row", paddingVertical: 10, justifyContent: "space-around" }}>
+    <View style={styles.container}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
+        const isFocused = state.index === index;
+
         const getLabel = () => {
           if (route.name === "Home") {
             return "Home";
@@ -44,8 +47,6 @@ export const TabBarComponent: FC<TabBarComponentProps> = ({ state, descriptors, 
             return "Achieveness";
           } else return "";
         }
-
-        const isFocused = state.index === index;
 
         const Icon = () => {
           if (route.name === "Home") {
@@ -79,7 +80,7 @@ export const TabBarComponent: FC<TabBarComponentProps> = ({ state, descriptors, 
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
             onPress={onPress}
-            style={{ alignItems: "center" }}
+            style={styles.tab}
           >
             <Icon />
             <Text style={{ color: isFocused ? "#673ab7" : "#222" }}>
@@ -91,3 +92,16 @@ export const TabBarComponent: FC<TabBarComponentProps> = ({ state, descriptors, 
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row", 
+    paddingVertical: 7, 
+    justifyContent: "space-around", 
+    borderTopWidth: 1, 
+    borderTopColor: "#000"
+  },
+  tab: {
+    alignItems: "center"
+  }
+});

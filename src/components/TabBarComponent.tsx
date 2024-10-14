@@ -97,9 +97,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row", 
     paddingVertical: 7, 
-    justifyContent: "space-around", 
-    borderTopWidth: 1, 
-    borderTopColor: "#000"
+    justifyContent: "space-around",
   },
   tab: {
     alignItems: "center"

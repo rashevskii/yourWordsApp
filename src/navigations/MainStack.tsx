@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { BottomTabs } from './BottomTabsStack';
 
 export type MainStackParamList = {
-  Home: undefined;
   BottomTabs: undefined;
 };
 

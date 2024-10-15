@@ -6,3 +6,5 @@ export * from "./MainButton";
 export * from "./AllLanguages";
 export * from "./SelectableLanguage";
 export * from "./TabBarComponent";
+export * from "./HeaderComponent";
+export * from "./TranslationInputComponent";

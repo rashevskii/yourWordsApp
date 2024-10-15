@@ -20,6 +20,7 @@ import {
 } from "@react-navigation/bottom-tabs/lib/typescript/src/types";
 import { EdgeInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../hooks";
 
 export interface TabBarComponentProps {
   state: TabNavigationState<ParamListBase>;
@@ -30,8 +31,9 @@ export interface TabBarComponentProps {
 
 export const TabBarComponent: FC<TabBarComponentProps> = ({ state, descriptors, navigation }) => {
   const { t } = useTranslation();
+  const { colors: { background } } = useTheme();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: background }]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;

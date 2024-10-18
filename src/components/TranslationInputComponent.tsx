@@ -42,7 +42,7 @@ export const TranslationInputComponent: FC<ITranslationInputProps> = ({
       <TextInput 
         placeholder={t("Enter word for translation")} 
         multiline={true}
-        style={styles.input}
+        style={[styles.input, { color: text }]}
       />
       <TouchableOpacity style={styles.searchButton}>
         <SearchIcon width={25} height={25} />

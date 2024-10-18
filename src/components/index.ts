@@ -16,3 +16,6 @@ export * from "./AddFolderComponent";
 export * from "./MicrophoneComponent";
 export * from "./HomeMenuComponent";
 export * from "./TrashComponent";
+export * from "./SearchComponent";
+export * from "./WordsHeaderComponent";
+export * from "./SelectableComponent";

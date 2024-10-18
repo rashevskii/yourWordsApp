@@ -12,6 +12,7 @@ export interface IFolderComponentProps {
   imagePath: string | null;
   countOfWords: number;
   onDeleteFolder: (id: string | null) => void;
+  onFolder: (idFolder: string | null, folderName: string) => void;
 }
 
 export const FolderComponent: FC<IFolderComponentProps> = (
@@ -21,13 +22,17 @@ export const FolderComponent: FC<IFolderComponentProps> = (
     name, 
     countOfWords, 
     imagePath,
-    onDeleteFolder
+    onDeleteFolder,
+    onFolder
   }
 ) => {
   const { colors: { background, border, text } } = useTheme();
   
   return (
-    <TouchableOpacity style={[styles.container, { backgroundColor: background, borderColor: border }]}>
+    <TouchableOpacity 
+      style={[styles.container, { backgroundColor: background, borderColor: border }]}
+      onPress={() => onFolder(idFolder, name)}
+    >
       <Text numberOfLines={2} allowFontScaling={true} style={[styles.name, { color: text }]}>{name}</Text>
       {
         imagePath ? 

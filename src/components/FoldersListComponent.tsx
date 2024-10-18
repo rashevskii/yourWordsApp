@@ -2,6 +2,13 @@ import React, { FC, useState } from "react";
 import { Alert, FlatList, StyleSheet } from "react-native";
 import { FolderComponent } from "./FolderComponent";
 import { useTranslation } from "react-i18next";
+import { useNavigation } from "@react-navigation/native";
+import { DictionaryNavigationProp } from "../screens";
+import { WordsScreenProps } from "../navigations";
+
+export interface IFolderProps {
+  
+}
 
 export type FolderType = {
   id: string | null;
@@ -73,9 +80,10 @@ const foldersList: FolderType[] = [
   },
 ];
 
-export const FoldersListComponent: FC = () => {
+export const FoldersListComponent: FC<IFolderProps> = () => {
   const [folders, setFolders] = useState(foldersList);
   const { t } = useTranslation();
+  const navigation = useNavigation<WordsScreenProps['navigation']>();
 
   const handleDeleteFolder = (id: string | null) => {
     Alert.alert(
@@ -94,6 +102,13 @@ export const FoldersListComponent: FC = () => {
     )
   };
 
+  const handleOnPressFolder = (idFolder: string | null, folderName: string) => {
+    navigation.navigate("Words", {
+      idFolder,
+      folderName
+    })
+  }
+
   const renderItem = ({ item }: {item: FolderType}) => {
     return (
       <FolderComponent 
@@ -103,6 +118,7 @@ export const FoldersListComponent: FC = () => {
         countOfWords={item.countOfWords}
         percentage={30}
         onDeleteFolder={handleDeleteFolder}
+        onFolder={handleOnPressFolder}
       />
     )
   }

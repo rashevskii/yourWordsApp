@@ -10,6 +10,7 @@ interface AppTheme extends Theme {
     card: string;
     border: string;
     notification: string;
+    invertedText: string;
   };
 }
 
@@ -23,6 +24,7 @@ export const lightTheme: AppTheme = {
     secondary: '#a5a4a4',
     button: '#ecded2',
     border: "#a5a4a4",
+    invertedText: "#ffffff"
   },
 };
 
@@ -36,5 +38,6 @@ export const darkTheme: AppTheme = {
     secondary: '#a5a4a4',
     button: '#ecded2',
     border: "#ecded2",
+    invertedText: "#000000"
   },
 };

@@ -3,7 +3,6 @@ import { Alert, FlatList, StyleSheet } from "react-native";
 import { FolderComponent } from "./FolderComponent";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
-import { DictionaryNavigationProp } from "../screens";
 import { WordsScreenProps } from "../navigations";
 
 export interface IFolderProps {

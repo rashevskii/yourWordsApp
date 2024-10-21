@@ -32,5 +32,8 @@
   "Are you sure you want to delete this folder": "Are you sure you want to delete this folder?",
   "Yes delete": "Yes, delete",
   "Cancel": "Cancel",
-  "Search": "Search"
+  "Search": "Search",
+  "Sort by": "Sort by: ",
+  "Date added": "Date added",
+  "Alphabet": "Алфавит"
 }

@@ -17,5 +17,7 @@ export * from "./MicrophoneComponent";
 export * from "./HomeMenuComponent";
 export * from "./TrashComponent";
 export * from "./SearchComponent";
-export * from "./WordsHeaderComponent";
 export * from "./SelectableComponent";
+export * from "./SettingsIconComponent";
+export * from "./PlanetIconComponent";
+export * from "./BackIconComponent";

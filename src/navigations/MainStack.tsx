@@ -1,8 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
 import { BottomTabs } from './BottomTabsStack';
 import { WordsRouteProp, WordsScreen } from '../screens';
-import { BackIconComponent, HeaderComponent, SettingsIconComponent } from '../components';
+import { 
+  BackIconComponent, 
+  HeaderComponent, 
+  SettingsIconComponent 
+} from '../components';
+import { createTables } from '../database';
 
 export type MainStackParamList = {
   BottomTabs: undefined;
@@ -17,7 +22,12 @@ export type WordsScreenProps = StackScreenProps<MainStackParamList, 'Words'>;
 const Stack = createStackNavigator<MainStackParamList>();
 
 export const MainStack: FC = () => {
-
+  useEffect(() => {
+    const initDB = async () => {
+      await createTables();
+    };
+    initDB();
+  }, []);
 
   return (
     <Stack.Navigator>

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { LanguagesType } from '../data';
 
 // Укажи свой API-ключ для DeepL
 const apiKey = 'your-deepl-api-key'; 
@@ -11,7 +12,7 @@ const apiUrl = 'https://api-free.deepl.com/v2';
  * @param source Исходный язык (необязательно, если требуется автоопределение)
  * @returns Переведенный текст
  */
-export const translateText = async (text: string, target: string, source?: string): Promise<string> => {
+export const translateText = async (text: string, target: LanguagesType, source?: string): Promise<string> => {
   try {
     const params: any = {
       auth_key: apiKey,

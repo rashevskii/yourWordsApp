@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { 
   StyleSheet, 
   Text, 
@@ -15,15 +15,26 @@ export interface ITranslationInputProps {
   additionalLanguage: LanguagesType | null;
   onChangeLanguage: () => void;
   currentLang: LanguagesType | null;
+  onTranslate: (text: string) => Promise<void>;
 }
 
 export const TranslationInputComponent: FC<ITranslationInputProps> = ({ 
   additionalLanguage, 
   onChangeLanguage, 
-  currentLang 
+  currentLang,
+  onTranslate
 }) => {
   const { t } = useTranslation();
   const { colors: { border, text, secondary } } = useTheme();
+  const [query, setQuery] = useState("");
+
+  const getTranslation = (text: string) => {
+    if (text.length > 0) {
+      onTranslate(text);
+      setQuery("");
+    }
+  }
+
   return (
     <View style={[styles.inputContainer, { borderColor: border }]}>
       <TouchableOpacity 
@@ -40,11 +51,16 @@ export const TranslationInputComponent: FC<ITranslationInputProps> = ({
         <Text style={[styles.langName, { color: text }]}>{currentLang}</Text>
       </TouchableOpacity>
       <TextInput 
-        placeholder={t("Enter word for translation")} 
-        multiline={true}
+        placeholder={t("Enter word for translation")}
         style={[styles.input, { color: text }]}
+        value={query}
+        onChangeText={(e) => setQuery(e)}
+        onSubmitEditing={(event) => getTranslation(event.nativeEvent.text)}
+        inputMode="text"
+        returnKeyType={"done"}
+        autoCapitalize="none"
       />
-      <TouchableOpacity style={styles.searchButton}>
+      <TouchableOpacity style={styles.searchButton} onPress={() => getTranslation(query)}>
         <SearchIcon width={25} height={25} />
       </TouchableOpacity>
     </View>

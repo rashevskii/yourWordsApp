@@ -17,6 +17,7 @@ import {
   MicrophoneComponent, 
   TranslationInputComponent 
 } from "../../components";
+import { translateText } from "../../api";
 
 type HomeNavigationProp = NativeStackNavigationProp<BottomTabsParamList, "Home">;
 type HomeRouteProp = RouteProp<BottomTabsParamList, "Home">;
@@ -31,6 +32,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { baseContainer, containerPadding } = globalStyles;
   const { mainLanguage, additionalLanguage } = useSelector((state: RootState) => state.appSettings);
   const [currentLang, setCurrentLang] = useState(mainLanguage);
+  const [translatedText, setTranslatedText] = useState("");
 
   const onChangeLanguage = () => {
     if (currentLang === mainLanguage) {
@@ -38,6 +40,13 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
     } else {
       setCurrentLang(mainLanguage);
     }
+  }
+
+  const onTranslateText = async (text: string) => {
+    console.log(text);
+    
+    // const translation = await translateText(text, currentLang!);
+    // setTranslatedText(translation);
   }
 
   const onMyDictionary = () => {
@@ -56,6 +65,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
         additionalLanguage={additionalLanguage}
         onChangeLanguage={onChangeLanguage}
         currentLang={currentLang}
+        onTranslate={onTranslateText}
       />
       <HomeMenuComponent onMyDictionary={onMyDictionary} />
       <MicrophoneComponent />

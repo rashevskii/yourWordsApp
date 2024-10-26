@@ -21,3 +21,4 @@ export * from "./SelectableComponent";
 export * from "./SettingsIconComponent";
 export * from "./PlanetIconComponent";
 export * from "./BackIconComponent";
+export * from "./BottomSheetComponent";

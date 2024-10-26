@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { globalStyles } from "../styles";
 import { useTheme } from "../hooks";
@@ -28,12 +28,12 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
   idFolder
  } } }) => {
   const { t } = useTranslation();
-  const sortItems = [
+  const sortItems = useMemo(() => [
     { label: t("Date added"), value: "dateAsc" },
     { label: t("Date added"), value: "dateDesc" },
     { label: t("Alphabet"), value: "alphabetAsc" },
     { label: t("Alphabet"), value: "alphabetDesc" }
-  ];
+  ], []);
   const { containerPadding, baseContainer } = globalStyles;
   const { colors: { background, secondary, invertedText, text } } = useTheme();
   const [selectedValue, setSelectedValue] = useState(sortItems[0]);

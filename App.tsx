@@ -20,6 +20,7 @@ import {
 import { globalStyles } from './src/styles';
 import { useTheme } from './src/hooks';
 import { ToastProvider } from "react-native-toast-notifications";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export const App: React.FC = () => {
   const theme = useTheme();
@@ -27,16 +28,18 @@ export const App: React.FC = () => {
   const isAuth = useSelector((state: RootState) => state.appSettings.isAuthenticated);
 
   return (
-    <ToastProvider>
-      <SafeAreaView style={globalStyles.baseContainer}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={theme.colors.background}
-        />
-        <NavigationContainer>
-          {isAuth ? <MainStack /> : <AuthStack />}
-        </NavigationContainer>
-      </SafeAreaView>
-    </ToastProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ToastProvider>
+        <SafeAreaView style={globalStyles.baseContainer}>
+          <StatusBar
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor={theme.colors.background}
+          />
+          <NavigationContainer>
+            {isAuth ? <MainStack /> : <AuthStack />}
+          </NavigationContainer>
+        </SafeAreaView>
+      </ToastProvider>
+    </GestureHandlerRootView>
   );
 }

@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 import { 
   StyleSheet,
   Text,
@@ -12,6 +12,7 @@ import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/n
 import { BottomTabsParamList } from "../../navigations";
 import { RouteProp } from "@react-navigation/native";
 import {
+  BottomSheetComponent,
   HeaderComponent, 
   HomeMenuComponent, 
   MicrophoneComponent, 
@@ -28,7 +29,7 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
-  const { colors: { background, text, secondary } } = useTheme();
+  const { colors: { background, text } } = useTheme();
   const { baseContainer, containerPadding } = globalStyles;
   const { mainLanguage, additionalLanguage } = useSelector((state: RootState) => state.appSettings);
   const [currentLang, setCurrentLang] = useState(mainLanguage);
@@ -42,12 +43,12 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
     }
   }
 
-  const onTranslateText = async (text: string) => {
+  const onTranslateText = useCallback(async (text: string) => {
     console.log(text);
     
     // const translation = await translateText(text, currentLang!);
-    // setTranslatedText(translation);
-  }
+    setTranslatedText(text);
+  }, []);
 
   const onMyDictionary = () => {
     navigation.navigate("Dictionary");
@@ -68,6 +69,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
         onTranslate={onTranslateText}
       />
       <HomeMenuComponent onMyDictionary={onMyDictionary} />
+      <BottomSheetComponent translatedText={translatedText} />
       <MicrophoneComponent />
     </View>
   );

@@ -1,5 +1,6 @@
 import React, { FC, useState } from "react";
 import { 
+  Keyboard,
   StyleSheet, 
   Text, 
   TextInput, 
@@ -25,11 +26,12 @@ export const TranslationInputComponent: FC<ITranslationInputProps> = ({
   onTranslate
 }) => {
   const { t } = useTranslation();
-  const { colors: { border, text, secondary } } = useTheme();
+  const { colors: { border, text, secondary, invertedText } } = useTheme();
   const [query, setQuery] = useState("");
 
   const getTranslation = (text: string) => {
     if (text.length > 0) {
+      Keyboard.dismiss();
       onTranslate(text);
       setQuery("");
     }
@@ -48,7 +50,7 @@ export const TranslationInputComponent: FC<ITranslationInputProps> = ({
         onPress={onChangeLanguage}
         disabled={additionalLanguage && additionalLanguage.length ? false : true}
       >
-        <Text style={[styles.langName, { color: text }]}>{currentLang}</Text>
+        <Text style={[styles.langName, { color: invertedText }]}>{currentLang}</Text>
       </TouchableOpacity>
       <TextInput 
         placeholder={t("Enter word for translation")}

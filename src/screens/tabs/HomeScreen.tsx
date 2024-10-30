@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useState } from "react";
 import { 
+  ActivityIndicator,
   StyleSheet,
   Text,
   View 
@@ -34,20 +35,22 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { mainLanguage, additionalLanguage } = useSelector((state: RootState) => state.appSettings);
   const [currentLang, setCurrentLang] = useState(mainLanguage);
   const [translatedText, setTranslatedText] = useState("");
+  const [load, setLoad] = useState(false);
 
-  const onChangeLanguage = () => {
+  const onChangeLanguage = useCallback(() => {
     if (currentLang === mainLanguage) {
       setCurrentLang(additionalLanguage);
     } else {
       setCurrentLang(mainLanguage);
     }
-  }
+  }, []);
 
   const onTranslateText = useCallback(async (text: string) => {
-    console.log(text);
+    setLoad(true);
+    const translation = await translateText({text, targetLang: currentLang!}).finally(() => setLoad(false));
+    console.log(translation);
     
-    // const translation = await translateText(text, currentLang!);
-    setTranslatedText(text);
+    // setTranslatedText(translation);
   }, []);
 
   const onMyDictionary = () => {
@@ -71,6 +74,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       <HomeMenuComponent onMyDictionary={onMyDictionary} />
       <BottomSheetComponent translatedText={translatedText} />
       <MicrophoneComponent />
+      {load && <ActivityIndicator />}
     </View>
   );
 

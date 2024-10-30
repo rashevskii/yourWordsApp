@@ -1,9 +1,20 @@
 import axios from 'axios';
-import { LanguagesType } from '../data';
 
-// Укажи свой API-ключ для DeepL
-const apiKey = 'your-deepl-api-key'; 
-const apiUrl = 'https://api-free.deepl.com/v2';
+const DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
+const DEEPL_API_KEY = '63c18f26-8af1-4d34-8061-822da5cc0a48:fx';
+
+interface TranslationResponse {
+  translations: {
+    detected_source_language: string;
+    text: string;
+  }[];
+}
+
+interface TranslationOptions {
+  text: string;
+  targetLang: string;
+  sourceLang?: string;
+}
 
 /**
  * Функция для перевода текста с одного языка на другой
@@ -12,41 +23,70 @@ const apiUrl = 'https://api-free.deepl.com/v2';
  * @param source Исходный язык (необязательно, если требуется автоопределение)
  * @returns Переведенный текст
  */
-export const translateText = async (text: string, target: LanguagesType, source?: string): Promise<string> => {
+export async function translateText(options: TranslationOptions): Promise<undefined> {
+  const { text, targetLang, sourceLang } = options;
+  const params = new URLSearchParams({
+    'target_lang': targetLang,
+    'text': text
+  });
+  console.log(params.toString());
+  
+
   try {
-    const params: any = {
-      auth_key: apiKey,
-      text,
-      target_lang: target,
-    };
+    // const response = await axios.post<TranslationResponse>(
+    //   DEEPL_API_URL,
+    //   new URLSearchParams({
+    //     text,
+    //     target_lang: targetLang,
+    //     ...(sourceLang ? { source_lang: sourceLang } : {}), // Опционально указываем язык оригинала
+    //   }),
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //       'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`,
+    //     },
+    //   }
+    // );
 
-    if (source) {
-      params.source_lang = source;
-    }
+    const resp = await fetch(DEEPL_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`,
+      },
+      body: JSON.stringify(params),
+    }).then(r => r.json())
+      .then((response: { translations: { detected_source_language: string; text: string;}[]}) => response.translations.map((translation) => translation.text).join(' '))
+      .catch(error => {
+        console.error(error);
+        return 'Could not translate';
+      });
 
-    const response = await axios.post(`${apiUrl}/translate`, new URLSearchParams(params));
-    const translatedText = response.data.translations[0].text;
+    console.log(resp);
     
-    return translatedText;
+
+    // const translatedText = response.data.translations[0].text;
+    // return translatedText;
   } catch (error) {
-    throw new Error(`Error translating text: ${error}`);
+    console.error('Ошибка при переводе текста:', error);
+    throw new Error('Не удалось выполнить перевод');
   }
-};
+}
 
 /**
  * Функция для получения списка доступных языков перевода
  * @returns Список языков
  */
-export const getAvailableLanguages = async (): Promise<string[]> => {
-  try {
-    const response = await axios.get(`${apiUrl}/languages`, {
-      params: { auth_key: apiKey },
-    });
+// export const getAvailableLanguages = async (): Promise<string[]> => {
+//   try {
+//     const response = await axios.get(`${apiUrl}/languages`, {
+//       params: { auth_key: apiKey },
+//     });
     
-    const languages = response.data.map((lang: any) => lang.language);
+//     const languages = response.data.map((lang: any) => lang.language);
     
-    return languages;
-  } catch (error) {
-    throw new Error(`Error fetching languages: ${error}`);
-  }
-};
+//     return languages;
+//   } catch (error) {
+//     throw new Error(`Error fetching languages: ${error}`);
+//   }
+// };

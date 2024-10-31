@@ -8,10 +8,10 @@ import {
 } from "../components";
 import i18n from "../locales/i18n";
 
-export type LanguagesType = "en" | "se" | "fi" | "dk" | "no";
+export type LanguagesType = "en" | "sv" | "fi" | "da" | "nb"; // no, se, dk поменять для другого апи
 export type ListOfLanguagesType = Array<ListOfLanguagesItemType>;
 export type ListOfLanguagesItemType = {
-  key: "en" | "se" | "fi" | "dk" | "no";
+  key: "en" | "sv" | "fi" | "da" | "nb"; // no, se, dk поменять для другого апи
   icon: FC;
   engName: string;
   translatedName: string;
@@ -25,19 +25,19 @@ export const listOfLanguages: ListOfLanguagesType = [
     translatedName: i18n.t("English")
   },
   {
-    key: "no",
+    key: "nb",
     icon: NorwayIcon,
     engName: "Norwegian",
     translatedName: i18n.t("Norwegian")
   },
   {
-    key: "se",
+    key: "sv",
     icon: SwedenIcon,
     engName: "Swedish",
     translatedName: i18n.t("Swedish")
   },
   {
-    key: "dk",
+    key: "da",
     icon: DenamrkIcon,
     engName: "Danish",
     translatedName: i18n.t("Danish")

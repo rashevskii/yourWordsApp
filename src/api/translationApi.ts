@@ -4,10 +4,8 @@ const DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
 const DEEPL_API_KEY = '63c18f26-8af1-4d34-8061-822da5cc0a48:fx';
 
 interface TranslationResponse {
-  translations: {
-    detected_source_language: string;
-    text: string;
-  }[];
+  alternatives: string[];
+  translatedText: string;
 }
 
 interface TranslationOptions {
@@ -23,50 +21,26 @@ interface TranslationOptions {
  * @param source Исходный язык (необязательно, если требуется автоопределение)
  * @returns Переведенный текст
  */
-export async function translateText(options: TranslationOptions): Promise<undefined> {
+export async function translateText(options: TranslationOptions): Promise<TranslationResponse> {
   const { text, targetLang, sourceLang } = options;
-  const params = new URLSearchParams({
-    'target_lang': targetLang,
-    'text': text
-  });
-  console.log(params.toString());
   
-
   try {
-    // const response = await axios.post<TranslationResponse>(
-    //   DEEPL_API_URL,
-    //   new URLSearchParams({
-    //     text,
-    //     target_lang: targetLang,
-    //     ...(sourceLang ? { source_lang: sourceLang } : {}), // Опционально указываем язык оригинала
-    //   }),
-    //   {
-    //     headers: {
-    //       'Content-Type': 'application/x-www-form-urlencoded',
-    //       'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`,
-    //     },
-    //   }
-    // );
+    const res = await fetch("https://trans.zillyhuhn.com/translate", {
+      method: "POST",
+      body: JSON.stringify({
+        q: text,
+        source: sourceLang,
+        target: targetLang,
+        format: "text",
+        alternatives: 3,
+        api_key: ""
+      }),
+      headers: { "Content-Type": "application/json" }
+    });
 
-    const resp = await fetch(DEEPL_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`,
-      },
-      body: JSON.stringify(params),
-    }).then(r => r.json())
-      .then((response: { translations: { detected_source_language: string; text: string;}[]}) => response.translations.map((translation) => translation.text).join(' '))
-      .catch(error => {
-        console.error(error);
-        return 'Could not translate';
-      });
+    const translations = res.json();
 
-    console.log(resp);
-    
-
-    // const translatedText = response.data.translations[0].text;
-    // return translatedText;
+    return translations;
   } catch (error) {
     console.error('Ошибка при переводе текста:', error);
     throw new Error('Не удалось выполнить перевод');

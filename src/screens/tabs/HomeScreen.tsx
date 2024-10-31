@@ -32,26 +32,26 @@ interface HomeScreenProps {
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { colors: { background, text } } = useTheme();
   const { baseContainer, containerPadding } = globalStyles;
-  const { mainLanguage, additionalLanguage } = useSelector((state: RootState) => state.appSettings);
+  const { mainLanguage, additionalLanguage, nativeLanguage } = useSelector((state: RootState) => state.appSettings);
   const [currentLang, setCurrentLang] = useState(mainLanguage);
   const [translatedText, setTranslatedText] = useState("");
   const [load, setLoad] = useState(false);
 
-  const onChangeLanguage = useCallback(() => {
+  const onChangeLanguage = () => {
     if (currentLang === mainLanguage) {
       setCurrentLang(additionalLanguage);
     } else {
       setCurrentLang(mainLanguage);
     }
-  }, []);
+  };
 
-  const onTranslateText = useCallback(async (text: string) => {
+  const onTranslateText = async (text: string) => {
     setLoad(true);
-    const translation = await translateText({text, targetLang: currentLang!}).finally(() => setLoad(false));
+    const translation = await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!}).finally(() => setLoad(false));
     console.log(translation);
     
-    // setTranslatedText(translation);
-  }, []);
+    setTranslatedText(translation.translatedText);
+  };
 
   const onMyDictionary = () => {
     navigation.navigate("Dictionary");

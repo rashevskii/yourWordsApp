@@ -22,3 +22,4 @@ export * from "./SettingsIconComponent";
 export * from "./PlanetIconComponent";
 export * from "./BackIconComponent";
 export * from "./BottomSheetComponent";
+export * from "./WordButton";

@@ -1,7 +1,5 @@
-import axios from 'axios';
-
-const DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
-const DEEPL_API_KEY = '63c18f26-8af1-4d34-8061-822da5cc0a48:fx';
+// const DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
+// const DEEPL_API_KEY = '63c18f26-8af1-4d34-8061-822da5cc0a48:fx';
 
 interface TranslationResponse {
   alternatives: string[];
@@ -32,7 +30,40 @@ export async function translateText(options: TranslationOptions): Promise<Transl
         source: sourceLang,
         target: targetLang,
         format: "text",
-        alternatives: 3,
+        alternatives: 5,
+        api_key: ""
+      }),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const translations = res.json();
+
+    return translations;
+  } catch (error) {
+    console.error('Ошибка при переводе текста:', error);
+    throw new Error('Не удалось выполнить перевод');
+  }
+}
+
+/**
+ * Функция для перевода текста с одного языка на другой
+ * @param text Текст для перевода
+ * @param target Язык, на который нужно перевести (например, 'RU' или 'EN')
+ * @param source Исходный язык (необязательно, если требуется автоопределение)
+ * @returns Переведенный текст
+ */
+export async function translateAdditionalText(options: TranslationOptions): Promise<TranslationResponse> {
+  const { text, targetLang, sourceLang } = options;
+  
+  try {
+    const res = await fetch("https://trans.zillyhuhn.com/translate", {
+      method: "POST",
+      body: JSON.stringify({
+        q: text,
+        source: sourceLang,
+        target: targetLang,
+        format: "text",
+        alternatives: 5,
         api_key: ""
       }),
       headers: { "Content-Type": "application/json" }

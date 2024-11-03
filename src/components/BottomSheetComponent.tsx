@@ -4,33 +4,121 @@ import React, {
   useCallback, 
   useEffect, 
   useMemo,
-  useRef 
+  useRef, 
+  useState
 } from "react";
 import { 
   StyleSheet, 
   Text, 
-  TouchableOpacity 
+  TouchableOpacity, 
+  View
 } from "react-native";
+import { Translations } from "../screens";
+import { useTheme } from "../hooks";
+import { useTranslation } from "react-i18next";
+import { WordButton } from "./WordButton";
 
 export interface IBottomSheetProps {
-  translatedText: string;
+  translations: Translations[];
+  sourceWord: string;
+  changedLanguages: boolean;
+  clearTranslate: () => void;
 }
 
-export const BottomSheetComponent: FC<IBottomSheetProps> = ({ translatedText }) => {
+export const BottomSheetComponent: FC<IBottomSheetProps> = (
+  { 
+    translations, 
+    sourceWord, 
+    changedLanguages,
+    clearTranslate
+  }
+) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['25%', '50%', '80%'], []);
+  const { t } = useTranslation();
+  const { colors: 
+    { 
+      primary, 
+      button, 
+      border, 
+      text,
+    } 
+  } = useTheme();
+  const [
+    mainOrAdditionalTranslate, 
+    setMainOrAdditionalTranslate
+  ] = useState(translations.length ? translations[0].translatedText : null);
+  const [
+    nativeTranslate, 
+    setNativeTranslate
+  ] = useState(translations.length ? translations[1]?.translatedText || null : null);
 
   useEffect(() => {
     handleSheetOpen();
-  }, [translatedText]);
+  }, [translations]);
 
   const handleSheetOpen = useCallback(() => {
     bottomSheetRef.current?.expand();
   }, []);
 
   const handleSheetClose = useCallback(() => {
+    clearTranslate();
+    setMainOrAdditionalTranslate(null);
+    setNativeTranslate(null);
     bottomSheetRef.current?.close();
   }, []);
+
+  const onSelectTranslate = (index: number, word: string) => {
+    if (translations.length === 1) {
+      setNativeTranslate(word);
+    } else {
+      if (index === 1) {
+        setNativeTranslate(word);
+      } else {
+        setMainOrAdditionalTranslate(word);
+      }
+    }
+  }
+
+  const onSaveWords = () => {
+    console.log("sourceWord", sourceWord);
+    console.log("nativeOrAdditionalTranslate", mainOrAdditionalTranslate);
+    console.log("nativeTranslate", nativeTranslate);
+    if (changedLanguages) {
+      handleSheetClose();
+    } else {
+      handleSheetClose();
+    }
+  }
+
+  const renderVariants = () => {
+    return translations?.map((translation, index) => {
+      return (
+        <View key={translation.translatedText} style={styles.variantContainer}>
+          <Text style={[styles.lang, { color: text }]}>{translation.lang}:</Text>
+          <View style={[styles.variant, { borderBottomColor: border }]}>
+            <WordButton 
+              selectTranslate={onSelectTranslate}
+              selectedWord={index === 1 ? nativeTranslate || "" : mainOrAdditionalTranslate || ""}
+              index={index}
+              word={translation.translatedText}
+            />
+            {translation.alternatives.map((alternative) => {
+              return (
+                <WordButton 
+                  key={alternative}
+                  selectedWord={index === 1 ? nativeTranslate || "" : mainOrAdditionalTranslate || ""}
+                  selectTranslate={onSelectTranslate}
+                  index={index}
+                  word={alternative}
+                />
+              )
+            })}
+          </View>
+        </View>
+      )
+    })
+  }
 
   return (
     <BottomSheet
@@ -39,10 +127,15 @@ export const BottomSheetComponent: FC<IBottomSheetProps> = ({ translatedText }) 
       index={-1}
     >
       <BottomSheetView style={styles.contentContainer}>
-        <Text>{translatedText}</Text>
-        <TouchableOpacity onPress={handleSheetClose}>
-          <Text>Закрыть</Text>
-        </TouchableOpacity>
+        {renderVariants()}
+        <View style={styles.btnContainer}>
+          <TouchableOpacity style={[styles.button, { borderColor: primary }]} onPress={handleSheetClose}>
+            <Text style={{ color: text }}>{t("Do not save")}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { borderColor: primary, backgroundColor: button }]} onPress={onSaveWords}>
+            <Text style={{ color: text }}>{t("Save")}</Text>
+          </TouchableOpacity>
+        </View>
       </BottomSheetView>
     </BottomSheet>
   );
@@ -53,5 +146,35 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 36,
     alignItems: 'center',
+  },
+  variantContainer: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  variant: {
+    borderBottomWidth: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    paddingVertical: 10,
+    width: "100%"
+  },
+  button: {
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderWidth: 1,
+    margin: 5
+  },
+  btnContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 15
+  },
+  lang: {
+    fontSize: 20,
+    fontWeight: "light"
   },
 });

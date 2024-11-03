@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useState } from "react";
 import { 
   ActivityIndicator,
+  Alert,
   StyleSheet,
   Text,
   View 
@@ -19,7 +20,8 @@ import {
   MicrophoneComponent, 
   TranslationInputComponent 
 } from "../../components";
-import { translateText } from "../../api";
+import { translateAdditionalText, translateText } from "../../api";
+import { LanguagesType, UILanguagesType } from "../../data";
 
 type HomeNavigationProp = NativeStackNavigationProp<BottomTabsParamList, "Home">;
 type HomeRouteProp = RouteProp<BottomTabsParamList, "Home">;
@@ -29,29 +31,71 @@ interface HomeScreenProps {
   route: HomeRouteProp;
 }
 
+export type Translations = {
+  alternatives: string[];
+  translatedText: string;
+  lang?: LanguagesType | UILanguagesType;
+}
+
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { colors: { background, text } } = useTheme();
   const { baseContainer, containerPadding } = globalStyles;
   const { mainLanguage, additionalLanguage, nativeLanguage } = useSelector((state: RootState) => state.appSettings);
   const [currentLang, setCurrentLang] = useState(mainLanguage);
-  const [translatedText, setTranslatedText] = useState("");
+  const [changedLang, setChangedLang] = useState(false);
+  const [translatedText, setTranslatedText] = useState<Translations[]>([]);
   const [load, setLoad] = useState(false);
+  const [sourceWord, setSourceWord] = useState("");
 
   const onChangeLanguage = () => {
     if (currentLang === mainLanguage) {
       setCurrentLang(additionalLanguage);
+      setChangedLang(true);
     } else {
       setCurrentLang(mainLanguage);
+      setChangedLang(false)
     }
   };
 
   const onTranslateText = async (text: string) => {
     setLoad(true);
-    const translation = await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!}).finally(() => setLoad(false));
-    console.log(translation);
-    
-    setTranslatedText(translation.translatedText);
+    try {
+      if (additionalLanguage) {
+        const targetLang = changedLang ? mainLanguage : additionalLanguage;
+        Promise.all([
+          await translateAdditionalText({text, targetLang: targetLang!, sourceLang: currentLang!}),
+          await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!})
+        ])
+          .then((resp) => { // {"error": "Slowdown: 5 per 1 minute"}
+            const data = resp.map((item, index) => {
+              if (index === 0) {
+                return { lang: targetLang, ...item } as Translations
+              } else {
+                return { lang: nativeLanguage, ...item } as Translations
+              }
+            });
+            
+            setSourceWord(text);
+            setTranslatedText(data);
+          });
+      } else {
+        await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!})
+        .then((resp) => {
+          setSourceWord(text);
+          setTranslatedText([resp]);
+        });
+      }
+    } catch(error: any) {
+      Alert.alert("Ошибка", error);
+    } finally {
+      setLoad(false);
+    }
+   
   };
+
+  const clearTranslate = () => {
+    setTranslatedText([]);
+  }
 
   const onMyDictionary = () => {
     navigation.navigate("Dictionary");
@@ -72,8 +116,13 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
         onTranslate={onTranslateText}
       />
       <HomeMenuComponent onMyDictionary={onMyDictionary} />
-      <BottomSheetComponent translatedText={translatedText} />
-      <MicrophoneComponent />
+      <BottomSheetComponent 
+        translations={translatedText} 
+        sourceWord={sourceWord}
+        changedLanguages={changedLang}
+        clearTranslate={clearTranslate}
+      />
+      <MicrophoneComponent disabled={!!translatedText.length} />
       {load && <ActivityIndicator />}
     </View>
   );

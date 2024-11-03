@@ -3,10 +3,22 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import MicrophoneIcon from "../assets/icons/microphone.svg";
 import { useTheme } from "../hooks";
 
-export const MicrophoneComponent: FC = () => {
+export interface IMicrophoneProps {
+  disabled: boolean;
+}
+
+export const MicrophoneComponent: FC<IMicrophoneProps> = ({ disabled }) => {
   const { colors: { secondary } } = useTheme();
   return (
-    <TouchableOpacity style={[styles.microphoneButton, { backgroundColor: secondary }]}>
+    <TouchableOpacity style={
+      [
+        styles.microphoneButton, 
+        { backgroundColor: secondary }, 
+        disabled && styles.opacity
+        ]
+      } 
+      disabled={disabled}
+    >
       <MicrophoneIcon width={25} height={25} />
     </TouchableOpacity>
   );
@@ -20,4 +32,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     borderRadius: 40,
   },
+  opacity: {
+    opacity: 0.5
+  }
 });

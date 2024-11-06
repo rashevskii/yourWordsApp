@@ -23,3 +23,4 @@ export * from "./PlanetIconComponent";
 export * from "./BackIconComponent";
 export * from "./BottomSheetComponent";
 export * from "./WordButton";
+export * from "./Loading";

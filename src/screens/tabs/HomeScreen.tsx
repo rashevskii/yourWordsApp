@@ -1,6 +1,5 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useState } from "react";
 import { 
-  ActivityIndicator,
   Alert,
   StyleSheet,
   Text,
@@ -17,11 +16,15 @@ import {
   BottomSheetComponent,
   HeaderComponent, 
   HomeMenuComponent, 
+  Loading, 
   MicrophoneComponent, 
   TranslationInputComponent 
 } from "../../components";
 import { translateAdditionalText, translateText } from "../../api";
 import { LanguagesType, UILanguagesType } from "../../data";
+import { useTranslation } from "react-i18next";
+import { addWord } from "../../database";
+import { errorHandler } from "../../helpers";
 
 type HomeNavigationProp = NativeStackNavigationProp<BottomTabsParamList, "Home">;
 type HomeRouteProp = RouteProp<BottomTabsParamList, "Home">;
@@ -39,6 +42,7 @@ export type Translations = {
 
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { colors: { background, text } } = useTheme();
+  const { t } = useTranslation();
   const { baseContainer, containerPadding } = globalStyles;
   const { mainLanguage, additionalLanguage, nativeLanguage } = useSelector((state: RootState) => state.appSettings);
   const [currentLang, setCurrentLang] = useState(mainLanguage);
@@ -67,6 +71,13 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!})
         ])
           .then((resp) => { // {"error": "Slowdown: 5 per 1 minute"}
+            if ("error" in resp) {
+              Alert.alert(
+                t("Attention"),
+                resp.error as string
+              )
+              return;
+            }
             const data = resp.map((item, index) => {
               if (index === 0) {
                 return { lang: targetLang, ...item } as Translations
@@ -86,12 +97,28 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
         });
       }
     } catch(error: any) {
-      Alert.alert("Ошибка", error);
+      errorHandler(error);
     } finally {
       setLoad(false);
     }
    
   };
+
+  const saveTranslation = async (
+    originalWord: string,
+    nativeTranslation: string,
+    additionalTranslation: string | null,
+    groupId: string | null,
+    addedDate: string
+  ) => {
+    await addWord(
+      originalWord,
+      nativeTranslation,
+      additionalTranslation,
+      groupId,
+      addedDate
+    );
+  }
 
   const clearTranslate = () => {
     setTranslatedText([]);
@@ -121,9 +148,10 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
         sourceWord={sourceWord}
         changedLanguages={changedLang}
         clearTranslate={clearTranslate}
+        saveTranslation={saveTranslation}
       />
       <MicrophoneComponent disabled={!!translatedText.length} />
-      {load && <ActivityIndicator />}
+      {load && <Loading />}
     </View>
   );
 

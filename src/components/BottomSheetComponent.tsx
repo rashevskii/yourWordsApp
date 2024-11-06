@@ -23,6 +23,13 @@ export interface IBottomSheetProps {
   sourceWord: string;
   changedLanguages: boolean;
   clearTranslate: () => void;
+  saveTranslation: (
+    originalWord: string,
+    nativeTranslation: string,
+    additionalTranslation: string | null,
+    groupId: string | null,
+    addedDate: string
+  ) => void;
 }
 
 export const BottomSheetComponent: FC<IBottomSheetProps> = (
@@ -30,7 +37,8 @@ export const BottomSheetComponent: FC<IBottomSheetProps> = (
     translations, 
     sourceWord, 
     changedLanguages,
-    clearTranslate
+    clearTranslate,
+    saveTranslation
   }
 ) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -86,8 +94,22 @@ export const BottomSheetComponent: FC<IBottomSheetProps> = (
     console.log("nativeTranslate", nativeTranslate);
     if (changedLanguages) {
       handleSheetClose();
+      saveTranslation(
+        mainOrAdditionalTranslate || "",
+        nativeTranslate || "",
+        sourceWord,
+        null,
+        Date.now.toString()
+      );
     } else {
       handleSheetClose();
+      saveTranslation(
+        sourceWord,
+        nativeTranslate || "",
+        mainOrAdditionalTranslate || "",
+        null,
+        Date.now.toString()
+      );
     }
   }
 

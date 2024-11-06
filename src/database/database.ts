@@ -24,7 +24,7 @@ export const createTables = async (): Promise<void> => {
         original_word TEXT NOT NULL,
         additional_translation TEXT,
         native_translation TEXT NOT NULL,
-        group_id INTEGER,
+        group_id TEXT,
         added_date TEXT NOT NULL,
         FOREIGN KEY (group_id) REFERENCES groups(id)
       );
@@ -69,7 +69,7 @@ export const addWord = async (
   original_word: string,
   native_translation: string,
   additional_translation: string | null = null,
-  group_id: number | null = null,
+  group_id: string | null = null,
   added_date: string
 ): Promise<void> => {
   const db = await getDBConnection();

@@ -38,5 +38,9 @@
   "Alphabet": "Alphabet",
   "Save": "Save",
   "Do not save": "Do not save",
-  "Error": "Error"
+  "Error": "Error",
+  "Word added": "Word added!",
+  "Folder created": "Folder created!",
+  "Folder deleted": "Folder deleted!",
+  "Word deleted": "Слово удалено!"
 }

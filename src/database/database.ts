@@ -1,6 +1,11 @@
 import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
 import { Toast } from 'react-native-toast-notifications';
 import { FoldersDBResponse, WordsDBResponse } from '../types/database';
+import i18n from '../locales/i18n';
+
+export type ISortTypeWords  = string & {
+  orderBy: 'date_asc' | 'date_desc' | 'alphabet_asc' | 'alphabet_desc';
+}
 
 // Включаем режим отладки (по желанию)
 SQLite.DEBUG(true);
@@ -79,7 +84,7 @@ export const addWord = async (
       VALUES (?, ?, ?, ?, ?);`,
       [original_word, native_translation, additional_translation, group_id, added_date],
       () => {
-        Toast.show("Success!");
+        Toast.show(i18n.t("Word added"));
       },
       (_, error) => {
         console.error('Error fetching words: ', error);
@@ -103,7 +108,7 @@ export const addGroup = async (group_name: string, image_path: string | null = n
       VALUES (?, ?);`,
       [group_name, image_path],
       () => {
-        Toast.show("Success!");
+        Toast.show(i18n.t("Folder created"));
       },
       (_, error) => {
         console.error('Error fetching words: ', error);
@@ -120,7 +125,7 @@ export const addGroup = async (group_name: string, image_path: string | null = n
  * @returns Массив слов
  */
 export const getAllWords = async (
-  orderBy: 'date_asc' | 'date_desc' | 'alphabet_asc' | 'alphabet_desc'
+  orderBy: ISortTypeWords 
 ): Promise<WordsDBResponse> => {
   const db = await getDBConnection();
   let words: WordsDBResponse = [];
@@ -154,7 +159,6 @@ export const getAllWords = async (
       (_, error) => {
         console.error('Error fetching words: ', error);
         Toast.show(error.message);
-        return null;
       }
     );
   });
@@ -170,8 +174,8 @@ export const getAllWords = async (
  * @returns Массив слов
  */
 export const getWordsByGroup = async (
-  groupId: number,
-  orderBy: 'date_asc' | 'date_desc' | 'alphabet_asc' | 'alphabet_desc'
+  groupId: string,
+  orderBy: ISortTypeWords
 ): Promise<WordsDBResponse> => {
   const db = await getDBConnection();
   let words: WordsDBResponse = [];
@@ -205,7 +209,6 @@ export const getWordsByGroup = async (
       (_, error) => {
         console.error('Error fetching words by group: ', error);
         Toast.show(error.message);
-        return null;
       }
     );
   });
@@ -252,7 +255,7 @@ export const deleteWord = async (wordId: number): Promise<void> => {
       `DELETE FROM words WHERE id = ?`,
       [wordId],
       () => {
-        Toast.show("Success!");
+        Toast.show(i18n.t("Word deleted"));
       },
       (_, error) => {
         console.error('Error deleting word: ', error);
@@ -288,7 +291,7 @@ export const deleteGroup = async (groupId: number): Promise<void> => {
       `DELETE FROM groups WHERE id = ?`,
       [groupId],
       () => {
-        Toast.show("Success!");
+        Toast.show(i18n.t("Folder deleted"));
       },
       (_, error) => {
         console.error('Error deleting group: ', error);

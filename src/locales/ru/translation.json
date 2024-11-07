@@ -38,5 +38,9 @@
   "Alphabet": "Алфавит",
   "Save": "Сохранить",
   "Do not save": "Не сохранять",
-  "Error": "Ошибка"
+  "Error": "Ошибка",
+  "Word added": "Слово добавлено!",
+  "Folder created": "Папка создана!",
+  "Folder deleted": "Папка удалена!",
+  "Word deleted": "Слово удалено!"
 }

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { globalStyles } from "../styles";
 import { useTheme } from "../hooks";
@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/n
 import { MainStackParamList } from "../navigations";
 import { RouteProp } from "@react-navigation/native";
 import {  
+  Loading,
   SearchComponent, 
   SelectableComponent,
 } from "../components";
@@ -13,6 +14,9 @@ import { SelectItem } from "../types";
 import { useTranslation } from "react-i18next";
 import ArrowDownIcon from "../assets/icons/arrow-down.svg";
 import ArrowUpIcon from "../assets/icons/arrow-up.svg";
+import { getAllWords, getWordsByGroup, ISortTypeWords } from "../database";
+import { WordsDBResponse } from "../types/database";
+import { errorHandler } from "../helpers";
 
 type WordsNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Words'>;
 export type WordsRouteProp = RouteProp<MainStackParamList, 'Words'>;
@@ -29,14 +33,36 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
  } } }) => {
   const { t } = useTranslation();
   const sortItems = useMemo(() => [
-    { label: t("Date added"), value: "dateAsc" },
-    { label: t("Date added"), value: "dateDesc" },
-    { label: t("Alphabet"), value: "alphabetAsc" },
-    { label: t("Alphabet"), value: "alphabetDesc" }
+    { label: t("Date added"), value: "date_asc" },
+    { label: t("Date added"), value: "date_desc" },
+    { label: t("Alphabet"), value: "alphabet_asc" },
+    { label: t("Alphabet"), value: "alphabet_desc" }
   ], []);
   const { containerPadding, baseContainer } = globalStyles;
   const { colors: { background, secondary, invertedText, text } } = useTheme();
-  const [selectedValue, setSelectedValue] = useState(sortItems[0]);
+  const [selectedSort, setSelectedSort] = useState(sortItems[0]);
+  const [words, setWords] = useState<WordsDBResponse>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fethWords = async () => {
+      setLoading(true);
+      try {
+        if (idFolder) {
+          const words = await getWordsByGroup(idFolder, selectedSort.value as ISortTypeWords);
+          setWords(words);
+        } else {
+          const words = await getAllWords(selectedSort.value as ISortTypeWords);
+          setWords(words);
+        }
+      } catch (error: any) {
+        errorHandler(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fethWords();
+  }, []);
 
   const selectButton = (selectedItem: SelectItem<string>) => {
     return (
@@ -68,7 +94,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
 
 
   const onSelectLanguages = useCallback((value: SelectItem<string>) => {
-    setSelectedValue(value);
+    setSelectedSort(value);
   }, []);
   
 
@@ -88,10 +114,19 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
           renderButton={selectButton}
           renderItem={selectItem}
           onValueChange={onSelectLanguages}
-          defaultValue={selectedValue}
+          defaultValue={selectedSort}
         />
       </View>
-      
+      {words.map((word) => {
+        return (
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ padding: 10 }}>{word.original_word}</Text>
+            <Text style={{ padding: 10 }}>{word.additional_translation}</Text>
+            <Text style={{ padding: 10 }}>{word.native_translation}</Text>
+          </View>
+        )
+      })}
+      {loading && <Loading />}
     </View>
   );
 };

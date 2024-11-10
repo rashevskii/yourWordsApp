@@ -71,10 +71,11 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!})
         ])
           .then((resp) => { // {"error": "Slowdown: 5 per 1 minute"}
-            if ("error" in resp) {
+            const slowdown = resp.find(item => ("error" in item));
+            if (slowdown) {
               Alert.alert(
                 t("Attention"),
-                resp.error as string
+                slowdown.error as string
               )
               return;
             }
@@ -92,12 +93,19 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       } else {
         await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!})
         .then((resp) => {
+          if ("error" in resp) {
+            Alert.alert(
+              t("Attention"),
+              resp.error as string
+            )
+            return;
+          }
           setSourceWord(text);
           setTranslatedText([resp]);
         });
       }
     } catch(error: any) {
-      errorHandler(error);
+      errorHandler({error});
     } finally {
       setLoad(false);
     }
@@ -111,13 +119,20 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
     groupId: string | null,
     addedDate: string
   ) => {
-    await addWord(
-      originalWord,
-      nativeTranslation,
-      additionalTranslation,
-      groupId,
-      addedDate
-    );
+    try {
+      setLoad(true);
+      await addWord(
+        originalWord,
+        nativeTranslation,
+        additionalTranslation,
+        groupId,
+        addedDate
+      );
+    } catch(error: any) {
+      errorHandler({ error });
+    } finally {
+      setLoad(false);
+    }
   }
 
   const clearTranslate = () => {

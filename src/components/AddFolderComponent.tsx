@@ -8,10 +8,10 @@ export interface IAddFolderProps {
 }
 
 export const AddFolderComponent: FC<IAddFolderProps> = ({ onPress }) => {
-  const { colors: { secondary } } = useTheme();
+  const { colors: { secondary, background } } = useTheme();
   return (
     <TouchableOpacity style={[styles.container, { backgroundColor: secondary }]} onPress={onPress}>
-      <AddFolderIcon width={35} height={35} />
+      <AddFolderIcon width={35} height={35} color={background} />
     </TouchableOpacity>
   );
 };

@@ -6,13 +6,13 @@ import { useTheme } from "../hooks";
 import { TrashComponent } from "./TrashComponent";
 
 export interface IFolderComponentProps {
-  idFolder: string | null;
+  idFolder: number | null;
   percentage: number;
   name: string;
   imagePath: string | null;
   countOfWords: number;
-  onDeleteFolder: (id: string | null) => void;
-  onFolder: (idFolder: string | null, folderName: string) => void;
+  onDeleteFolder: (id: number | null) => void;
+  onFolder: (idFolder: number | null, folderName: string) => void;
 }
 
 export const FolderComponent: FC<IFolderComponentProps> = (

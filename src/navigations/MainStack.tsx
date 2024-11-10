@@ -12,7 +12,7 @@ import { createTables } from '../database';
 export type MainStackParamList = {
   BottomTabs: undefined;
   Words: {
-    idFolder: string | null;
+    idFolder: number | null;
     folderName: string;
   };
 };

@@ -30,6 +30,7 @@
   "My dictionary": "Мой словарь",
   "Attention": "Внимание",
   "Are you sure you want to delete this folder": "Вы действительно хотите удалить эту папку?",
+  "Are you sure you want to delete this word": "Вы действительно хотите удалить это слово?",
   "Yes delete": "Да, удалить",
   "Cancel": "Отмена",
   "Search": "Поиск",
@@ -42,5 +43,6 @@
   "Word added": "Слово добавлено!",
   "Folder created": "Папка создана!",
   "Folder deleted": "Папка удалена!",
-  "Word deleted": "Слово удалено!"
+  "Word deleted": "Слово удалено!",
+  "All words": "Все слова"
 }

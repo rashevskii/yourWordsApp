@@ -1,90 +1,66 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet } from "react-native";
 import { FolderComponent } from "./FolderComponent";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import { WordsScreenProps } from "../navigations";
+import { getAllGroups, getAllWordCount, getWordCountByGroupId } from "../database";
+import { errorHandler } from "../helpers";
+import { Loading } from "./Loading";
+import { FoldersType, FolderType } from "../types";
+import { dbEventEmitter, events } from "../events";
 
 export interface IFolderProps {
   
 }
 
-export type FolderType = {
-  id: string | null;
-  name: string;
-  image: string | null;
-  countOfWords: number;
-}
-
-const foldersList: FolderType[] = [
-  {
-    id: null,
-    name: "Все слова",
-    image: null,
-    countOfWords: 0
-  },
-  {
-    id: "1",
-    name: "Фотография",
-    image: null,
-    countOfWords: 0
-  },
-  {
-    id: "2",
-    name: "Парикмахер",
-    image: null,
-    countOfWords: 0
-  },
-  {
-    id: "3",
-    name: "Визаж",
-    image: null,
-    countOfWords: 0
-  },
-  {
-    id: "4",
-    name: "Неправильные глаголы",
-    image: null,
-    countOfWords: 0
-  },
-  {
-    id: "5",
-    name: "Автомобильная тематека",
-    image: null,
-    countOfWords: 0
-  },
-  {
-    id: "6",
-    name: "Автомобильная тематека",
-    image: null,
-    countOfWords: 0
-  },
-  {
-    id: "7",
-    name: "Автомобильная тематека",
-    image: null,
-    countOfWords: 0
-  },
-  {
-    id: "8",
-    name: "Автомобильная тематека",
-    image: null,
-    countOfWords: 0
-  },
-  {
-    id: "9",
-    name: "Автомобильная тематека",
-    image: null,
-    countOfWords: 0
-  },
-];
-
 export const FoldersListComponent: FC<IFolderProps> = () => {
-  const [folders, setFolders] = useState(foldersList);
   const { t } = useTranslation();
   const navigation = useNavigation<WordsScreenProps['navigation']>();
+  const [loading, setLoading] = useState(false);
+  const [folders, setFolders] = useState<FoldersType>([]);
 
-  const handleDeleteFolder = (id: string | null) => {
+  useEffect(() => {
+    const fetchFolders = async () => {
+      setLoading(true);
+      try {
+        const folders = await getAllGroups();
+        const folderData = await Promise.all(folders.map(async (folder) => {
+          const count = await getWordCountByGroupId(folder.id!);
+          return {
+            ...folder,
+            count
+          } as FolderType
+        }));
+        const countOfAllWords = await getAllWordCount();
+        const allFolders = [
+          ({ 
+            id: null, 
+            group_name: t("All words"), 
+            image_path: null, 
+            count: countOfAllWords 
+          } as FolderType), 
+          ...folderData
+        ];
+        setFolders(allFolders);
+      } catch(error: any) {
+        errorHandler({error});
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchFolders();
+    
+    dbEventEmitter.addListener(events.WORD_ADDED, fetchFolders);
+    dbEventEmitter.addListener(events.WORD_DELETED, fetchFolders);
+
+    return () => {
+      dbEventEmitter.removeAllListeners(events.WORD_ADDED);
+      dbEventEmitter.removeAllListeners(events.WORD_DELETED);
+    };
+  }, []);
+
+  const handleDeleteFolder = (id: number | null) => {
     Alert.alert(
       t("Attention"),
       t("Are you sure you want to delete this folder"),
@@ -101,7 +77,7 @@ export const FoldersListComponent: FC<IFolderProps> = () => {
     )
   };
 
-  const handleOnPressFolder = (idFolder: string | null, folderName: string) => {
+  const handleOnPressFolder = (idFolder: number | null, folderName: string) => {
     navigation.navigate("Words", {
       idFolder,
       folderName
@@ -112,9 +88,9 @@ export const FoldersListComponent: FC<IFolderProps> = () => {
     return (
       <FolderComponent 
         idFolder={item.id}
-        name={item.name}
-        imagePath={item.image}
-        countOfWords={item.countOfWords}
+        name={item.group_name}
+        imagePath={item.image_path}
+        countOfWords={item.count}
         percentage={30}
         onDeleteFolder={handleDeleteFolder}
         onFolder={handleOnPressFolder}
@@ -131,6 +107,7 @@ export const FoldersListComponent: FC<IFolderProps> = () => {
         numColumns={2}
         showsVerticalScrollIndicator={false}
       />
+      {loading && <Loading />}
     </>
   );
 };

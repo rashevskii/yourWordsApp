@@ -7,7 +7,7 @@ export type WordDBResponse = {
 }
 
 export type FolderDBResponse = {
-  id: number; 
+  id: number | null; 
   group_name: string; 
   image_path: string | null
 }

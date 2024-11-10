@@ -24,3 +24,5 @@ export * from "./BackIconComponent";
 export * from "./BottomSheetComponent";
 export * from "./WordButton";
 export * from "./Loading";
+export * from "./Word";
+export * from "./WordsContainer";

@@ -19,7 +19,7 @@ interface TranslationOptions {
  * @param source Исходный язык (необязательно, если требуется автоопределение)
  * @returns Переведенный текст
  */
-export async function translateText(options: TranslationOptions): Promise<TranslationResponse> {
+export async function translateText(options: TranslationOptions): Promise<TranslationResponse | { error: "Slowdown: 5 per 1 minute" }> {
   const { text, targetLang, sourceLang } = options;
   
   try {
@@ -41,7 +41,7 @@ export async function translateText(options: TranslationOptions): Promise<Transl
     return translations;
   } catch (error) {
     console.error('Ошибка при переводе текста:', error);
-    throw new Error('Не удалось выполнить перевод');
+    throw new Error(`Не удалось выполнить перевод: ${error}`);
   }
 }
 
@@ -74,7 +74,7 @@ export async function translateAdditionalText(options: TranslationOptions): Prom
     return translations;
   } catch (error) {
     console.error('Ошибка при переводе текста:', error);
-    throw new Error('Не удалось выполнить перевод');
+    throw new Error(`Не удалось выполнить перевод: ${error}`);
   }
 }
 

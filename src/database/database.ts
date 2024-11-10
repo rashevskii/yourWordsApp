@@ -2,6 +2,7 @@ import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
 import { Toast } from 'react-native-toast-notifications';
 import { FoldersDBResponse, WordsDBResponse } from '../types/database';
 import i18n from '../locales/i18n';
+import { dbEventEmitter, events } from '../events';
 
 export type ISortTypeWords  = string & {
   orderBy: 'date_asc' | 'date_desc' | 'alphabet_asc' | 'alphabet_desc';
@@ -85,6 +86,7 @@ export const addWord = async (
       [original_word, native_translation, additional_translation, group_id, added_date],
       () => {
         Toast.show(i18n.t("Word added"));
+        dbEventEmitter.emit(events.WORD_ADDED);
       },
       (_, error) => {
         console.error('Error fetching words: ', error);
@@ -174,7 +176,7 @@ export const getAllWords = async (
  * @returns Массив слов
  */
 export const getWordsByGroup = async (
-  groupId: string,
+  groupId: number,
   orderBy: ISortTypeWords
 ): Promise<WordsDBResponse> => {
   const db = await getDBConnection();
@@ -245,6 +247,55 @@ export const getAllGroups = async (): Promise<FoldersDBResponse> => {
 };
 
 /**
+ * Получение количества всех слов
+ * @returns количество слов
+ */
+export const getAllWordCount = async (): Promise<number> => {
+  const db = await getDBConnection();
+  let count = 0;
+  await db.transaction(tx => {
+    tx.executeSql(
+      `SELECT COUNT(*) as count FROM words`,
+      [],
+      (_, results) => {
+        count = results.rows.item(0).count;
+      },
+      (_, error) => {
+        console.error('Error fetching word count: ', error);
+        Toast.show(error.message);
+        return null;
+      }
+    );
+  });
+  return count;
+}
+
+/**
+ * Получение количества слов, относящихся к определенной папке
+ * @param groupId ID папки
+ * @returns количество слов в папке
+ */
+export const getWordCountByGroupId = async (groupId: number): Promise<number> => {
+  const db = await getDBConnection();
+  let count = 0;
+  await db.transaction(tx => {
+    tx.executeSql(
+      `SELECT COUNT(*) as count FROM words WHERE group_id = ?`,
+      [groupId],
+      (_, results) => {
+        count = results.rows.item(0).count;
+      },
+      (_, error) => {
+        console.error('Error fetching word count: ', error);
+        Toast.show(error.message);
+        return null;
+      }
+    );
+  });
+  return count;
+}
+
+/**
  * Удаление слова по ID
  * @param wordId ID слова, которое нужно удалить
  */
@@ -256,6 +307,7 @@ export const deleteWord = async (wordId: number): Promise<void> => {
       [wordId],
       () => {
         Toast.show(i18n.t("Word deleted"));
+        dbEventEmitter.emit(events.WORD_DELETED);
       },
       (_, error) => {
         console.error('Error deleting word: ', error);

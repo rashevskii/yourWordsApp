@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { globalStyles } from "../styles";
 import { useTheme } from "../hooks";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
@@ -9,13 +9,14 @@ import {
   Loading,
   SearchComponent, 
   SelectableComponent,
+  WordContainer,
 } from "../components";
 import { SelectItem } from "../types";
 import { useTranslation } from "react-i18next";
 import ArrowDownIcon from "../assets/icons/arrow-down.svg";
 import ArrowUpIcon from "../assets/icons/arrow-up.svg";
-import { getAllWords, getWordsByGroup, ISortTypeWords } from "../database";
-import { WordsDBResponse } from "../types/database";
+import { deleteWord, getAllWords, getWordsByGroup, ISortTypeWords } from "../database";
+import { WordDBResponse, WordsDBResponse } from "../types/database";
 import { errorHandler } from "../helpers";
 
 type WordsNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Words'>;
@@ -41,7 +42,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
   const { containerPadding, baseContainer } = globalStyles;
   const { colors: { background, secondary, invertedText, text } } = useTheme();
   const [selectedSort, setSelectedSort] = useState(sortItems[0]);
-  const [words, setWords] = useState<WordsDBResponse>([]);
+  const [translations, setTranslations] = useState<WordsDBResponse>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -49,14 +50,14 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
       setLoading(true);
       try {
         if (idFolder) {
-          const words = await getWordsByGroup(idFolder, selectedSort.value as ISortTypeWords);
-          setWords(words);
+          const translations = await getWordsByGroup(idFolder, selectedSort.value as ISortTypeWords);
+          setTranslations(translations);
         } else {
-          const words = await getAllWords(selectedSort.value as ISortTypeWords);
-          setWords(words);
+          const translations = await getAllWords(selectedSort.value as ISortTypeWords);
+          setTranslations(translations);
         }
       } catch (error: any) {
-        errorHandler(error);
+        errorHandler({error});
       } finally {
         setLoading(false);
       }
@@ -92,11 +93,32 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     );
   }
 
-
   const onSelectLanguages = useCallback((value: SelectItem<string>) => {
     setSelectedSort(value);
   }, []);
-  
+
+  const onDeleteTranslate = async (id: number) => {
+    setLoading(true);
+    try {
+      await deleteWord(id);
+      const wordsAfterDelete = translations.filter(translation => translation.id !== id);
+      setTranslations(wordsAfterDelete);
+    } catch(error: any) {
+      errorHandler({error});
+    } finally {
+      setLoading(false);
+    } 
+  }
+
+  const renderItem = ({ item }: {item: WordDBResponse}) => {
+    return (
+      <WordContainer 
+        key={item.id} 
+        words={item} 
+        onDeleteWord={onDeleteTranslate} 
+      />
+    )
+  }
 
   return (
     <View 
@@ -117,15 +139,11 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
           defaultValue={selectedSort}
         />
       </View>
-      {words.map((word) => {
-        return (
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ padding: 10 }}>{word.original_word}</Text>
-            <Text style={{ padding: 10 }}>{word.additional_translation}</Text>
-            <Text style={{ padding: 10 }}>{word.native_translation}</Text>
-          </View>
-        )
-      })}
+      <FlatList
+        data={translations}
+        showsVerticalScrollIndicator={false}
+        renderItem={renderItem}
+      />
       {loading && <Loading />}
     </View>
   );

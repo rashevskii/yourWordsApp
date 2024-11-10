@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { 
   AddFolderComponent, 
   FoldersListComponent,
@@ -28,11 +28,3 @@ export const DictionaryScreen: FC<IDictionaryProps> = () => {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 20
-  }
-});

@@ -1,28 +1,26 @@
 import React, { FC } from "react";
-import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { WordDBResponse } from "../types/database";
 import { Word } from "./Word";
 import { useTheme } from "../hooks";
-import { TrainingProgressComponent } from "./TrainingProgressComponent";
-import { TrashComponent } from "./TrashComponent";
-import Sound from "../assets/icons/sound.svg";
-import AddFolderIcon from "../assets/icons/folder-add.svg";
 import { useTranslation } from "react-i18next";
+import { ButtonsInTanslate } from "./ButtonsInTranslate";
 
 export interface IWordContainerProps {
   words: WordDBResponse;
   onDeleteWord: (id: number) => Promise<void>;
+  onAddFolder: () => void;
 }
 
-export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord }) => {
+export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord, onAddFolder }) => {
   const { colors: { border, secondary } } = useTheme();
   const { t } = useTranslation();
-  const idWord = words.id;
+  const wordId = words.id;
   const original = words.original_word;
   const additional = words.additional_translation;
   const native = words.native_translation;
 
-  const onDelete = () => {
+  const onDelete = (id: number) => {
     Alert.alert(
       t("Attention"),
       t("Are you sure you want to delete this word"),
@@ -34,27 +32,10 @@ export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord }) 
         },
         {
           text: t("Yes delete"),
-          onPress: () => onDeleteWord(idWord)
+          onPress: async () => onDeleteWord(id)
         }
       ]
     )
-  }
-
-  const Buttons = () => {
-    return (
-      <View style={styles.buttonsContainer}>
-        <TrainingProgressComponent percentage={40} />
-        <TouchableOpacity onPress={onDelete}>
-          <TrashComponent />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Sound width={28} height={28} color={secondary} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <AddFolderIcon width={28} height={28} color={secondary} />
-        </TouchableOpacity>
-      </View>
-    );
   }
 
   return (
@@ -67,7 +48,11 @@ export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord }) 
         <View style={styles.horizontalRow}>
           <Word text={native} />
         </View>
-        <Buttons />
+        <ButtonsInTanslate
+          onDelete={onDelete} 
+          wordId={wordId} 
+          onAddFolder={onAddFolder}
+        />
       </View>
     ) : (
       <View style={[styles.container, styles.horizontal, { borderBottomColor: border }]}>
@@ -75,7 +60,11 @@ export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord }) 
           <Word text={original} />
           <Word text={native} />
         </View>
-        <Buttons />
+        <ButtonsInTanslate 
+          onDelete={onDelete} 
+          wordId={wordId} 
+          onAddFolder={onAddFolder}
+        />
       </View>
     )
   ) 

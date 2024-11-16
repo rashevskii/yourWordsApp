@@ -9,6 +9,7 @@ import {
   Loading,
   SearchComponent, 
   SelectableComponent,
+  SelectFolderSheet,
   WordContainer,
 } from "../components";
 import { SelectItem } from "../types";
@@ -27,8 +28,6 @@ export interface IWordsProps {
   route: WordsRouteProp;
 }
 
-
-
 export const WordsScreen: FC<IWordsProps> = ({ route: { params: { 
   idFolder
  } } }) => {
@@ -43,6 +42,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
   const { colors: { background, secondary, invertedText, text } } = useTheme();
   const [selectedSort, setSelectedSort] = useState(sortItems[0]);
   const [translations, setTranslations] = useState<WordsDBResponse>([]);
+  const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -110,42 +110,50 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     } 
   }
 
+  const onAddWordInFolder = () => {
+    setOpened(true);
+  }
+
   const renderItem = ({ item }: {item: WordDBResponse}) => {
     return (
       <WordContainer 
         key={item.id} 
         words={item} 
         onDeleteWord={onDeleteTranslate} 
+        onAddFolder={onAddWordInFolder}
       />
     )
   }
 
   return (
-    <View 
-      style={[
-        baseContainer, 
-        containerPadding, 
-        { backgroundColor: background }
-      ]}
-    >
-      <SearchComponent />
-      <View style={styles.sortContainer}>
-        <Text style={styles.sortLabel}>{t("Sort by")}</Text>
-        <SelectableComponent 
-          items={sortItems} 
-          renderButton={selectButton}
-          renderItem={selectItem}
-          onValueChange={onSelectLanguages}
-          defaultValue={selectedSort}
+    <>
+      <View 
+        style={[
+          baseContainer, 
+          containerPadding, 
+          { backgroundColor: background }
+        ]}
+      >
+        <SearchComponent />
+        <View style={styles.sortContainer}>
+          <Text style={styles.sortLabel}>{t("Sort by")}</Text>
+          <SelectableComponent 
+            items={sortItems} 
+            renderButton={selectButton}
+            renderItem={selectItem}
+            onValueChange={onSelectLanguages}
+            defaultValue={selectedSort}
+          />
+        </View>
+        <FlatList
+          data={translations}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderItem}
         />
+        {loading && <Loading />}
       </View>
-      <FlatList
-        data={translations}
-        showsVerticalScrollIndicator={false}
-        renderItem={renderItem}
-      />
-      {loading && <Loading />}
-    </View>
+      <SelectFolderSheet opened={opened} />
+    </>
   );
 };
 

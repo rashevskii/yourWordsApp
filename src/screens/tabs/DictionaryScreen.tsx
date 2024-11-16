@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { View } from "react-native";
 import { 
-  AddFolderComponent, 
+  AddFolderButton, 
   FoldersListComponent,
 } from "../../components";
 import { useTheme } from "../../hooks";
@@ -21,10 +21,13 @@ export interface IDictionaryProps {
 export const DictionaryScreen: FC<IDictionaryProps> = () => {
   const { colors: { background } } = useTheme();
   const { baseContainer, containerPadding } = globalStyles;
+
+
+
   return (
     <View style={[baseContainer, containerPadding, { backgroundColor: background }]}>
       <FoldersListComponent />
-      <AddFolderComponent onPress={() => {}} />
+      <AddFolderButton onPress={() => {}} />
     </View>
   );
 }

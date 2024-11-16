@@ -13,7 +13,7 @@ import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/n
 import { BottomTabsParamList } from "../../navigations";
 import { RouteProp } from "@react-navigation/native";
 import {
-  BottomSheetComponent,
+  SelectWords,
   HeaderComponent, 
   HomeMenuComponent, 
   Loading, 
@@ -158,7 +158,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
         onTranslate={onTranslateText}
       />
       <HomeMenuComponent onMyDictionary={onMyDictionary} />
-      <BottomSheetComponent 
+      <SelectWords 
         translations={translatedText} 
         sourceWord={sourceWord}
         changedLanguages={changedLang}

@@ -18,7 +18,7 @@ import { useTheme } from "../hooks";
 import { useTranslation } from "react-i18next";
 import { WordButton } from "./WordButton";
 
-export interface IBottomSheetProps {
+export interface ISelectWordsProps {
   translations: Translations[];
   sourceWord: string;
   changedLanguages: boolean;
@@ -32,7 +32,7 @@ export interface IBottomSheetProps {
   ) => void;
 }
 
-export const BottomSheetComponent: FC<IBottomSheetProps> = (
+export const SelectWords: FC<ISelectWordsProps> = (
   { 
     translations, 
     sourceWord, 

@@ -3,11 +3,11 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import AddFolderIcon from "../assets/icons/folder-add.svg";
 import { useTheme } from "../hooks";
 
-export interface IAddFolderProps {
+export interface IAddFolderButtonProps {
   onPress: () => void;
 }
 
-export const AddFolderComponent: FC<IAddFolderProps> = ({ onPress }) => {
+export const AddFolderButton: FC<IAddFolderButtonProps> = ({ onPress }) => {
   const { colors: { secondary, background } } = useTheme();
   return (
     <TouchableOpacity style={[styles.container, { backgroundColor: secondary }]} onPress={onPress}>

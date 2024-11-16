@@ -56,7 +56,7 @@ export const TranslationInputComponent: FC<ITranslationInputProps> = ({
         placeholder={t("Enter word for translation")}
         style={[styles.input, { color: text }]}
         value={query}
-        onChangeText={(e) => setQuery(e)}
+        onChangeText={(text) => setQuery(text)}
         onSubmitEditing={(event) => getTranslation(event.nativeEvent.text)}
         inputMode="text"
         returnKeyType={"done"}

@@ -11,7 +11,7 @@ export interface IFolderComponentProps {
   name: string;
   imagePath: string | null;
   countOfWords: number;
-  onDeleteFolder: (id: number | null) => void;
+  onDeleteFolder: (id: number) => void;
   onFolder: (idFolder: number | null, folderName: string) => void;
 }
 

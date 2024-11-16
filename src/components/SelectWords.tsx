@@ -9,14 +9,14 @@ import React, {
 } from "react";
 import { 
   StyleSheet, 
-  Text, 
-  TouchableOpacity, 
+  Text,
   View
 } from "react-native";
 import { Translations } from "../screens";
 import { useTheme } from "../hooks";
 import { useTranslation } from "react-i18next";
 import { WordButton } from "./WordButton";
+import { BottomSheetActionButtons } from "./BottomSheetActionButtons";
 
 export interface ISelectWordsProps {
   translations: Translations[];
@@ -46,8 +46,6 @@ export const SelectWords: FC<ISelectWordsProps> = (
   const { t } = useTranslation();
   const { colors: 
     { 
-      primary, 
-      button, 
       border, 
       text,
     } 
@@ -89,9 +87,6 @@ export const SelectWords: FC<ISelectWordsProps> = (
   }
 
   const onSaveWords = () => {
-    console.log("sourceWord", sourceWord);
-    console.log("nativeOrAdditionalTranslate", mainOrAdditionalTranslate);
-    console.log("nativeTranslate", nativeTranslate);
     if (changedLanguages) {
       handleSheetClose();
       saveTranslation(
@@ -150,14 +145,11 @@ export const SelectWords: FC<ISelectWordsProps> = (
     >
       <BottomSheetView style={styles.contentContainer}>
         {renderVariants()}
-        <View style={styles.btnContainer}>
-          <TouchableOpacity style={[styles.button, { borderColor: primary }]} onPress={handleSheetClose}>
-            <Text style={{ color: text }}>{t("Do not save")}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { borderColor: primary, backgroundColor: button }]} onPress={onSaveWords}>
-            <Text style={{ color: text }}>{t("Save")}</Text>
-          </TouchableOpacity>
-        </View>
+        <BottomSheetActionButtons 
+          positiveActionText={t("Save")}
+          negativeActionText={t("Do not save")}
+          positiveAction={onSaveWords}
+        />
       </BottomSheetView>
     </BottomSheet>
   );
@@ -180,20 +172,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     width: "100%"
-  },
-  button: {
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderWidth: 1,
-    margin: 5
-  },
-  btnContainer: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 15
   },
   lang: {
     fontSize: 20,

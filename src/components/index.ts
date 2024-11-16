@@ -26,3 +26,5 @@ export * from "./WordButton";
 export * from "./Loading";
 export * from "./Word";
 export * from "./WordsContainer";
+export * from "./BottomSheetActionButtons";
+export * from "./AddFolderSheet";

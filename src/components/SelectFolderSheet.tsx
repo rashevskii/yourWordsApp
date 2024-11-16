@@ -15,9 +15,9 @@ export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({ opened }) => {
 
   useEffect(() => {
     if (opened) {
-      handleSheetClose();
-    } else {
       handleSheetOpen();
+    } else {
+      handleSheetClose();
     }
   }, [opened]);
 

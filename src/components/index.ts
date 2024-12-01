@@ -31,3 +31,4 @@ export * from "./AddFolderSheet";
 export * from "./ButtonsInTranslate";
 export * from "./SelectFolderSheet";
 export * from "./AddNewFolder";
+export * from "./FolderButton";

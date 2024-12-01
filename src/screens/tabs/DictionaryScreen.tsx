@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { Alert, View } from "react-native";
 import { 
   AddFolderSheet,
@@ -102,20 +102,20 @@ export const DictionaryScreen: FC<IDictionaryProps> = () => {
     })
   }
 
-  const onPressAddFolder = () => {
+  const onPressAddFolder = useCallback(() => {
     setOpenedSheet(true);
-  }
+  }, []);
 
-  const handleCloseSheet = () => {
+  const handleCloseSheet = useCallback(() => {
     setOpenedSheet(false);
-  }
+  }, []);
 
   const handleSaveFolder = async (folderName: string) => {
     const name = folderName.trim();
     if (name.length > 0) {
       try {
         setLoading(true);
-        await addGroup(name).then(() => fetchFolders());
+        await addGroup(name).then(fetchFolders).finally(() => setLoading(false));
       } catch(error: any) {
         errorHandler({ error });
       } finally {

@@ -3,6 +3,7 @@ export type WordDBResponse = {
   original_word: string; 
   native_translation: string; 
   additional_translation: string | null; 
+  group_id: number | null;
   added_date: string
 }
 

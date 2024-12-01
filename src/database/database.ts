@@ -30,7 +30,7 @@ export const createTables = async (): Promise<void> => {
         original_word TEXT NOT NULL,
         additional_translation TEXT,
         native_translation TEXT NOT NULL,
-        group_id TEXT,
+        group_id INTEGER,
         added_date TEXT NOT NULL,
         FOREIGN KEY (group_id) REFERENCES groups(id)
       );
@@ -237,7 +237,6 @@ export const getAllGroups = async (): Promise<FoldersDBResponse> => {
       (_, error) => {
         console.error('Error fetching groups: ', error);
         Toast.show(error.message);
-        return null;
       }
     );
   });

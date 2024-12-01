@@ -5,19 +5,28 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-nativ
 import { globalStyles } from "../styles";
 
 export interface IAddNewFolderProps {
-
+  onOpenInput: () => void;
+  onCloseInput: () => void;
+  inputOpened: boolean;
 }
 
-export const AddNewFolder: FC<IAddNewFolderProps> = () => {
+export const AddNewFolder: FC<IAddNewFolderProps> = ({
+  onCloseInput,
+  onOpenInput,
+  inputOpened
+}) => {
   const { t } = useTranslation();
   const { colors: { border, primary, text } } = useTheme();
-  const [inputShowed, setInputShowed] = useState(false);
+  const [folderName, setFolderName] = useState("");
   const { baseButton } = globalStyles;
   return (
-    <>
+    <View style={[styles.container, { borderBottomColor: border }]}>
       {
-        !inputShowed ? (
-          <TouchableOpacity onPress={() => setInputShowed(true)} style={[baseButton, { backgroundColor: primary, borderColor: primary }]}>
+        !inputOpened ? (
+          <TouchableOpacity 
+            onPress={onOpenInput} 
+            style={[baseButton, styles.button, { backgroundColor: primary, borderColor: primary }]}
+          >
             <Text style={{ color: text }}>
               {t("New folder")}
             </Text>
@@ -25,14 +34,16 @@ export const AddNewFolder: FC<IAddNewFolderProps> = () => {
         ) : null
       }
       {
-        inputShowed && (
+        inputOpened && (
           <View style={styles.inputContainer}>
             <View style={[styles.inputWrapper, { borderColor: border }]}>
               <TextInput
                 placeholder={t("Folder name")}
+                value={folderName}
+                onChangeText={(text) => setFolderName(text)}
               />
             </View>
-            <TouchableOpacity onPress={() => setInputShowed(false)} style={[baseButton, { borderColor: primary }]}>
+            <TouchableOpacity onPress={onCloseInput} style={[baseButton, { borderColor: primary }]}>
               <Text style={{ color: text }}>
                 {t("Cancel")}
               </Text>
@@ -40,11 +51,19 @@ export const AddNewFolder: FC<IAddNewFolderProps> = () => {
           </View>
         )
       }
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    marginBottom: 20
+  },
+  button: {
+    alignItems: "center",
+  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",

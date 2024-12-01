@@ -9,16 +9,17 @@ import { ButtonsInTanslate } from "./ButtonsInTranslate";
 export interface IWordContainerProps {
   words: WordDBResponse;
   onDeleteWord: (id: number) => Promise<void>;
-  onAddFolder: () => void;
+  onAddFolder: (id: number | null) => void;
 }
 
 export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord, onAddFolder }) => {
-  const { colors: { border, secondary } } = useTheme();
+  const { colors: { border } } = useTheme();
   const { t } = useTranslation();
   const wordId = words.id;
   const original = words.original_word;
   const additional = words.additional_translation;
   const native = words.native_translation;
+  const folderId = words.group_id;
 
   const onDelete = (id: number) => {
     Alert.alert(
@@ -51,7 +52,7 @@ export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord, on
         <ButtonsInTanslate
           onDelete={onDelete} 
           wordId={wordId} 
-          onAddFolder={onAddFolder}
+          onAddFolder={() => onAddFolder(folderId)}
         />
       </View>
     ) : (
@@ -63,7 +64,7 @@ export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord, on
         <ButtonsInTanslate 
           onDelete={onDelete} 
           wordId={wordId} 
-          onAddFolder={onAddFolder}
+          onAddFolder={() => onAddFolder(folderId)}
         />
       </View>
     )

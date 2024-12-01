@@ -44,6 +44,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
   const [translations, setTranslations] = useState<WordsDBResponse>([]);
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [idSelectedFolder, setIdSelectedFolder] = useState<number | null>(null);
 
   useEffect(() => {
     const fethWords = async () => {
@@ -110,8 +111,9 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     } 
   }
 
-  const onAddWordInFolder = () => {
+  const onAddWordInFolder = (id: number | null) => {
     setOpened(true);
+    setIdSelectedFolder(id);
   }
 
   const renderItem = ({ item }: {item: WordDBResponse}) => {
@@ -152,7 +154,11 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
         />
         {loading && <Loading />}
       </View>
-      <SelectFolderSheet opened={opened} />
+      <SelectFolderSheet 
+        setOpened={setOpened} 
+        opened={opened} 
+        selectedWord={idSelectedFolder}
+      />
     </>
   );
 };

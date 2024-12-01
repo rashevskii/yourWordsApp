@@ -30,3 +30,4 @@ export * from "./BottomSheetActionButtons";
 export * from "./AddFolderSheet";
 export * from "./ButtonsInTranslate";
 export * from "./SelectFolderSheet";
+export * from "./AddNewFolder";

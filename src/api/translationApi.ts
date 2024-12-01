@@ -2,8 +2,12 @@
 // const DEEPL_API_KEY = '63c18f26-8af1-4d34-8061-822da5cc0a48:fx';
 
 interface TranslationResponse {
-  alternatives: string[];
-  translatedText: string;
+  translations: Translation[];
+}
+
+type Translation = {
+  detected_source_language: string;
+  text: string;
 }
 
 interface TranslationOptions {
@@ -19,19 +23,16 @@ interface TranslationOptions {
  * @param source Исходный язык (необязательно, если требуется автоопределение)
  * @returns Переведенный текст
  */
-export async function translateText(options: TranslationOptions): Promise<TranslationResponse | { error: "Slowdown: 5 per 1 minute" }> {
-  const { text, targetLang, sourceLang } = options;
+export async function translateText(options: TranslationOptions): Promise<TranslationResponse> {
+  const { text, targetLang,sourceLang } = options;
   
   try {
-    const res = await fetch("https://trans.zillyhuhn.com/translate", {
+    const res = await fetch("https://your-words-server.onrender.com/translate", {
       method: "POST",
       body: JSON.stringify({
-        q: text,
-        source: sourceLang,
-        target: targetLang,
-        format: "text",
-        alternatives: 5,
-        api_key: ""
+        text,
+        sourceLang,
+        targetLang
       }),
       headers: { "Content-Type": "application/json" }
     });
@@ -56,15 +57,12 @@ export async function translateAdditionalText(options: TranslationOptions): Prom
   const { text, targetLang, sourceLang } = options;
   
   try {
-    const res = await fetch("https://trans.zillyhuhn.com/translate", {
+    const res = await fetch("https://your-words-server.onrender.com/translate", {
       method: "POST",
       body: JSON.stringify({
-        q: text,
-        source: sourceLang,
-        target: targetLang,
-        format: "text",
-        alternatives: 5,
-        api_key: ""
+        text,
+        sourceLang,
+        targetLang
       }),
       headers: { "Content-Type": "application/json" }
     });
@@ -77,21 +75,3 @@ export async function translateAdditionalText(options: TranslationOptions): Prom
     throw new Error(`Не удалось выполнить перевод: ${error}`);
   }
 }
-
-/**
- * Функция для получения списка доступных языков перевода
- * @returns Список языков
- */
-// export const getAvailableLanguages = async (): Promise<string[]> => {
-//   try {
-//     const response = await axios.get(`${apiUrl}/languages`, {
-//       params: { auth_key: apiKey },
-//     });
-    
-//     const languages = response.data.map((lang: any) => lang.language);
-    
-//     return languages;
-//   } catch (error) {
-//     throw new Error(`Error fetching languages: ${error}`);
-//   }
-// };

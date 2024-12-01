@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../hooks";
+import { globalStyles } from "../styles";
 
 export interface IBottomSheetActionButtonsProps {
   negativeActionText: string;
@@ -22,12 +23,13 @@ export const BottomSheetActionButtons: FC<IBottomSheetActionButtonsProps> = ({
       text,
     } 
   } = useTheme();
+  const { baseButton } = globalStyles;
   return (
     <View style={styles.btnContainer}>
-      <TouchableOpacity style={[styles.button, { borderColor: primary }]} onPress={negativeAction}>
+      <TouchableOpacity style={[baseButton, styles.button, { borderColor: primary }]} onPress={negativeAction}>
         <Text style={{ color: text }}>{negativeActionText}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.button, { borderColor: primary, backgroundColor: button }]} onPress={positiveAction}>
+      <TouchableOpacity style={[baseButton, styles.button, { borderColor: primary, backgroundColor: button }]} onPress={positiveAction}>
         <Text style={{ color: text }}>{positiveActionText}</Text>
       </TouchableOpacity>
     </View>
@@ -36,10 +38,6 @@ export const BottomSheetActionButtons: FC<IBottomSheetActionButtonsProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderWidth: 1,
     margin: 5
   },
   btnContainer: {

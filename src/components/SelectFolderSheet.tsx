@@ -1,8 +1,9 @@
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import { BottomSheetActionButtons } from "./BottomSheetActionButtons";
 import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native";
+import { AddNewFolder } from "./AddNewFolder";
 
 export interface ISelectFolderSheetProps {
   opened: boolean;
@@ -36,9 +37,11 @@ export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({ opened }) => {
       index={-1}
     >
       <BottomSheetView style={styles.contentContainer}>
+        <AddNewFolder />
         <BottomSheetActionButtons 
           positiveActionText={t("Save")}
           negativeActionText={t("Do not save")}
+          negativeAction={handleSheetClose}
         />
       </BottomSheetView>
     </BottomSheet>

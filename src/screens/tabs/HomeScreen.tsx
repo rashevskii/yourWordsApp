@@ -1,6 +1,5 @@
 import React, { FC, useState } from "react";
 import { 
-  Alert,
   StyleSheet,
   Text,
   View 
@@ -22,7 +21,6 @@ import {
 } from "../../components";
 import { translateAdditionalText, translateText } from "../../api";
 import { LanguagesType, UILanguagesType } from "../../data";
-import { useTranslation } from "react-i18next";
 import { addWord } from "../../database";
 import { errorHandler } from "../../helpers";
 
@@ -34,20 +32,18 @@ interface HomeScreenProps {
   route: HomeRouteProp;
 }
 
-export type Translations = {
-  alternatives: string[];
-  translatedText: string;
+export type Translation = {
+  translations: string[];
   lang?: LanguagesType | UILanguagesType;
 }
 
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { colors: { background, text } } = useTheme();
-  const { t } = useTranslation();
   const { baseContainer, containerPadding } = globalStyles;
   const { mainLanguage, additionalLanguage, nativeLanguage } = useSelector((state: RootState) => state.appSettings);
   const [currentLang, setCurrentLang] = useState(mainLanguage);
   const [changedLang, setChangedLang] = useState(false);
-  const [translatedText, setTranslatedText] = useState<Translations[]>([]);
+  const [translatedText, setTranslatedText] = useState<Translation[]>([]);
   const [load, setLoad] = useState(false);
   const [sourceWord, setSourceWord] = useState("");
 
@@ -70,22 +66,26 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           await translateAdditionalText({text, targetLang: targetLang!, sourceLang: currentLang!}),
           await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!})
         ])
-          .then((resp) => { // {"error": "Slowdown: 5 per 1 minute"}
-            const slowdown = resp.find(item => ("error" in item));
-            if (slowdown) {
-              Alert.alert(
-                t("Attention"),
-                slowdown.error as string
-              )
-              return;
-            }
-            const data = resp.map((item, index) => {
-              if (index === 0) {
-                return { lang: targetLang, ...item } as Translations
-              } else {
-                return { lang: nativeLanguage, ...item } as Translations
+          .then((resp) => {
+            const additionalTranslates = resp[0].translations.map(translation => translation.text);
+            const nativeTranslations = resp[1].translations.map(translation => translation.text);
+            const data: Translation[] = [
+              {
+                lang: targetLang!,
+                translations: additionalTranslates
+              },
+              {
+                lang: nativeLanguage!,
+                translations: nativeTranslations
               }
-            });
+            ];
+            // const data = resp.map((item, index) => {
+            //   if (index === 0) {
+            //     return { lang: targetLang, ...item } as Translations
+            //   } else {
+            //     return { lang: nativeLanguage, ...item } as Translations
+            //   }
+            // });
             
             setSourceWord(text);
             setTranslatedText(data);
@@ -93,15 +93,9 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       } else {
         await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!})
         .then((resp) => {
-          if ("error" in resp) {
-            Alert.alert(
-              t("Attention"),
-              resp.error as string
-            )
-            return;
-          }
+          const data = resp.translations.map(translation => translation.text);
           setSourceWord(text);
-          setTranslatedText([resp]);
+          setTranslatedText([{ translations: data }]);
         });
       }
     } catch(error: any) {
@@ -159,7 +153,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       />
       <HomeMenuComponent onMyDictionary={onMyDictionary} />
       <SelectWords 
-        translations={translatedText} 
+        translation={translatedText} 
         sourceWord={sourceWord}
         changedLanguages={changedLang}
         clearTranslate={clearTranslate}

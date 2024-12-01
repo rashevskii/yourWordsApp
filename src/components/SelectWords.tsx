@@ -12,14 +12,14 @@ import {
   Text,
   View
 } from "react-native";
-import { Translations } from "../screens";
+import { Translation } from "../screens";
 import { useTheme } from "../hooks";
 import { useTranslation } from "react-i18next";
 import { WordButton } from "./WordButton";
 import { BottomSheetActionButtons } from "./BottomSheetActionButtons";
 
 export interface ISelectWordsProps {
-  translations: Translations[];
+  translation: Translation[];
   sourceWord: string;
   changedLanguages: boolean;
   clearTranslate: () => void;
@@ -34,7 +34,7 @@ export interface ISelectWordsProps {
 
 export const SelectWords: FC<ISelectWordsProps> = (
   { 
-    translations, 
+    translation, 
     sourceWord, 
     changedLanguages,
     clearTranslate,
@@ -53,15 +53,19 @@ export const SelectWords: FC<ISelectWordsProps> = (
   const [
     mainOrAdditionalTranslate, 
     setMainOrAdditionalTranslate
-  ] = useState(translations.length ? translations[0].translatedText : null);
+  ] = useState("");
   const [
     nativeTranslate, 
     setNativeTranslate
-  ] = useState(translations.length ? translations[1]?.translatedText || null : null);
+  ] = useState("");
 
   useEffect(() => {
-    handleSheetOpen();
-  }, [translations]);
+    if (translation.length) {
+      handleSheetOpen();
+      setMainOrAdditionalTranslate(translation[0].translations[0]);
+      setNativeTranslate(translation[1].translations[0]);
+    }
+  }, [translation]);
 
   const handleSheetOpen = useCallback(() => {
     bottomSheetRef.current?.expand();
@@ -69,13 +73,13 @@ export const SelectWords: FC<ISelectWordsProps> = (
 
   const handleSheetClose = useCallback(() => {
     clearTranslate();
-    setMainOrAdditionalTranslate(null);
-    setNativeTranslate(null);
+    setMainOrAdditionalTranslate("");
+    setNativeTranslate("");
     bottomSheetRef.current?.close();
   }, []);
 
   const onSelectTranslate = (index: number, word: string) => {
-    if (translations.length === 1) {
+    if (translation.length === 1) {
       setNativeTranslate(word);
     } else {
       if (index === 1) {
@@ -90,8 +94,8 @@ export const SelectWords: FC<ISelectWordsProps> = (
     if (changedLanguages) {
       handleSheetClose();
       saveTranslation(
-        mainOrAdditionalTranslate || "",
-        nativeTranslate || "",
+        mainOrAdditionalTranslate,
+        nativeTranslate,
         sourceWord,
         null,
         Date.now.toString()
@@ -100,8 +104,8 @@ export const SelectWords: FC<ISelectWordsProps> = (
       handleSheetClose();
       saveTranslation(
         sourceWord,
-        nativeTranslate || "",
-        mainOrAdditionalTranslate || "",
+        nativeTranslate,
+        mainOrAdditionalTranslate,
         null,
         Date.now.toString()
       );
@@ -109,25 +113,19 @@ export const SelectWords: FC<ISelectWordsProps> = (
   }
 
   const renderVariants = () => {
-    return translations?.map((translation, index) => {
+    return translation.map((translation, index) => {
       return (
-        <View key={translation.translatedText} style={styles.variantContainer}>
-          <Text style={[styles.lang, { color: text }]}>{translation.lang}:</Text>
+        <View key={index} style={styles.variantContainer}>
+          {translation.lang && <Text style={[styles.lang, { color: text }]}>{translation.lang}:</Text>}
           <View style={[styles.variant, { borderBottomColor: border }]}>
-            <WordButton 
-              selectTranslate={onSelectTranslate}
-              selectedWord={index === 1 ? nativeTranslate || "" : mainOrAdditionalTranslate || ""}
-              index={index}
-              word={translation.translatedText}
-            />
-            {translation.alternatives.map((alternative) => {
+            {translation.translations.map((text) => {
               return (
                 <WordButton 
-                  key={alternative}
-                  selectedWord={index === 1 ? nativeTranslate || "" : mainOrAdditionalTranslate || ""}
+                  key={text}
+                  selectedWord={index === 1 ? nativeTranslate : mainOrAdditionalTranslate}
                   selectTranslate={onSelectTranslate}
                   index={index}
-                  word={alternative}
+                  word={text}
                 />
               )
             })}
@@ -149,6 +147,7 @@ export const SelectWords: FC<ISelectWordsProps> = (
           positiveActionText={t("Save")}
           negativeActionText={t("Do not save")}
           positiveAction={onSaveWords}
+          negativeAction={handleSheetClose}
         />
       </BottomSheetView>
     </BottomSheet>

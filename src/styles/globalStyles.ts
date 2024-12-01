@@ -11,4 +11,10 @@ export const globalStyles = StyleSheet.create({
     width: 35,
     height: 35,
   },
+  baseButton: {
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderWidth: 1,
+  },
 });

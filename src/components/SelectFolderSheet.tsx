@@ -11,16 +11,23 @@ import { FolderButton } from "./FolderButton";
 export interface ISelectFolderSheetProps {
   opened: boolean;
   setOpened: (opened: boolean) => void;
-  selectedWord: number | null;
+  onAddWordInFolder: () => Promise<void>;
+  selectedFolderId: number | null;
+  onSelectFolder: (id: number | null) => void;
 }
 
-export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({ opened, setOpened, selectedWord }) => {
+export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({ 
+  opened, 
+  setOpened, 
+  selectedFolderId,
+  onAddWordInFolder,
+  onSelectFolder
+}) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["75%"], []);
   const { t } = useTranslation();
   const [folderList, setFolderList] = useState<FoldersDBResponse>([]);
   const [newFolderOpened, setNewFolderOpened] = useState(false);
-  const [selectedFolder, setSelectedFolder] = useState<number | null>(selectedWord);
 
   useEffect(() => {
     if (opened) {
@@ -62,9 +69,20 @@ export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({ opened, setOpen
     setNewFolderOpened(false);
   }, []);
 
-  const handleSelectFolder = useCallback((id: number | null) => {
-    setSelectedFolder(id);
-  }, []);
+  const renderFolderList = () => {
+    return folderList.map(folder => {
+      return (
+        <FolderButton 
+          key={folder.id} 
+          selectedFolder={selectedFolderId} 
+          inputOpened={newFolderOpened} 
+          folderName={folder.group_name}
+          id={folder.id}
+          onSelectFolder={onSelectFolder}
+        />
+      )
+    })
+  }
 
   return (
     <BottomSheet
@@ -81,19 +99,14 @@ export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({ opened, setOpen
           inputOpened={newFolderOpened}
         />
         <BottomSheetScrollView showsVerticalScrollIndicator={false} >
-          {folderList.map(folder => <FolderButton 
-                                      key={folder.id} 
-                                      selectedFolder={selectedFolder} 
-                                      inputOpened={newFolderOpened} 
-                                      folderName={folder.group_name}
-                                      id={folder.id}
-                                      onSelectFolder={handleSelectFolder}
-                                    />)}
+          {renderFolderList()}
         </BottomSheetScrollView>
         <BottomSheetActionButtons 
           positiveActionText={t("Save")}
           negativeActionText={t("Do not save")}
           negativeAction={handleSheetClose}
+          disabledPositive={newFolderOpened}
+          positiveAction={onAddWordInFolder}
         />
       </View>
     </BottomSheet>

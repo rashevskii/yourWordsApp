@@ -6,15 +6,19 @@ import { globalStyles } from "../styles";
 export interface IBottomSheetActionButtonsProps {
   negativeActionText: string;
   positiveActionText: string;
-  negativeAction?: () => void;
-  positiveAction?: () => void;
+  negativeAction?: () => Promise<void> | void;
+  positiveAction?: () => Promise<void> | void;
+  disabledPositive?: boolean;
+  disabledNegative?: boolean
 }
 
 export const BottomSheetActionButtons: FC<IBottomSheetActionButtonsProps> = ({
   positiveActionText,
   negativeActionText,
   positiveAction,
-  negativeAction
+  negativeAction,
+  disabledNegative,
+  disabledPositive
 }) => {
   const { colors: 
     { 
@@ -26,10 +30,28 @@ export const BottomSheetActionButtons: FC<IBottomSheetActionButtonsProps> = ({
   const { baseButton } = globalStyles;
   return (
     <View style={styles.btnContainer}>
-      <TouchableOpacity style={[baseButton, styles.button, { borderColor: primary }]} onPress={negativeAction}>
+      <TouchableOpacity 
+        style={[
+          baseButton, 
+          styles.button, 
+          { borderColor: primary },
+          disabledNegative ? styles.opacity : undefined
+        ]} 
+        onPress={negativeAction}
+        disabled={disabledNegative}
+      >
         <Text style={{ color: text }}>{negativeActionText}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[baseButton, styles.button, { borderColor: primary, backgroundColor: button }]} onPress={positiveAction}>
+      <TouchableOpacity 
+        style={[
+          baseButton, 
+          styles.button, 
+          { borderColor: primary, backgroundColor: button },
+          disabledPositive ? styles.opacity : undefined
+        ]} 
+        onPress={positiveAction}
+        disabled={disabledPositive}
+      >
         <Text style={{ color: text }}>{positiveActionText}</Text>
       </TouchableOpacity>
     </View>
@@ -46,5 +68,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 15
+  },
+  opacity: {
+    opacity: 0.5
   },
 });

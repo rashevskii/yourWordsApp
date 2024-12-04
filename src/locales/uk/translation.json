@@ -38,6 +38,7 @@
   "Date added": "Дата добавления",
   "Alphabet": "Алфавит",
   "Save": "Сохранить",
+  "Add folder": "Добавить папку",
   "Do not save": "Не сохранять",
   "Error": "Ошибка",
   "Word added": "Слово добавлено!",
@@ -47,5 +48,16 @@
   "All words": "Все слова",
   "Enter folder name": "Имя папки",
   "New folder": "Новая папка",
-  "Folder name": "Наименование папки"
+  "Folder name": "Наименование папки",
+  "Word added to folder": "Слово добавлено в папку!",
+  "Added to": "Добавлено в",
+  "Failed to create tables": "Ошибка создания таблиц",
+  "Error adding word": "Ошибка при добавлении слова",
+  "Error adding folder": "Ошибка при добавлении папки",
+  "Error fetching words": "Ошибка получения слов",
+  "Error fetching words by group": "Ошибка получения слов по группе",
+  "Error fetching groups": "Ошибка получения папок",
+  "Error updating group for word": "Ошибка добавления слова в папку",
+  "Error deleting word": "Ошибка удаления слова",
+  "Error deleting group": "Ошибка удаления папки"
 }

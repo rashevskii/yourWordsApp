@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { globalStyles } from "../styles";
 import { useTheme } from "../hooks";
@@ -16,7 +16,13 @@ import { SelectItem } from "../types";
 import { useTranslation } from "react-i18next";
 import ArrowDownIcon from "../assets/icons/arrow-down.svg";
 import ArrowUpIcon from "../assets/icons/arrow-up.svg";
-import { deleteWord, getAllWords, getWordsByGroup, ISortTypeWords } from "../database";
+import { 
+  deleteWord, 
+  getAllWords, 
+  getWordsByGroup, 
+  ISortTypeWords, 
+  updateGroupForWord 
+} from "../database";
 import { WordDBResponse, WordsDBResponse } from "../types/database";
 import { errorHandler } from "../helpers";
 
@@ -29,7 +35,8 @@ export interface IWordsProps {
 }
 
 export const WordsScreen: FC<IWordsProps> = ({ route: { params: { 
-  idFolder
+  idFolder,
+  folderName
  } } }) => {
   const { t } = useTranslation();
   const sortItems = useMemo(() => [
@@ -44,27 +51,30 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
   const [translations, setTranslations] = useState<WordsDBResponse>([]);
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [idSelectedFolder, setIdSelectedFolder] = useState<number | null>(null);
+  const [idSelectedFolder, setIdSelectedFolder] = useState<number | null>(idFolder);
+  const [nameSelectedFolder, setNameSelectedFolder] = useState<string>(folderName);
+  const [selectedWordForAdding, setSelectedWordForAdding] = useState<number | null>(null);
 
   useEffect(() => {
-    const fethWords = async () => {
-      setLoading(true);
-      try {
-        if (idFolder) {
-          const translations = await getWordsByGroup(idFolder, selectedSort.value as ISortTypeWords);
-          setTranslations(translations);
-        } else {
-          const translations = await getAllWords(selectedSort.value as ISortTypeWords);
-          setTranslations(translations);
-        }
-      } catch (error: any) {
-        errorHandler({error});
-      } finally {
-        setLoading(false);
-      }
-    }
     fethWords();
   }, []);
+
+  const fethWords = async () => {
+    setLoading(true);
+    try {
+      if (idFolder) {
+        const translations = await getWordsByGroup(idFolder, selectedSort.value as ISortTypeWords);
+        setTranslations(translations);
+      } else {
+        const translations = await getAllWords(selectedSort.value as ISortTypeWords);
+        setTranslations(translations);
+      }
+    } catch (error: any) {
+      errorHandler({error});
+    } finally {
+      setLoading(false);
+    }
+  } 
 
   const selectButton = (selectedItem: SelectItem<string>) => {
     return (
@@ -94,9 +104,9 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     );
   }
 
-  const onSelectLanguages = useCallback((value: SelectItem<string>) => {
+  const onSelectLanguages = (value: SelectItem<string>) => {
     setSelectedSort(value);
-  }, []);
+  };
 
   const onDeleteTranslate = async (id: number) => {
     setLoading(true);
@@ -111,18 +121,38 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     } 
   }
 
-  const onAddWordInFolder = (id: number | null) => {
+  const onFolder = (idWord: number) => {
     setOpened(true);
-    setIdSelectedFolder(id);
+    setSelectedWordForAdding(idWord);
   }
+
+  const handleSelectFolder = (idFolder: number | null) => {
+    setIdSelectedFolder(idFolder);
+  };
+
+  const handleAddWordInFolder = async () => {
+    setLoading(true);
+    await updateGroupForWord(idSelectedFolder, selectedWordForAdding!, nameSelectedFolder)
+      .then(async () => {
+        setOpened(false);
+        setIdSelectedFolder(idFolder);
+        setSelectedWordForAdding(null);
+        if (idFolder !== null) {
+          await fethWords();
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      })
+  };
 
   const renderItem = ({ item }: {item: WordDBResponse}) => {
     return (
       <WordContainer 
         key={item.id} 
-        words={item} 
+        word={item} 
         onDeleteWord={onDeleteTranslate} 
-        onAddFolder={onAddWordInFolder}
+        onAddFolder={onFolder}
       />
     )
   }
@@ -157,8 +187,11 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
       <SelectFolderSheet 
         setOpened={setOpened} 
         opened={opened} 
-        selectedWord={idSelectedFolder}
+        selectedFolderId={idSelectedFolder}
+        onAddWordInFolder={handleAddWordInFolder}
+        onSelectFolder={handleSelectFolder}
       />
+      {loading && <Loading />}
     </>
   );
 };

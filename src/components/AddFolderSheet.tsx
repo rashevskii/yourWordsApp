@@ -45,10 +45,13 @@ export const AddFolderSheet: FC<IAddFolderSheetProps> = ({
     handleClose();
   }, []);
 
-  const onSaveFolder = async (name: string) => {
-    await handleSave(name).then(() => {
-      handleSheetClose();
-    });
+  const onSaveFolder = async (folderName: string) => {
+    const name = folderName.trim();
+    if (name.length > 0) {
+      await handleSave(name).then(() => {
+        handleSheetClose();
+      });
+    }
   }
 
   const renderCreateFolder = () => {

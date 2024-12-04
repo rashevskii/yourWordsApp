@@ -43,11 +43,23 @@ export const AddNewFolder: FC<IAddNewFolderProps> = ({
                 onChangeText={(text) => setFolderName(text)}
               />
             </View>
-            <TouchableOpacity onPress={onCloseInput} style={[baseButton, { borderColor: primary }]}>
-              <Text style={{ color: text }}>
-                {t("Cancel")}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.buttonWrapper}>
+              <TouchableOpacity 
+                onPress={onCloseInput} 
+                style={[baseButton, styles.button, { borderColor: primary }]}
+              >
+                <Text style={{ color: text }}>
+                  {t("Cancel")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[baseButton, styles.button, { borderColor: primary, backgroundColor: primary }]}
+              >
+                <Text style={{ color: text }}>
+                  {t("Add folder")}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )
       }
@@ -63,17 +75,20 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
+    marginHorizontal: 5
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
     width: "100%"
   },
   inputWrapper: {
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 15,
-    flex: 0.9
+  },
+  buttonWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10
   },
 });

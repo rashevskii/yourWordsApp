@@ -43,9 +43,9 @@ export const DictionaryScreen: FC<IDictionaryProps> = () => {
     fetchFolders();
     dbEventEmitter.addListener(events.WORD_ADDED, fetchFolders);
     dbEventEmitter.addListener(events.WORD_DELETED, fetchFolders);
+    dbEventEmitter.addListener(events.FOLDER_ADDED, fetchFolders);
     return () => {
-      dbEventEmitter.removeAllListeners(events.WORD_ADDED);
-      dbEventEmitter.removeAllListeners(events.WORD_DELETED);
+      dbEventEmitter.removeAllListeners();
     };
   }, []);
 
@@ -111,16 +111,12 @@ export const DictionaryScreen: FC<IDictionaryProps> = () => {
   }, []);
 
   const handleSaveFolder = async (folderName: string) => {
-    const name = folderName.trim();
-    if (name.length > 0) {
-      try {
-        setLoading(true);
-        await addGroup(name).then(fetchFolders).finally(() => setLoading(false));
-      } catch(error: any) {
-        errorHandler({ error });
-      } finally {
-        setLoading(false);
-      }
+    try {
+      await addGroup(folderName).then(fetchFolders).finally(() => setLoading(false));
+    } catch(error: any) {
+      errorHandler({ error });
+    } finally {
+      setLoading(false);
     }
   }
 

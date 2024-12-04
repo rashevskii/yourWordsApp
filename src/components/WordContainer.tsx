@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { WordDBResponse } from "../types/database";
 import { Word } from "./Word";
 import { useTheme } from "../hooks";
@@ -7,19 +7,19 @@ import { useTranslation } from "react-i18next";
 import { ButtonsInTanslate } from "./ButtonsInTranslate";
 
 export interface IWordContainerProps {
-  words: WordDBResponse;
+  word: WordDBResponse;
   onDeleteWord: (id: number) => Promise<void>;
-  onAddFolder: (id: number | null) => void;
+  onAddFolder: (wordId: number) => void;
 }
 
-export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord, onAddFolder }) => {
+export const WordContainer: FC<IWordContainerProps> = ({ word, onDeleteWord, onAddFolder }) => {
   const { colors: { border } } = useTheme();
   const { t } = useTranslation();
-  const wordId = words.id;
-  const original = words.original_word;
-  const additional = words.additional_translation;
-  const native = words.native_translation;
-  const folderId = words.group_id;
+  const wordId = word.id;
+  const original = word.original_word;
+  const additional = word.additional_translation;
+  const native = word.native_translation;
+  const folderName = word.group_name;
 
   const onDelete = (id: number) => {
     Alert.alert(
@@ -49,10 +49,13 @@ export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord, on
         <View style={styles.horizontalRow}>
           <Word text={native} />
         </View>
+        <Text>
+          {`${t("Added to")} ${folderName}`}
+        </Text>
         <ButtonsInTanslate
           onDelete={onDelete} 
           wordId={wordId} 
-          onAddFolder={() => onAddFolder(folderId)}
+          onAddFolder={onAddFolder}
         />
       </View>
     ) : (
@@ -64,7 +67,7 @@ export const WordContainer: FC<IWordContainerProps> = ({ words, onDeleteWord, on
         <ButtonsInTanslate 
           onDelete={onDelete} 
           wordId={wordId} 
-          onAddFolder={() => onAddFolder(folderId)}
+          onAddFolder={onAddFolder}
         />
       </View>
     )

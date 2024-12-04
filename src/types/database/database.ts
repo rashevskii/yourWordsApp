@@ -4,13 +4,14 @@ export type WordDBResponse = {
   native_translation: string; 
   additional_translation: string | null; 
   group_id: number | null;
-  added_date: string
+  group_name: string;
+  added_date: string;
 }
 
 export type FolderDBResponse = {
   id: number | null; 
   group_name: string; 
-  image_path: string | null
+  image_path: string | null;
 }
 
 export type FoldersDBResponse = FolderDBResponse[];

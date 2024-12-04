@@ -9,7 +9,7 @@ import { useTheme } from "../hooks";
 export interface IButtonsInTranslateProps {
   onDelete: (id: number) => void;
   wordId: number;
-  onAddFolder: () => void;
+  onAddFolder: (wordId: number) => void;
 }
 
 export const ButtonsInTanslate: FC<IButtonsInTranslateProps> = ({ onDelete, wordId, onAddFolder }) => {
@@ -23,7 +23,7 @@ export const ButtonsInTanslate: FC<IButtonsInTranslateProps> = ({ onDelete, word
       <TouchableOpacity>
         <Sound width={28} height={28} color={secondary} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={onAddFolder}>
+      <TouchableOpacity onPress={() => onAddFolder(wordId)}>
         <AddFolderIcon width={28} height={28} color={secondary} />
       </TouchableOpacity>
     </View>

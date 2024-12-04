@@ -1,9 +1,9 @@
 import SQLite, { ResultSet, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { Toast } from 'react-native-toast-notifications';
-import { FoldersDBResponse, WordsDBResponse } from '../types/database';
+import { FoldersDBResponse, WordDBResponse, WordsDBResponse } from '../types/database';
 import i18n from '../locales/i18n';
 import { dbEventEmitter, events } from '../events';
 import { AppState, AppStateStatus } from 'react-native';
+import { useToast } from '../hooks';
 
 export type ISortTypeWords  = string & {
   orderBy: 'date_asc' | 'date_desc' | 'alphabet_asc' | 'alphabet_desc';
@@ -98,7 +98,8 @@ export const createTables = async (): Promise<void> => {
           FOREIGN KEY (group_id) REFERENCES groups(id)
         );
       `);
-
+    });
+    await db.transaction(async (tx) => {
       await tx.executeSql(`
         CREATE TABLE IF NOT EXISTS groups (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -109,7 +110,7 @@ export const createTables = async (): Promise<void> => {
     });
   } catch (error) {
     console.error('Error creating tables:', error);
-    Toast.show(i18n.t('Failed to create tables'), { type: 'danger' });
+    useToast(i18n.t('Failed to create tables'), 'danger');
   }
 };
 
@@ -138,10 +139,10 @@ export const addWord = async (
       [original_word, native_translation, additional_translation, group_id, added_date]
     );
 
-    Toast.show(i18n.t("Word added"), { type: "success" });
+    useToast(i18n.t("Word added"), "success");
     dbEventEmitter.emit(events.WORD_ADDED);
   } catch (error) {
-    Toast.show(i18n.t("Error adding word"), { type: 'danger' });
+    useToast(i18n.t("Error adding word"), 'danger');
     if (error instanceof Error) {
       console.error('Error:', error.message);
     } else {
@@ -166,10 +167,10 @@ export const addGroup = async (group_name: string, image_path: string | null = n
       [group_name, image_path]
     );
 
-    Toast.show(i18n.t('Folder created'), { type: "success" });
+    useToast(i18n.t('Folder created'), "success");
     dbEventEmitter.emit(events.FOLDER_ADDED);
   } catch (error) {
-    Toast.show(i18n.t("Error adding group"), { type: 'danger' });
+    useToast(i18n.t("Error adding group"), 'danger');
     if (error instanceof Error) {
       console.error('Error adding group:', error.message);
     } else {
@@ -195,7 +196,7 @@ export const getAllWords = async (orderBy: string): Promise<WordsDBResponse> => 
     const results = await executeSql(`SELECT * FROM words ORDER BY ${orderClause}`);
     return Array.from({ length: results.rows.length }, (_, i) => results.rows.item(i));
   } catch (error) {
-    Toast.show(i18n.t("Error fetching words"), { type: 'danger' });
+    useToast(i18n.t("Error fetching words"), 'danger');
     if (error instanceof Error) {
       console.error('Error fetching words:', error.message);
     } else {
@@ -204,6 +205,29 @@ export const getAllWords = async (orderBy: string): Promise<WordsDBResponse> => 
     return [];
   }
 };
+
+/**
+ * Получение слова по id
+ * @param id ID записи
+ * @returns Запись слова или null
+ */
+export const getWordById = async (id: number): Promise<WordDBResponse | null> => {
+  try {
+    const result = await executeSql('SELECT * FROM words WHERE id = ?', [id]);
+    if (result.rows.length) {
+      return result.rows.item(0);
+    } else {
+      return null;
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error fetching word:', error.message);
+    } else {
+      console.error('Unknown error in getWordById:', error);
+    }
+    return null;
+  }
+}
 
 /**
  * Получение всех слов по группе с сортировкой
@@ -232,7 +256,7 @@ export const getWordsByGroup = async (
 
     return Array.from({ length: results.rows.length }, (_, i) => results.rows.item(i));
   } catch (error) {
-    Toast.show(i18n.t("Error fetching words by group"), { type: 'danger' });
+    useToast(i18n.t("Error fetching words by group"), 'danger');
     if (error instanceof Error) {
       console.error('Error fetching words by group:', error.message);
     } else {
@@ -251,7 +275,7 @@ export const getAllGroups = async (): Promise<FoldersDBResponse> => {
     const results = await executeSql(`SELECT * FROM groups`);
     return Array.from({ length: results.rows.length }, (_, i) => results.rows.item(i));
   } catch (error) {
-    Toast.show(i18n.t("Error fetching groups"), { type: 'danger' });
+    useToast(i18n.t("Error fetching groups"), 'danger');
     if (error instanceof Error) {
       console.error('Error fetching groups:', error);
     } else {
@@ -327,10 +351,10 @@ export const updateGroupForWord = async (
       [groupId, groupName, wordId]
     );
 
-    Toast.show(i18n.t('Word added to folder'), { type: "success" });
+    useToast(i18n.t('Word added to folder'), "success");
     dbEventEmitter.emit(events.WORD_ADDED);
   } catch (error) {
-    Toast.show(i18n.t("Error updating group for word"), { type: 'danger' });
+    useToast(i18n.t("Error updating group for word"), 'danger');
     if (error instanceof Error) {
       console.error('Error updating group for word:', error.message);
     } else {
@@ -348,10 +372,10 @@ export const deleteWord = async (wordId: number): Promise<void> => {
     if (!wordId) throw new Error(i18n.t('Invalid word ID'));
 
     await executeSql(`DELETE FROM words WHERE id = ?`, [wordId]);
-    Toast.show(i18n.t('Word deleted'), { type: "success" });
+    useToast(i18n.t('Word deleted'), "success");
     dbEventEmitter.emit(events.WORD_DELETED);
   } catch (error) {
-    Toast.show(i18n.t("Error updating group for word"), { type: 'danger' });
+    useToast(i18n.t("Error updating group for word"), 'danger');
     if (error instanceof Error) {
       console.error('Error deleting word:', error.message);
     } else {
@@ -371,9 +395,9 @@ export const deleteGroup = async (groupId: number): Promise<void> => {
     await executeSql(`UPDATE words SET group_id = NULL WHERE group_id = ?`, [groupId]);
     await executeSql(`DELETE FROM groups WHERE id = ?`, [groupId]);
 
-    Toast.show(i18n.t('Folder deleted'), { type: "success" });
+    useToast(i18n.t('Folder deleted'), "success");
   } catch (error) {
-    Toast.show(i18n.t("Error updating group for word"), { type: 'danger' });
+    useToast(i18n.t("Error updating group for word"), 'danger');
     if (error instanceof Error) {
       console.error('Error deleting group:', error.message);
     } else {

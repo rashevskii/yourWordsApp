@@ -10,15 +10,17 @@ export interface IWordContainerProps {
   word: WordDBResponse;
   onDeleteWord: (id: number) => Promise<void>;
   onAddFolder: (wordId: number) => void;
+  idCurrentFolder: number | null;
 }
 
-export const WordContainer: FC<IWordContainerProps> = ({ word, onDeleteWord, onAddFolder }) => {
+export const WordContainer: FC<IWordContainerProps> = ({ word, onDeleteWord, onAddFolder, idCurrentFolder }) => {
   const { colors: { border } } = useTheme();
   const { t } = useTranslation();
   const wordId = word.id;
   const original = word.original_word;
   const additional = word.additional_translation;
   const native = word.native_translation;
+  const folderId = word.group_id;
   const folderName = word.group_name;
 
   const onDelete = (id: number) => {
@@ -49,9 +51,12 @@ export const WordContainer: FC<IWordContainerProps> = ({ word, onDeleteWord, onA
         <View style={styles.horizontalRow}>
           <Word text={native} />
         </View>
-        <Text>
-          {`${t("Added to")} ${folderName}`}
-        </Text>
+        {
+          (!idCurrentFolder && folderId) &&
+          <Text>
+            {`${t("Added to")} ${folderName}`}
+          </Text>
+        }
         <ButtonsInTanslate
           onDelete={onDelete} 
           wordId={wordId} 

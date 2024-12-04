@@ -19,6 +19,7 @@ import ArrowUpIcon from "../assets/icons/arrow-up.svg";
 import { 
   deleteWord, 
   getAllWords, 
+  getWordById, 
   getWordsByGroup, 
   ISortTypeWords, 
   updateGroupForWord 
@@ -126,8 +127,9 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     setSelectedWordForAdding(idWord);
   }
 
-  const handleSelectFolder = (idFolder: number | null) => {
+  const handleSelectFolder = (idFolder: number | null, nameFolder: string) => {
     setIdSelectedFolder(idFolder);
+    setNameSelectedFolder(nameFolder);
   };
 
   const handleAddWordInFolder = async () => {
@@ -135,11 +137,18 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     await updateGroupForWord(idSelectedFolder, selectedWordForAdding!, nameSelectedFolder)
       .then(async () => {
         setOpened(false);
-        setIdSelectedFolder(idFolder);
-        setSelectedWordForAdding(null);
-        if (idFolder !== null) {
+        if (idFolder === null) {
+          const word = await getWordById(selectedWordForAdding!);
+          if (word) {
+            const indexOfWord = translations.findIndex((translation) => translation.id === selectedWordForAdding);
+            const newTranslations = translations.map((translation, index) => index === indexOfWord ? word : translation);
+            setTranslations(newTranslations);
+          }
+        } else {
           await fethWords();
         }
+        setIdSelectedFolder(idFolder);
+        setSelectedWordForAdding(null);
       })
       .finally(() => {
         setLoading(false);
@@ -153,6 +162,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
         word={item} 
         onDeleteWord={onDeleteTranslate} 
         onAddFolder={onFolder}
+        idCurrentFolder={idFolder}
       />
     )
   }

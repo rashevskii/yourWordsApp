@@ -13,7 +13,7 @@ export interface ISelectFolderSheetProps {
   setOpened: (opened: boolean) => void;
   onAddWordInFolder: () => Promise<void>;
   selectedFolderId: number | null;
-  onSelectFolder: (id: number | null) => void;
+  onSelectFolder: (id: number | null, name: string) => void;
 }
 
 export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({ 

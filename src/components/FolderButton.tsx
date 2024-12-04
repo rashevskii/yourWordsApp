@@ -7,7 +7,7 @@ export interface IFolderButtonProps {
   inputOpened: boolean;
   selectedFolder: number | null;
   id: number | null;
-  onSelectFolder: (id: number | null) => void;
+  onSelectFolder: (id: number | null, name: string) => void;
 }
 
 export const FolderButton: FC<IFolderButtonProps> = ({
@@ -33,7 +33,7 @@ export const FolderButton: FC<IFolderButtonProps> = ({
         selectedFolder === id ? { backgroundColor: button } : { backgroundColor: "#fff" },
         inputOpened ? styles.opacity : undefined
       ]}
-      onPress={() => onSelectFolder(id)}
+      onPress={() => onSelectFolder(id, folderName)}
       disabled={inputOpened}
     >
       <Text style={[styles.text, { color: text }]}>{folderName}</Text>

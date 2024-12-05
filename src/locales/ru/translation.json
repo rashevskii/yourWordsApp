@@ -59,5 +59,6 @@
   "Error fetching groups": "Ошибка получения папок",
   "Error updating group for word": "Ошибка добавления слова в папку",
   "Error deleting word": "Ошибка удаления слова",
-  "Error deleting group": "Ошибка удаления папки"
+  "Error deleting group": "Ошибка удаления папки",
+  "Folder alredy exists": "Папка с таким именем уже сущетвует"
 }

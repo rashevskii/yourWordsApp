@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { globalStyles } from "../styles";
-import { useTheme } from "../hooks";
+import { useTheme, useToast } from "../hooks";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { MainStackParamList } from "../navigations";
 import { RouteProp } from "@react-navigation/native";
@@ -17,14 +17,15 @@ import { useTranslation } from "react-i18next";
 import ArrowDownIcon from "../assets/icons/arrow-down.svg";
 import ArrowUpIcon from "../assets/icons/arrow-up.svg";
 import { 
+  addGroup,
   deleteWord, 
+  getAllGroups, 
   getAllWords, 
-  getWordById, 
   getWordsByGroup, 
   ISortTypeWords, 
   updateGroupForWord 
 } from "../database";
-import { WordDBResponse, WordsDBResponse } from "../types/database";
+import { FoldersDBResponse, WordDBResponse, WordsDBResponse } from "../types/database";
 import { errorHandler } from "../helpers";
 
 type WordsNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Words'>;
@@ -50,17 +51,18 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
   const { colors: { background, secondary, invertedText, text } } = useTheme();
   const [selectedSort, setSelectedSort] = useState(sortItems[0]);
   const [translations, setTranslations] = useState<WordsDBResponse>([]);
-  const [opened, setOpened] = useState(false);
+  const [openedFolders, setOpenedFolders] = useState(false);
   const [loading, setLoading] = useState(false);
   const [idSelectedFolder, setIdSelectedFolder] = useState<number | null>(idFolder);
   const [nameSelectedFolder, setNameSelectedFolder] = useState<string>(folderName);
   const [selectedWordForAdding, setSelectedWordForAdding] = useState<number | null>(null);
+  const [folders, setFolders] = useState<FoldersDBResponse>([]);
 
   useEffect(() => {
-    fethWords();
+    fethData();
   }, []);
 
-  const fethWords = async () => {
+  const fethData = async () => {
     setLoading(true);
     try {
       if (idFolder) {
@@ -70,6 +72,23 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
         const translations = await getAllWords(selectedSort.value as ISortTypeWords);
         setTranslations(translations);
       }
+      const folders = await getAllGroups();
+      let allFolders = [
+        {
+          id: null, 
+          group_name: t("All words"), 
+          image_path: null, 
+        },
+        ...folders
+      ];
+      if (idFolder !== null) {
+        const firstElement = allFolders.find((folder) => folder.id === idFolder);
+        if (firstElement) {
+          const filteredFolders = allFolders.filter((folder) => folder.id !== firstElement.id);
+          allFolders = [firstElement, ...filteredFolders];
+        }
+      }
+      setFolders(allFolders);
     } catch (error: any) {
       errorHandler({error});
     } finally {
@@ -123,7 +142,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
   }
 
   const onFolder = (idWord: number) => {
-    setOpened(true);
+    setOpenedFolders(true);
     setSelectedWordForAdding(idWord);
   }
 
@@ -132,28 +151,60 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     setNameSelectedFolder(nameFolder);
   };
 
+  const handleCloseSelectFolder = () => {
+    setIdSelectedFolder(idFolder);
+    setNameSelectedFolder(folderName);
+    setOpenedFolders(false);
+  }
+
   const handleAddWordInFolder = async () => {
-    setLoading(true);
-    await updateGroupForWord(idSelectedFolder, selectedWordForAdding!, nameSelectedFolder)
-      .then(async () => {
-        setOpened(false);
-        if (idFolder === null) {
-          const word = await getWordById(selectedWordForAdding!);
-          if (word) {
-            const indexOfWord = translations.findIndex((translation) => translation.id === selectedWordForAdding);
-            const newTranslations = translations.map((translation, index) => index === indexOfWord ? word : translation);
+    if (idSelectedFolder !== idFolder) {
+      setLoading(true);
+      await updateGroupForWord(idSelectedFolder, selectedWordForAdding!, nameSelectedFolder)
+        .then(async () => {
+          setOpenedFolders(false);
+          if (idFolder === null) {
+            const newTranslations = translations.map((translation) => {
+              if (translation.id === selectedWordForAdding) {
+                translation.group_id = idSelectedFolder;
+                translation.group_name = nameSelectedFolder;
+              }
+              return translation;
+            });
             setTranslations(newTranslations);
+          } else {
+            const filteredTranslations = 
+              translations.filter((translation) => translation.id !== selectedWordForAdding);
+            setTranslations(filteredTranslations);
           }
-        } else {
-          await fethWords();
-        }
-        setIdSelectedFolder(idFolder);
-        setSelectedWordForAdding(null);
-      })
-      .finally(() => {
-        setLoading(false);
-      })
+          setIdSelectedFolder(idFolder);
+          setSelectedWordForAdding(null);
+        })
+        .finally(() => {
+          setLoading(false);
+        })
+    }
   };
+
+  const handleAddFolder = async (folderName: string) => {
+    setLoading(true);
+    try {
+      const addedFolderId = await addGroup(folderName);
+      if (addedFolderId) {
+        setIdSelectedFolder(addedFolderId);
+        setNameSelectedFolder(folderName);
+        const newFolders = [
+          { id: addedFolderId, group_name: folderName, image_path: null }, 
+          ...folders
+        ];
+        setFolders(newFolders);
+      }
+    } catch (error: any) {
+      errorHandler({error});
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const renderItem = ({ item }: {item: WordDBResponse}) => {
     return (
@@ -194,12 +245,14 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
         />
         {loading && <Loading />}
       </View>
-      <SelectFolderSheet 
-        setOpened={setOpened} 
-        opened={opened} 
+      <SelectFolderSheet
+        folders={folders}
+        opened={openedFolders} 
         selectedFolderId={idSelectedFolder}
         onAddWordInFolder={handleAddWordInFolder}
         onSelectFolder={handleSelectFolder}
+        onCloseSelectFolder={handleCloseSelectFolder}
+        saveFolder={handleAddFolder}
       />
       {loading && <Loading />}
     </>

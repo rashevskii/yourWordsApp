@@ -4,48 +4,37 @@ import { BottomSheetActionButtons } from "./BottomSheetActionButtons";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import { AddNewFolder } from "./AddNewFolder";
-import { getAllGroups } from "../database";
 import { FoldersDBResponse } from "../types/database";
 import { FolderButton } from "./FolderButton";
+import { useToast } from "../hooks";
 
 export interface ISelectFolderSheetProps {
+  folders: FoldersDBResponse;
   opened: boolean;
-  setOpened: (opened: boolean) => void;
   onAddWordInFolder: () => Promise<void>;
   selectedFolderId: number | null;
   onSelectFolder: (id: number | null, name: string) => void;
+  onCloseSelectFolder: () => void;
+  saveFolder: (folderName: string) => Promise<void>;
 }
 
 export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({ 
-  opened, 
-  setOpened, 
+  folders,
+  opened,
   selectedFolderId,
   onAddWordInFolder,
-  onSelectFolder
+  onSelectFolder,
+  onCloseSelectFolder,
+  saveFolder
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["75%"], []);
   const { t } = useTranslation();
-  const [folderList, setFolderList] = useState<FoldersDBResponse>([]);
   const [newFolderOpened, setNewFolderOpened] = useState(false);
+  const [folderName, setFolderName] = useState("");
 
   useEffect(() => {
     if (opened) {
-      const getFolders = async () => {
-        const folders = await getAllGroups();
-        const allFolders = [
-          {
-            id: null, 
-            group_name: t("All words"), 
-            image_path: null, 
-          },
-          ...folders
-        ]
-        if (folders) {
-          setFolderList(allFolders);
-        } 
-      }
-      getFolders();
       handleSheetOpen();
     } else {
       handleSheetClose();
@@ -58,7 +47,8 @@ export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({
 
   const handleSheetClose = useCallback(() => {
     bottomSheetRef.current?.close();
-    setOpened(false);
+    onCloseSelectFolder();
+    handleCloseInputNewFolder();
   }, []);
 
   const handleOpenInputNewFolder = useCallback(() => {
@@ -67,10 +57,24 @@ export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({
 
   const handleCloseInputNewFolder = useCallback(() => {
     setNewFolderOpened(false);
+    setFolderName("");
   }, []);
 
+  const handleSaveFolder = async (folderName: string) => {
+    if (folderName.trim().length) {
+      const folderAlreadyExists = 
+        folders.some((folder) => folder.group_name.toLowerCase() === folderName.toLowerCase());
+      if (!folderAlreadyExists) {
+        await saveFolder(folderName)
+          .then(() => setNewFolderOpened(false));
+      } else {
+        useToast(t("Folder alredy exists"), "danger");
+      }
+    }
+  }
+
   const renderFolderList = () => {
-    return folderList.map(folder => {
+    return folders.map(folder => {
       return (
         <FolderButton 
           key={folder.id} 
@@ -97,6 +101,9 @@ export const SelectFolderSheet: FC<ISelectFolderSheetProps> = ({
           onCloseInput={handleCloseInputNewFolder}
           onOpenInput={handleOpenInputNewFolder}
           inputOpened={newFolderOpened}
+          saveFolder={handleSaveFolder}
+          onChangeFolderName={setFolderName}
+          folderName={folderName}
         />
         <BottomSheetScrollView showsVerticalScrollIndicator={false} >
           {renderFolderList()}

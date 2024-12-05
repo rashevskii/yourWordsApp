@@ -8,16 +8,21 @@ export interface IAddNewFolderProps {
   onOpenInput: () => void;
   onCloseInput: () => void;
   inputOpened: boolean;
+  saveFolder: (folderName: string) => Promise<void>;
+  onChangeFolderName: (folderName: string) => void;
+  folderName: string;
 }
 
 export const AddNewFolder: FC<IAddNewFolderProps> = ({
   onCloseInput,
   onOpenInput,
-  inputOpened
+  inputOpened,
+  saveFolder,
+  onChangeFolderName,
+  folderName
 }) => {
   const { t } = useTranslation();
   const { colors: { border, primary, text } } = useTheme();
-  const [folderName, setFolderName] = useState("");
   const { baseButton } = globalStyles;
   return (
     <View style={[styles.container, { borderBottomColor: border }]}>
@@ -40,7 +45,7 @@ export const AddNewFolder: FC<IAddNewFolderProps> = ({
               <TextInput
                 placeholder={t("Folder name")}
                 value={folderName}
-                onChangeText={(text) => setFolderName(text)}
+                onChangeText={(text) => onChangeFolderName(text)}
               />
             </View>
             <View style={styles.buttonWrapper}>
@@ -53,6 +58,7 @@ export const AddNewFolder: FC<IAddNewFolderProps> = ({
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity 
+                onPress={() => saveFolder(folderName)}
                 style={[baseButton, styles.button, { borderColor: primary, backgroundColor: primary }]}
               >
                 <Text style={{ color: text }}>

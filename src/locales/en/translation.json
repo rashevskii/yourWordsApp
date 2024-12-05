@@ -59,5 +59,6 @@
   "Error fetching groups": "Error fetching folders",
   "Error updating group for word": "Error updating group for word",
   "Error deleting word": "Error deleting word",
-  "Error deleting group": "Error deleting group"
+  "Error deleting group": "Error deleting group",
+  "Folder alredy exists": "A folder with this name already exists"
 }

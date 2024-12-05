@@ -5,7 +5,7 @@ import {
   AddFolderButton, 
   FoldersListComponent,
 } from "../../components";
-import { useTheme } from "../../hooks";
+import { useTheme, useToast } from "../../hooks";
 import { globalStyles } from "../../styles";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { BottomTabsParamList, WordsScreenProps } from "../../navigations";
@@ -38,6 +38,7 @@ export const DictionaryScreen: FC<IDictionaryProps> = () => {
   const [loading, setLoading] = useState(false);
   const [folders, setFolders] = useState<FoldersType>([]);
   const [openedSheet, setOpenedSheet] = useState(false);
+  const [folderName, setFolderName] = useState("");
 
   useEffect(() => {
     fetchFolders();
@@ -108,15 +109,24 @@ export const DictionaryScreen: FC<IDictionaryProps> = () => {
 
   const handleCloseSheet = useCallback(() => {
     setOpenedSheet(false);
+    setFolderName("");
   }, []);
 
   const handleSaveFolder = async (folderName: string) => {
-    try {
-      await addGroup(folderName).then(fetchFolders).finally(() => setLoading(false));
-    } catch(error: any) {
-      errorHandler({ error });
-    } finally {
-      setLoading(false);
+    const folderAlreadyExists = 
+        folders.some((folder) => folder.group_name.toLowerCase() === folderName.toLowerCase());
+    if (!folderAlreadyExists) {
+      try {
+        await addGroup(folderName)
+          .then(() => {
+            fetchFolders();
+            handleCloseSheet();
+          });
+      } catch(error: any) {
+        errorHandler({ error });
+      }
+    } else {
+      useToast(t("Folder alredy exists"), "danger");
     }
   }
 
@@ -144,6 +154,8 @@ export const DictionaryScreen: FC<IDictionaryProps> = () => {
         opened={openedSheet}
         handleClose={handleCloseSheet}
         handleSave={handleSaveFolder}
+        onChangeFolderName={setFolderName}
+        folderName={folderName}
       />
     </View>
   );

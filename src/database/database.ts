@@ -156,19 +156,19 @@ export const addWord = async (
  * @param group_name Название группы
  * @param image_path Путь до картинки на устройстве
  */
-export const addGroup = async (group_name: string, image_path: string | null = null): Promise<void> => {
+export const addGroup = async (group_name: string, image_path: string | null = null): Promise<number | null> => {
   try {
     if (!group_name) {
       throw new Error(i18n.t('Invalid group name'));
     }
 
-    await executeSql(
+    const result = await executeSql(
       `INSERT INTO groups (group_name, image_path) VALUES (?, ?);`,
       [group_name, image_path]
     );
-
     useToast(i18n.t('Folder created'), "success");
     dbEventEmitter.emit(events.FOLDER_ADDED);
+    return result.insertId;
   } catch (error) {
     useToast(i18n.t("Error adding group"), 'danger');
     if (error instanceof Error) {
@@ -176,6 +176,7 @@ export const addGroup = async (group_name: string, image_path: string | null = n
     } else {
       console.error('Unknown error in addGroup:', error);
     }
+    return null;
   }
 };
 

@@ -9,12 +9,16 @@ export interface IAddFolderSheetProps {
   opened: boolean;
   handleClose: () => void;
   handleSave: (folderName: string) => Promise<void>;
+  onChangeFolderName: (folderName: string) => void;
+  folderName: string;
 }
 
 export const AddFolderSheet: FC<IAddFolderSheetProps> = ({
   opened,
   handleSave,
-  handleClose
+  handleClose,
+  onChangeFolderName,
+  folderName
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['25%'], []);
@@ -25,7 +29,7 @@ export const AddFolderSheet: FC<IAddFolderSheetProps> = ({
       text,
     } 
   } = useTheme();
-  const [folderName, setFolderName] = useState("");
+  
 
   useEffect(() => {
     if (opened) {
@@ -41,16 +45,12 @@ export const AddFolderSheet: FC<IAddFolderSheetProps> = ({
 
   const handleSheetClose = useCallback(() => {
     bottomSheetRef.current?.close();
-    setFolderName("");
     handleClose();
   }, []);
 
   const onSaveFolder = async (folderName: string) => {
-    const name = folderName.trim();
-    if (name.length > 0) {
-      await handleSave(name).then(() => {
-        handleSheetClose();
-      });
+    if (folderName.trim().length) {
+      await handleSave(folderName);
     }
   }
 
@@ -60,7 +60,7 @@ export const AddFolderSheet: FC<IAddFolderSheetProps> = ({
         placeholder={t("Enter folder name")}
         style={[styles.input, { borderColor: border, color: text }]}
         value={folderName}
-        onChangeText={(text) => setFolderName(text)}
+        onChangeText={(text) => onChangeFolderName(text)}
         onSubmitEditing={(event) => onSaveFolder(event.nativeEvent.text)}
         inputMode="text"
         returnKeyType={"done"}

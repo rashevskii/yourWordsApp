@@ -20,14 +20,12 @@ import { BottomSheetActionButtons } from "./BottomSheetActionButtons";
 
 export interface ISelectWordsProps {
   translation: Translation[];
-  clearTranslate: () => void;
   saveTranslation: () => Promise<void>;
 }
 
 export const SelectWords: FC<ISelectWordsProps> = (
   { 
     translation,
-    clearTranslate,
     saveTranslation
   }
 ) => {
@@ -44,6 +42,8 @@ export const SelectWords: FC<ISelectWordsProps> = (
   useEffect(() => {
     if (translation.length) {
       handleSheetOpen();
+    } else {
+      handleSheetClose();
     }
   }, [translation]);
 
@@ -52,7 +52,6 @@ export const SelectWords: FC<ISelectWordsProps> = (
   }, []);
 
   const handleSheetClose = useCallback(() => {
-    clearTranslate();
     bottomSheetRef.current?.close();
   }, []);
 

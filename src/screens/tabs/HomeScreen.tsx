@@ -120,15 +120,12 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
         null,
         Date.now.toString()
       );
+      setTranslatedText([]);
     } catch(error: any) {
       errorHandler({ error });
     } finally {
       setLoad(false);
     }
-  }
-
-  const clearTranslate = () => {
-    setTranslatedText([]);
   }
 
   const onMyDictionary = () => {
@@ -152,7 +149,6 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       <HomeMenuComponent onMyDictionary={onMyDictionary} />
       <SelectWords 
         translation={translatedText}
-        clearTranslate={clearTranslate}
         saveTranslation={saveTranslation}
       />
       <MicrophoneComponent disabled={!!translatedText.length} />

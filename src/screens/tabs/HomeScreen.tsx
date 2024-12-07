@@ -19,7 +19,7 @@ import {
   MicrophoneComponent, 
   TranslationInputComponent 
 } from "../../components";
-import { translateAdditionalText, translateText } from "../../api";
+import { translateText } from "../../api";
 import { LanguagesType, UILanguagesType } from "../../data";
 import { addWord } from "../../database";
 import { errorHandler } from "../../helpers";
@@ -34,26 +34,32 @@ interface HomeScreenProps {
 
 export type Translation = {
   translations: string[];
-  lang?: LanguagesType | UILanguagesType;
+  lang: LanguagesType | UILanguagesType;
 }
 
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { colors: { background, text } } = useTheme();
   const { baseContainer, containerPadding } = globalStyles;
   const { mainLanguage, additionalLanguage, nativeLanguage } = useSelector((state: RootState) => state.appSettings);
-  const [currentLang, setCurrentLang] = useState(mainLanguage);
-  const [changedLang, setChangedLang] = useState(false);
+  const [sourceLang, setSourceLang] = useState<LanguagesType | UILanguagesType | null>(mainLanguage);
+  const [firstTargetLang, setFirstTargetLang] = useState(additionalLanguage || nativeLanguage);
+  const [secondTargetLang, setSecondTargetLang] = useState<LanguagesType | UILanguagesType | null>(additionalLanguage ? nativeLanguage : null);
   const [translatedText, setTranslatedText] = useState<Translation[]>([]);
   const [load, setLoad] = useState(false);
   const [sourceWord, setSourceWord] = useState("");
 
   const onChangeLanguage = () => {
-    if (currentLang === mainLanguage) {
-      setCurrentLang(additionalLanguage);
-      setChangedLang(true);
-    } else {
-      setCurrentLang(mainLanguage);
-      setChangedLang(false)
+    if (sourceLang === mainLanguage) {
+      setSourceLang(additionalLanguage || nativeLanguage);
+      setFirstTargetLang(mainLanguage);
+    } else if (sourceLang === additionalLanguage) {
+      setSourceLang(nativeLanguage);
+      setFirstTargetLang(additionalLanguage);
+      setSecondTargetLang(mainLanguage);
+    } else if (sourceLang === nativeLanguage){
+      setSourceLang(mainLanguage);
+      setFirstTargetLang(additionalLanguage || nativeLanguage);
+      setSecondTargetLang(nativeLanguage || null);
     }
   };
 
@@ -61,42 +67,33 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
     setLoad(true);
     try {
       if (additionalLanguage) {
-        const targetLang = changedLang ? mainLanguage : additionalLanguage;
         Promise.all([
-          await translateAdditionalText({text, targetLang: targetLang!, sourceLang: currentLang!}),
-          await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!})
+          await translateText({text, targetLang: firstTargetLang!, sourceLang: sourceLang!}),
+          await translateText({text, targetLang: secondTargetLang!, sourceLang: sourceLang!})
         ])
           .then((resp) => {
-            const additionalTranslates = resp[0].translations.map(translation => translation.text);
-            const nativeTranslations = resp[1].translations.map(translation => translation.text);
+            const firstTranslation = resp[0].translations.map(translation => translation.text);
+            const secondTranslation = resp[1].translations.map(translation => translation.text);
             const data: Translation[] = [
               {
-                lang: targetLang!,
-                translations: additionalTranslates
+                lang: firstTargetLang!,
+                translations: firstTranslation
               },
               {
-                lang: nativeLanguage!,
-                translations: nativeTranslations
+                lang: secondTargetLang!,
+                translations: secondTranslation
               }
             ];
-            // const data = resp.map((item, index) => {
-            //   if (index === 0) {
-            //     return { lang: targetLang, ...item } as Translations
-            //   } else {
-            //     return { lang: nativeLanguage, ...item } as Translations
-            //   }
-            // });
-            
             setSourceWord(text);
             setTranslatedText(data);
           });
       } else {
-        await translateText({text, targetLang: nativeLanguage!, sourceLang: currentLang!})
-        .then((resp) => {
-          const data = resp.translations.map(translation => translation.text);
-          setSourceWord(text);
-          setTranslatedText([{ translations: data }]);
-        });
+        await translateText({text, targetLang: firstTargetLang!, sourceLang: sourceLang!})
+          .then((resp) => {
+            const data = resp.translations.map(translation => translation.text);
+            setSourceWord(text);
+            setTranslatedText([{ lang: firstTargetLang!,  translations: data }]);
+          });
       }
     } catch(error: any) {
       errorHandler({error});
@@ -106,21 +103,22 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
    
   };
 
-  const saveTranslation = async (
-    originalWord: string,
-    nativeTranslation: string,
-    additionalTranslation: string | null,
-    groupId: string | null,
-    addedDate: string
-  ) => {
+  const saveTranslation = async () => {
+    setLoad(true);
+    let source = translatedText.find((translate) => translate.lang === mainLanguage)?.translations[0] || sourceWord;
+    let native = translatedText.find((translate) => translate.lang === nativeLanguage)?.translations[0] || sourceWord;
+    let additional = 
+      translatedText.length === 1 ? 
+      null : 
+      translatedText.find((translate) => translate.lang === additionalLanguage)?.translations[0] || sourceWord;
+    
     try {
-      setLoad(true);
       await addWord(
-        originalWord,
-        nativeTranslation,
-        additionalTranslation,
-        groupId,
-        addedDate
+        source,
+        native,
+        additional,
+        null,
+        Date.now.toString()
       );
     } catch(error: any) {
       errorHandler({ error });
@@ -148,14 +146,12 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       <TranslationInputComponent 
         additionalLanguage={additionalLanguage}
         onChangeLanguage={onChangeLanguage}
-        currentLang={currentLang}
+        currentLang={sourceLang}
         onTranslate={onTranslateText}
       />
       <HomeMenuComponent onMyDictionary={onMyDictionary} />
       <SelectWords 
-        translation={translatedText} 
-        sourceWord={sourceWord}
-        changedLanguages={changedLang}
+        translation={translatedText}
         clearTranslate={clearTranslate}
         saveTranslation={saveTranslation}
       />

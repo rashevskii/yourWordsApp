@@ -20,23 +20,13 @@ import { BottomSheetActionButtons } from "./BottomSheetActionButtons";
 
 export interface ISelectWordsProps {
   translation: Translation[];
-  sourceWord: string;
-  changedLanguages: boolean;
   clearTranslate: () => void;
-  saveTranslation: (
-    originalWord: string,
-    nativeTranslation: string,
-    additionalTranslation: string | null,
-    groupId: string | null,
-    addedDate: string
-  ) => void;
+  saveTranslation: () => Promise<void>;
 }
 
 export const SelectWords: FC<ISelectWordsProps> = (
   { 
-    translation, 
-    sourceWord, 
-    changedLanguages,
+    translation,
     clearTranslate,
     saveTranslation
   }
@@ -50,20 +40,10 @@ export const SelectWords: FC<ISelectWordsProps> = (
       text,
     } 
   } = useTheme();
-  const [
-    mainOrAdditionalTranslate, 
-    setMainOrAdditionalTranslate
-  ] = useState("");
-  const [
-    nativeTranslate, 
-    setNativeTranslate
-  ] = useState("");
 
   useEffect(() => {
     if (translation.length) {
       handleSheetOpen();
-      setMainOrAdditionalTranslate(translation[0].translations[0]);
-      setNativeTranslate(translation[1].translations[0]);
     }
   }, [translation]);
 
@@ -73,57 +53,32 @@ export const SelectWords: FC<ISelectWordsProps> = (
 
   const handleSheetClose = useCallback(() => {
     clearTranslate();
-    setMainOrAdditionalTranslate("");
-    setNativeTranslate("");
     bottomSheetRef.current?.close();
   }, []);
 
-  const onSelectTranslate = (index: number, word: string) => {
-    if (translation.length === 1) {
-      setNativeTranslate(word);
-    } else {
-      if (index === 1) {
-        setNativeTranslate(word);
-      } else {
-        setMainOrAdditionalTranslate(word);
-      }
-    }
-  }
-
-  const onSaveWords = () => {
-    if (changedLanguages) {
-      handleSheetClose();
-      saveTranslation(
-        mainOrAdditionalTranslate,
-        nativeTranslate,
-        sourceWord,
-        null,
-        Date.now.toString()
-      );
-    } else {
-      handleSheetClose();
-      saveTranslation(
-        sourceWord,
-        nativeTranslate,
-        mainOrAdditionalTranslate,
-        null,
-        Date.now.toString()
-      );
-    }
-  }
+  // функция нужна будет, если будут альтернативные варианты перевода (требует доработки, скорее всего)
+  // const onSelectTranslate = (index: number, word: string) => {
+  //   if (translation.length === 1) {
+  //     setNativeTranslate(word);
+  //   } else {
+  //     if (index === 1) {
+  //       setNativeTranslate(word);
+  //     } else {
+  //       setMainOrAdditionalTranslate(word);
+  //     }
+  //   }
+  // }
 
   const renderVariants = () => {
     return translation.map((translation, index) => {
       return (
         <View key={index} style={styles.variantContainer}>
-          {translation.lang && <Text style={[styles.lang, { color: text }]}>{translation.lang}:</Text>}
+          <Text style={[styles.lang, { color: text }]}>{translation.lang}:</Text>
           <View style={[styles.variant, { borderBottomColor: border }]}>
             {translation.translations.map((text) => {
               return (
                 <WordButton 
                   key={text}
-                  selectedWord={index === 1 ? nativeTranslate : mainOrAdditionalTranslate}
-                  selectTranslate={onSelectTranslate}
                   index={index}
                   word={text}
                 />
@@ -146,7 +101,7 @@ export const SelectWords: FC<ISelectWordsProps> = (
         <BottomSheetActionButtons 
           positiveActionText={t("Save")}
           negativeActionText={t("Do not save")}
-          positiveAction={onSaveWords}
+          positiveAction={saveTranslation}
           negativeAction={handleSheetClose}
         />
       </BottomSheetView>

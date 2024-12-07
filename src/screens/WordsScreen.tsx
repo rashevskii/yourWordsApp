@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { globalStyles } from "../styles";
-import { useTheme, useToast } from "../hooks";
+import { useTheme } from "../hooks";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { MainStackParamList } from "../navigations";
 import { RouteProp } from "@react-navigation/native";
@@ -162,21 +162,21 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
       setLoading(true);
       await updateGroupForWord(idSelectedFolder, selectedWordForAdding!, nameSelectedFolder)
         .then(async () => {
-          setOpenedFolders(false);
           if (idFolder === null) {
-            const newTranslations = translations.map((translation) => {
+            const updatedTranslations = translations.map((translation) => {
               if (translation.id === selectedWordForAdding) {
                 translation.group_id = idSelectedFolder;
                 translation.group_name = nameSelectedFolder;
               }
               return translation;
             });
-            setTranslations(newTranslations);
+            setTranslations(updatedTranslations);
           } else {
             const filteredTranslations = 
               translations.filter((translation) => translation.id !== selectedWordForAdding);
             setTranslations(filteredTranslations);
           }
+          setOpenedFolders(false);
           setIdSelectedFolder(idFolder);
           setSelectedWordForAdding(null);
         })
@@ -193,11 +193,11 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
       if (addedFolderId) {
         setIdSelectedFolder(addedFolderId);
         setNameSelectedFolder(folderName);
-        const newFolders = [
+        const updatedFolders = [
           { id: addedFolderId, group_name: folderName, image_path: null }, 
           ...folders
         ];
-        setFolders(newFolders);
+        setFolders(updatedFolders);
       }
     } catch (error: any) {
       errorHandler({error});

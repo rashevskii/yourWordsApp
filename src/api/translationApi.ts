@@ -45,33 +45,3 @@ export async function translateText(options: TranslationOptions): Promise<Transl
     throw new Error(`Не удалось выполнить перевод: ${error}`);
   }
 }
-
-/**
- * Функция для перевода текста с одного языка на другой
- * @param text Текст для перевода
- * @param target Язык, на который нужно перевести (например, 'RU' или 'EN')
- * @param source Исходный язык (необязательно, если требуется автоопределение)
- * @returns Переведенный текст
- */
-export async function translateAdditionalText(options: TranslationOptions): Promise<TranslationResponse> {
-  const { text, targetLang, sourceLang } = options;
-  
-  try {
-    const res = await fetch("https://your-words-server.onrender.com/translate", {
-      method: "POST",
-      body: JSON.stringify({
-        text,
-        sourceLang,
-        targetLang
-      }),
-      headers: { "Content-Type": "application/json" }
-    });
-
-    const translations = res.json();
-
-    return translations;
-  } catch (error) {
-    console.error('Ошибка при переводе текста:', error);
-    throw new Error(`Не удалось выполнить перевод: ${error}`);
-  }
-}

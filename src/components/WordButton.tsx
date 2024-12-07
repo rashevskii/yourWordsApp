@@ -3,17 +3,15 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "../hooks";
 
 export interface IWordButtonProps {
-  selectTranslate: (index: number, word: string) => void;
+  selectTranslate?: (index: number, word: string) => void;
   index: number;
   word: string;
-  selectedWord: string;
 }
 
 export const WordButton: FC<IWordButtonProps> = ({
   selectTranslate,
   index,
   word,
-  selectedWord
 }) => {
   const { colors: 
     { 
@@ -24,8 +22,8 @@ export const WordButton: FC<IWordButtonProps> = ({
   } = useTheme();
   return (
     <TouchableOpacity 
-      style={[styles.button, { borderColor: primary }, selectedWord === word ? { backgroundColor: button } : undefined]}
-      onPress={() => selectTranslate(index, word)}
+      style={[styles.button, { borderColor: primary, backgroundColor: button }]}
+      onPress={selectTranslate ? () => selectTranslate(index, word) : undefined}
     >
       <Text style={[styles.text, { color: text }]}>{word}</Text>
     </TouchableOpacity>

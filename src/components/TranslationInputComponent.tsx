@@ -10,12 +10,12 @@ import {
 import SearchIcon from "../assets/icons/search.svg";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../hooks";
-import { LanguagesType } from "../data";
+import { LanguagesType, UILanguagesType } from "../data";
 
 export interface ITranslationInputProps {
   additionalLanguage: LanguagesType | null;
   onChangeLanguage: () => void;
-  currentLang: LanguagesType | null;
+  currentLang: UILanguagesType | LanguagesType | null;
   onTranslate: (text: string) => Promise<void>;
 }
 

@@ -69,6 +69,12 @@ export const WordContainer: FC<IWordContainerProps> = ({ word, onDeleteWord, onA
           <Word text={original} />
           <Word text={native} />
         </View>
+        {
+          (!idCurrentFolder && folderId) &&
+          <Text>
+            {`${t("Added to")} ${folderName}`}
+          </Text>
+        }
         <ButtonsInTanslate 
           onDelete={onDelete} 
           wordId={wordId} 

@@ -43,12 +43,10 @@ export const TranslationInputComponent: FC<ITranslationInputProps> = ({
         style={[
           styles.langButton, 
           { 
-            backgroundColor: secondary, 
-            opacity: additionalLanguage && additionalLanguage.length ? 1 : 0.5
+            backgroundColor: secondary,
           }
         ]} 
         onPress={onChangeLanguage}
-        disabled={additionalLanguage && additionalLanguage.length ? false : true}
       >
         <Text style={[styles.langName, { color: invertedText }]}>{currentLang}</Text>
       </TouchableOpacity>

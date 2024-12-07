@@ -42,10 +42,10 @@ export const NativeLanguageScreen: FC<NativeLanguageProps> = ({ navigation }) =>
   }
   return (
     <View style={[ globalStyles.baseContainer, { backgroundColor: colors.background }]}>
-      <WelcomeSteps activeMarker={3} />
+      <WelcomeSteps activeMarker={4} />
       <View style={styles.arrowTextContainer}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <ArrowLeft width={40} height={40} />
+          <ArrowLeft color={colors.secondary} width={40} height={40} />
         </TouchableOpacity>
         <Text style={[styles.selectText, { color: colors.text }]}>{t("Select native language")}</Text>
       </View>

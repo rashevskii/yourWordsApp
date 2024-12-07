@@ -7,11 +7,13 @@ import {
   NativeLanguageScreen,
   SetNotificationScreen,
   RatePlanScreen,
-  StartScreen
+  StartScreen,
+  InterfaceLanguageScreen
  } from '../screens';
 
 export type AuthStackParamList = {
   Welcome: undefined;
+  InterfaceLanguage: undefined;
   MainLanguage: undefined;
   AdditionalLanguage: undefined;
   NativeLanguage: undefined;
@@ -29,6 +31,11 @@ export const AuthStack = () => {
       <Stack.Screen 
         name="Welcome" 
         component={WelcomeScreen} 
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="InterfaceLanguage" 
+        component={InterfaceLanguageScreen} 
         options={{ headerShown: false }} 
       />
       <Stack.Screen 

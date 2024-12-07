@@ -41,10 +41,10 @@ export const SetNotificationScreen: FC<SetNotificationProps> = ({ navigation }) 
 
   return (
     <View style={[ globalStyles.baseContainer, { backgroundColor: colors.background }]}>
-      <WelcomeSteps activeMarker={4} />
+      <WelcomeSteps activeMarker={5} />
       <View style={styles.arrowTextContainer}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <ArrowLeft width={40} height={40} />
+          <ArrowLeft color={colors.secondary} width={40} height={40} />
         </TouchableOpacity>
       </View>
       <View>

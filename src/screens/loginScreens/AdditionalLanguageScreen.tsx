@@ -49,10 +49,10 @@ export const AdditionalLanguageScreen: FC<AdditionalLanguageProps> = ({ navigati
 
   return (
     <View style={[ globalStyles.baseContainer, { backgroundColor: colors.background }]}>
-      <WelcomeSteps activeMarker={2} />
+      <WelcomeSteps activeMarker={3} />
       <View style={styles.arrowTextContainer}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <ArrowLeft width={40} height={40} />
+          <ArrowLeft color={colors.secondary} width={40} height={40} />
         </TouchableOpacity>
         <Text style={[styles.selectText, { color: colors.text }]}>{t("Select additional language")}</Text>
       </View>

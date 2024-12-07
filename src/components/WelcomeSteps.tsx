@@ -14,6 +14,7 @@ export const WelcomeSteps: FC<WelcomeStepsProps> = ({ activeMarker }) => {
       <CircleComponent fill={activeMarker === 2 ? "pink" : "grey"} />
       <CircleComponent fill={activeMarker === 3 ? "pink" : "grey"} />
       <CircleComponent fill={activeMarker === 4 ? "pink" : "grey"} />
+      <CircleComponent fill={activeMarker === 5 ? "pink" : "grey"} />
     </View>
   );
 }

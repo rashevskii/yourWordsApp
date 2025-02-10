@@ -94,7 +94,7 @@ export const createTables = async (): Promise<void> => {
           native_translation TEXT NOT NULL,
           group_id INTEGER,
           group_name TEXT,
-          added_date TEXT NOT NULL,
+          added_date INTEGER NOT NULL,
           FOREIGN KEY (group_id) REFERENCES groups(id)
         );
       `);
@@ -120,14 +120,14 @@ export const createTables = async (): Promise<void> => {
  * @param native_translation Перевод на родной язык
  * @param additional_translation Перевод на дополнительный язык (необязательно)
  * @param group_id ID группы (если есть)
- * @param added_date Дата добавления (в формате строки)
+ * @param added_date Дата добавления
  */
 export const addWord = async (
   original_word: string,
   native_translation: string,
   additional_translation: string | null = null,
   group_id: number | null = null,
-  added_date: string
+  added_date: number
 ): Promise<void> => {
   try {
     if (!original_word || !native_translation || !added_date) {

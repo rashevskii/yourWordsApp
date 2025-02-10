@@ -118,7 +118,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
         native,
         additional,
         null,
-        Date.now.toString()
+        Date.now()
       );
       setTranslatedText([]);
     } catch(error: any) {

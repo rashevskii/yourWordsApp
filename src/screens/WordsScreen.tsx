@@ -60,7 +60,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
 
   useEffect(() => {
     fethData();
-  }, []);
+  }, [selectedSort]);
 
   const fethData = async () => {
     setLoading(true);
@@ -94,7 +94,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     } finally {
       setLoading(false);
     }
-  } 
+  }
 
   const selectButton = (selectedItem: SelectItem<string>) => {
     return (
@@ -103,7 +103,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
           {selectedItem && selectedItem.label}
         </Text>
         {
-          selectedItem && selectedItem.value.includes("Desc") ? 
+          selectedItem && selectedItem.value.includes("desc") ? 
           <ArrowDownIcon width={25} height={25} color={invertedText} /> : 
           <ArrowUpIcon width={25} height={25} color={invertedText} />
         }
@@ -116,7 +116,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
       <View style={styles.selectItem}>
         <Text style={[styles.selectItemText, { color: text }]}>{item.label}</Text>
         {
-          item.value.includes("Desc") ? 
+          item.value.includes("desc") ? 
           <ArrowDownIcon width={25} height={25} color={text} /> : 
           <ArrowUpIcon width={25} height={25} color={text} />
         }

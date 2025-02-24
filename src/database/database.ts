@@ -231,6 +231,65 @@ export const getWordById = async (id: number): Promise<WordDBResponse | null> =>
 }
 
 /**
+ * Функция поиска
+ * @param word искомое слово
+ * @param groupId id группы
+ * @param orderBy порядок сортировки
+ * @returns Массив слов или пустой массив
+ */
+export const searchWords = async (
+  word: string,
+  groupId: number | null = null,
+  orderBy: string
+): Promise<WordsDBResponse> => {
+  const orderClause = {
+    date_asc: 'added_date ASC',
+    date_desc: 'added_date DESC',
+    alphabet_asc: 'original_word ASC',
+    alphabet_desc: 'original_word DESC',
+  }[orderBy] || 'added_date DESC';
+
+  const sql = groupId !== null
+    ? 
+      `
+        SELECT * FROM words 
+        WHERE (original_word LIKE ? OR native_translation LIKE ? OR additional_translation LIKE ?) 
+        AND group_id = ? 
+        ORDER BY ${orderClause} 
+        LIMIT 10;
+      `
+    : 
+      `
+        SELECT * FROM words 
+        WHERE original_word LIKE ? 
+        OR native_translation LIKE ? 
+        OR additional_translation LIKE ? 
+        ORDER BY ${orderClause} 
+        LIMIT 10;
+      `;
+
+  const params = groupId !== null
+    ? [`%${word}%`, `%${word}%`, `%${word}%`, groupId]
+    : [`%${word}%`, `%${word}%`, `%${word}%`];
+
+  try {
+    const results = await executeSql(sql, params);
+    if (results.rows.length) {
+      return Array.from({ length: results.rows.length }, (_, i) => results.rows.item(i));
+    } else {
+      return [];
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error searching word:', error.message);
+    } else {
+      console.error('Unknown error in seacrhWord:', error);
+    }
+    return [];
+  }
+}
+
+/**
  * Получение всех слов по группе с сортировкой
  * @param groupId ID группы для фильтрации
  * @param orderBy Тип сортировки ('date_asc', 'date_desc', 'alphabet_asc', 'alphabet_desc')

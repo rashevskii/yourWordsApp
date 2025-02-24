@@ -23,6 +23,7 @@ import {
   getAllWords, 
   getWordsByGroup, 
   ISortTypeWords, 
+  searchWords, 
   updateGroupForWord 
 } from "../database";
 import { FoldersDBResponse, WordDBResponse, WordsDBResponse } from "../types/database";
@@ -49,6 +50,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
   ], []);
   const { containerPadding, baseContainer } = globalStyles;
   const { colors: { background, secondary, invertedText, text } } = useTheme();
+  const [query, setQuery] = useState('');
   const [selectedSort, setSelectedSort] = useState(sortItems[0]);
   const [translations, setTranslations] = useState<WordsDBResponse>([]);
   const [openedFolders, setOpenedFolders] = useState(false);
@@ -59,8 +61,17 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
   const [folders, setFolders] = useState<FoldersDBResponse>([]);
 
   useEffect(() => {
-    fethData();
+    if (query.length === 0) {
+      fethData();
+    } else {
+      onSearchWords();
+    }
   }, [selectedSort]);
+
+  useEffect(() => {
+    const timer = setTimeout(onSearchWords, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
 
   const fethData = async () => {
     setLoading(true);
@@ -93,6 +104,15 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
       errorHandler({error});
     } finally {
       setLoading(false);
+    }
+  }
+
+  const onSearchWords = async (): Promise<void> => {
+    if (query.length === 0) {
+      fethData();
+    } else {
+      const translations = await searchWords(query, idFolder, selectedSort.value as ISortTypeWords);
+      setTranslations(translations);
     }
   }
 
@@ -227,7 +247,10 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
           { backgroundColor: background }
         ]}
       >
-        <SearchComponent />
+        <SearchComponent 
+          onChangeText={setQuery} 
+          value={query} 
+        />
         <View style={styles.sortContainer}>
           <Text style={styles.sortLabel}>{t("Sort by")}</Text>
           <SelectableComponent 

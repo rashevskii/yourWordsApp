@@ -6,7 +6,12 @@ import {
   TrainingsScreen 
 } from '../screens';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HeaderComponent, PlanetIconComponent, SettingsIconComponent, TabBarComponent } from '../components';
+import {
+  HeaderComponent,
+  PlanetIconComponent,
+  SettingsIconComponent,
+  TabBarComponent
+} from '../components';
 import { useTranslation } from 'react-i18next';
 
 export type BottomTabsParamList = {

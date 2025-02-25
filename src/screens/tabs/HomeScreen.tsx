@@ -1,7 +1,6 @@
 import React, { FC, useState } from "react";
 import { 
   StyleSheet,
-  Text,
   View 
 } from "react-native";
 import { useSelector } from "react-redux";
@@ -17,7 +16,9 @@ import {
   HomeMenuComponent, 
   Loading, 
   MicrophoneComponent, 
-  TranslationInputComponent 
+  TranslationInputComponent,
+  PlanetIconComponent,
+  SettingsIconComponent,
 } from "../../components";
 import { translateText } from "../../api";
 import { LanguagesType, UILanguagesType } from "../../data";
@@ -105,12 +106,20 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
 
   const saveTranslation = async () => {
     setLoad(true);
-    let source = translatedText.find((translate) => translate.lang === mainLanguage)?.translations[0] || sourceWord;
-    let native = translatedText.find((translate) => translate.lang === nativeLanguage)?.translations[0] || sourceWord;
+    let source = 
+      translatedText
+        .find((translate) => translate.lang === mainLanguage)
+        ?.translations[0] || sourceWord;
+    let native = 
+      translatedText
+      .find((translate) => translate.lang === nativeLanguage)
+      ?.translations[0] || sourceWord;
     let additional = 
       translatedText.length === 1 ? 
       null : 
-      translatedText.find((translate) => translate.lang === additionalLanguage)?.translations[0] || sourceWord;
+      translatedText
+        .find((translate) => translate.lang === additionalLanguage)
+        ?.translations[0] || sourceWord;
     
     try {
       await addWord(
@@ -138,8 +147,12 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       containerPadding, 
       { backgroundColor: background }
     ]}>
-      <HeaderComponent />
-      <Text style={[styles.words, { color: text }]}>WORDS</Text>
+      <HeaderComponent
+        leftIcon={() => <PlanetIconComponent />} 
+        rightIcon={() => <SettingsIconComponent />}
+        title="WORDS"
+        titleStyle={styles.words}
+      />
       <TranslationInputComponent 
         additionalLanguage={additionalLanguage}
         onChangeLanguage={onChangeLanguage}

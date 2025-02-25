@@ -1,25 +1,25 @@
 import React, { FC, ReactNode } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import PlanetIcon from "../assets/icons/planet.svg";
-import SettingsIcon from "../assets/icons/settings.svg";
+import { StyleSheet, Text, TextStyle, View } from "react-native";
 import { useTheme } from "../hooks";
 
 export interface IHeaderProps {
   title?: string;
   leftIcon?: () => ReactNode;
   rightIcon?: () => ReactNode;
+  titleStyle?: TextStyle;
 }
 
 export const HeaderComponent: FC<IHeaderProps> = ({
   title,
   leftIcon,
   rightIcon,
+  titleStyle
 }) => {
   const { colors: { background, text } } = useTheme();
   return  (
     <View style={[styles.header, { backgroundColor: background }]}>
       {leftIcon && leftIcon()}
-      {title && <Text style={[styles.headerTitle, { color: text }]}>{title}</Text>}
+      {title && <Text style={[styles.headerTitle, { color: text }, titleStyle]}>{title}</Text>}
       {rightIcon && rightIcon()}
     </View>
   )

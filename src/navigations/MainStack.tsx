@@ -1,13 +1,18 @@
 import React, { FC, useEffect } from 'react';
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
 import { BottomTabs } from './BottomTabsStack';
-import { WordsRouteProp, WordsScreen } from '../screens';
+import {
+  SettingsScreen,
+  WordsRouteProp,
+  WordsScreen
+} from '../screens';
 import { 
   BackIconComponent, 
   HeaderComponent, 
   SettingsIconComponent 
 } from '../components';
 import { createTables } from '../database';
+import { useTranslation } from 'react-i18next';
 
 export type MainStackParamList = {
   BottomTabs: undefined;
@@ -15,13 +20,15 @@ export type MainStackParamList = {
     idFolder: number | null;
     folderName: string;
   };
+  Settings: undefined;
 };
 
 export type WordsScreenProps = StackScreenProps<MainStackParamList, 'Words'>;
 
-const Stack = createStackNavigator<MainStackParamList>();
+const MainStack = createStackNavigator<MainStackParamList>();
 
-export const MainStack: FC = () => {
+export const MainStackNavigator: FC = () => {
+  const { t } = useTranslation();
   useEffect(() => {
     const initDB = async () => {
       await createTables();
@@ -30,13 +37,13 @@ export const MainStack: FC = () => {
   }, []);
 
   return (
-    <Stack.Navigator>
-      <Stack.Screen 
+    <MainStack.Navigator>
+      <MainStack.Screen 
         name="BottomTabs" 
         component={BottomTabs}
         options={{ headerShown: false }} 
       />
-      <Stack.Screen 
+      <MainStack.Screen 
         name="Words" 
         component={WordsScreen} 
         options={{ 
@@ -48,6 +55,16 @@ export const MainStack: FC = () => {
             />
          }} 
       />
-    </Stack.Navigator>
+      <MainStack.Screen 
+        name="Settings"
+        component={SettingsScreen}
+        options={{ 
+          header: () => 
+            <HeaderComponent
+              title={t("Settings")}
+            />
+         }} 
+      />
+    </MainStack.Navigator>
   );
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import { 
   WelcomeScreen,
   AdditionalLanguageScreen, 
@@ -10,6 +9,7 @@ import {
   StartScreen,
   InterfaceLanguageScreen
  } from '../screens';
+import { createStackNavigator } from '@react-navigation/stack';
 
 export type AuthStackParamList = {
   Welcome: undefined;
@@ -22,52 +22,52 @@ export type AuthStackParamList = {
   Start: undefined;
 };
 
-const Stack = createStackNavigator<AuthStackParamList>();
+const AuthStack = createStackNavigator<AuthStackParamList>();
 
-export const AuthStack = () => {
+export const AuthStackNavigator = () => {
 
   return (
-    <Stack.Navigator>
-      <Stack.Screen 
+    <AuthStack.Navigator>
+      <AuthStack.Screen 
         name="Welcome" 
         component={WelcomeScreen} 
         options={{ headerShown: false }} 
       />
-      <Stack.Screen 
+      <AuthStack.Screen 
         name="InterfaceLanguage" 
         component={InterfaceLanguageScreen} 
         options={{ headerShown: false }} 
       />
-      <Stack.Screen 
+      <AuthStack.Screen 
         name="MainLanguage" 
         component={MainLanguageScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen 
+      <AuthStack.Screen 
         name="AdditionalLanguage" 
         component={AdditionalLanguageScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen 
+      <AuthStack.Screen 
         name="NativeLanguage" 
         component={NativeLanguageScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen 
+      <AuthStack.Screen 
         name="SetNotification" 
         component={SetNotificationScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen 
+      <AuthStack.Screen 
         name="RatePlan" 
         component={RatePlanScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen 
+      <AuthStack.Screen 
         name="Start" 
         component={StartScreen}
         options={{ headerShown: false }}
       />
-    </Stack.Navigator>
+    </AuthStack.Navigator>
   );
 };

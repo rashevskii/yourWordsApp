@@ -60,5 +60,6 @@
   "Error updating group for word": "Ошибка добавления слова в папку",
   "Error deleting word": "Ошибка удаления слова",
   "Error deleting group": "Ошибка удаления папки",
-  "Folder alredy exists": "Папка с таким именем уже сущетвует"
+  "Folder alredy exists": "Папка с таким именем уже сущетвует",
+  "Settings": "Настройки"
 }

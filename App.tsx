@@ -14,8 +14,8 @@ import {
   NavigationContainer
 } from '@react-navigation/native';
 import { 
-  MainStack, 
-  AuthStack 
+  MainStackNavigator, 
+  AuthStackNavigator 
 } from './src/navigations';
 import { globalStyles } from './src/styles';
 import { useTheme } from './src/hooks';
@@ -36,7 +36,7 @@ export const App: React.FC = () => {
             backgroundColor={theme.colors.background}
           />
           <NavigationContainer>
-            {isAuth ? <MainStack /> : <AuthStack />}
+            {isAuth ? <MainStackNavigator /> : <AuthStackNavigator />}
           </NavigationContainer>
         </SafeAreaView>
       </ToastProvider>

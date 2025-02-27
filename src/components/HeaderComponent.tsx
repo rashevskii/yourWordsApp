@@ -16,11 +16,22 @@ export const HeaderComponent: FC<IHeaderProps> = ({
   titleStyle
 }) => {
   const { colors: { background, text } } = useTheme();
+  const {
+    header,
+    headerTitle,
+    icon,
+    leftIconStyles,
+    rightIconStyles,
+  } = styles;
   return  (
-    <View style={[styles.header, { backgroundColor: background }]}>
-      {leftIcon && leftIcon()}
-      {title && <Text style={[styles.headerTitle, { color: text }, titleStyle]}>{title}</Text>}
-      {rightIcon && rightIcon()}
+    <View style={[header, { backgroundColor: background }]}>
+      <View style={[icon, leftIconStyles]}>
+        {leftIcon && leftIcon()}
+      </View>
+      {title && <Text style={[headerTitle, { color: text }, titleStyle]}>{title}</Text>}
+      <View style={[icon, rightIconStyles]}>
+        {rightIcon && rightIcon()}
+      </View>
     </View>
   )
 };
@@ -28,13 +39,23 @@ export const HeaderComponent: FC<IHeaderProps> = ({
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     paddingVertical: 15,
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    position: "relative"
   },
   headerTitle: {
     fontSize: 26,
-    fontWeight: "bold"
+    fontWeight: "bold",
+  },
+  icon: {
+    position: "absolute"
+  },
+  leftIconStyles: {
+    left: 15
+  },
+  rightIconStyles: {
+    right: 15
   }
 });

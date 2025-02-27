@@ -61,6 +61,7 @@ export const MainStackNavigator: FC = () => {
         options={{ 
           header: () => 
             <HeaderComponent
+              leftIcon={() => <BackIconComponent />}
               title={t("Settings")}
             />
          }} 

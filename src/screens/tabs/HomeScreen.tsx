@@ -1,6 +1,5 @@
 import React, { FC, useState } from "react";
 import { 
-  StyleSheet,
   View 
 } from "react-native";
 import { useSelector } from "react-redux";
@@ -12,13 +11,10 @@ import { BottomTabsParamList } from "../../navigations";
 import { RouteProp } from "@react-navigation/native";
 import {
   SelectWords,
-  HeaderComponent, 
   HomeMenuComponent, 
   Loading, 
   MicrophoneComponent, 
   TranslationInputComponent,
-  PlanetIconComponent,
-  SettingsIconComponent,
 } from "../../components";
 import { translateText } from "../../api";
 import { LanguagesType, UILanguagesType } from "../../data";
@@ -39,7 +35,7 @@ export type Translation = {
 }
 
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
-  const { colors: { background, text } } = useTheme();
+  const { colors: { background } } = useTheme();
   const { baseContainer, containerPadding } = globalStyles;
   const { mainLanguage, additionalLanguage, nativeLanguage } = useSelector((state: RootState) => state.appSettings);
   const [sourceLang, setSourceLang] = useState<LanguagesType | UILanguagesType | null>(mainLanguage);
@@ -147,12 +143,6 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       containerPadding, 
       { backgroundColor: background }
     ]}>
-      <HeaderComponent
-        leftIcon={() => <PlanetIconComponent />} 
-        rightIcon={() => <SettingsIconComponent />}
-        title="WORDS"
-        titleStyle={styles.words}
-      />
       <TranslationInputComponent 
         additionalLanguage={additionalLanguage}
         onChangeLanguage={onChangeLanguage}
@@ -170,12 +160,3 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   );
 
 };
-
-const styles = StyleSheet.create({
-  words: {
-    fontSize: 36,
-    fontWeight: "bold",
-    letterSpacing: 8,
-    textAlign: "center"
-  },
-});

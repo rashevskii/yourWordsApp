@@ -13,6 +13,7 @@ import {
   TabBarComponent
 } from '../components';
 import { useTranslation } from 'react-i18next';
+import { StyleSheet } from 'react-native';
 
 export type BottomTabsParamList = {
   Home: undefined;
@@ -31,7 +32,15 @@ export const BottomTabs: FC = () => {
       <Tab.Screen 
         name="Home" 
         component={HomeScreen} 
-        options={{ headerShown: false }} 
+        options={{ 
+          header: () => 
+            <HeaderComponent 
+              leftIcon={() => <PlanetIconComponent />} 
+              rightIcon={() => <SettingsIconComponent />} 
+              title="WORDS"
+              titleStyle={styles.words}
+            />
+        }} 
       />
       <Tab.Screen 
         name="Dictionary" 
@@ -58,3 +67,12 @@ export const BottomTabs: FC = () => {
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  words: {
+    fontSize: 36,
+    fontWeight: "bold",
+    letterSpacing: 8,
+    textAlign: "center"
+  },
+});

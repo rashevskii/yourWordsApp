@@ -61,5 +61,6 @@
   "Error deleting word": "Ошибка удаления слова",
   "Error deleting group": "Ошибка удаления папки",
   "Folder alredy exists": "Папка с таким именем уже сущетвует",
-  "Settings": "Настройки"
+  "Settings": "Настройки",
+  "Language being studied": "Изучаемый язык"
 }

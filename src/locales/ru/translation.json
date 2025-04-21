@@ -64,5 +64,6 @@
   "Settings": "Настройки",
   "Language being studied": "Изучаемый язык",
   "Native language": "Родной язык",
-  "Application language": "Язык приложения"
+  "Application language": "Язык приложения",
+  "Error empty value": "Отсутствует значение"
 }

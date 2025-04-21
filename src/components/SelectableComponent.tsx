@@ -4,23 +4,23 @@ import SelectDropdown from "react-native-select-dropdown";
 import { StyleSheet } from "react-native";
 import { useTheme } from "../hooks";
 
-export interface ISelectableProps {
-  items: SelectItems<string>;
-  onValueChange: (value: SelectItem<string>) => void;
-  renderButton: (selectedItem: any) => ReactNode;
-  renderItem: (item: any) => ReactNode;
-  defaultValue?:  SelectItem<string>;
+export interface ISelectableProps<T> {
+  items: SelectItems<T>;
+  onValueChange: (value: SelectItem<T>) => void;
+  renderButton: (selectedItem: SelectItem<T>) => ReactNode;
+  renderItem: (item: SelectItem<T>) => ReactNode;
+  defaultValue?:  SelectItem<T>;
   disabled?: boolean;
 }
 
-export const SelectableComponent: FC<ISelectableProps> = ({ 
+export const SelectableComponent = <T,>({ 
   items,
   renderButton,
   renderItem,
   disabled, 
   onValueChange,
   defaultValue
-}) => {
+}: ISelectableProps<T>) => {
   const { colors: { background } } = useTheme();
   return (
     <SelectDropdown 

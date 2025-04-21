@@ -5,18 +5,18 @@ interface IAppState {
   isAuthenticated: boolean;
   theme: 'dark' | 'light';
   language: UILanguagesType;
-  mainLanguage: LanguagesType | null;
+  mainLanguage: LanguagesType;
   additionalLanguage: LanguagesType | null;
-  nativeLanguage: UILanguagesType | null;
+  nativeLanguage: UILanguagesType;
 }
 
 const initialState: IAppState = {
   isAuthenticated: false,
   theme: 'light',
   language: 'ru',
-  mainLanguage: null,
+  mainLanguage: "en",
   additionalLanguage: null,
-  nativeLanguage: null,
+  nativeLanguage: "ru",
 };
 
 const appSettingsSlice = createSlice({
@@ -32,13 +32,13 @@ const appSettingsSlice = createSlice({
     setLanguage: (state, action: PayloadAction<UILanguagesType>) => {
       state.language = action.payload;
     },
-    setMainLanguage: (state, action: PayloadAction<LanguagesType | null>) => {
+    setMainLanguage: (state, action: PayloadAction<LanguagesType>) => {
       state.mainLanguage = action.payload;
     },
     setAdditionaLanguage: (state, action: PayloadAction<LanguagesType | null>) => {
       state.additionalLanguage = action.payload;
     },
-    setNativeLanguge: (state, action: PayloadAction<UILanguagesType | null>) => {
+    setNativeLanguge: (state, action: PayloadAction<UILanguagesType>) => {
       state.nativeLanguage = action.payload;
     }
   },

@@ -253,7 +253,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
         />
         <View style={styles.sortContainer}>
           <Text style={styles.sortLabel}>{t("Sort by")}</Text>
-          <SelectableComponent 
+          <SelectableComponent<string> 
             items={sortItems} 
             renderButton={selectButton}
             renderItem={selectItem}

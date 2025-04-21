@@ -64,5 +64,6 @@
   "Settings": "Settings",
   "Language being studied": "Language being studied",
   "Native language": "Native language",
-  "Application language": "Application language"
+  "Application language": "Application language",
+  "Error empty value": "Empty value"
 }

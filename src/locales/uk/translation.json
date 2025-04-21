@@ -62,5 +62,7 @@
   "Error deleting group": "Ошибка удаления папки",
   "Folder alredy exists": "Папка с таким именем уже сущетвует",
   "Settings": "Настройки",
-  "Language being studied": "Изучаемый язык"
+  "Language being studied": "Изучаемый язык",
+  "Native language": "Родной язык",
+  "Application language": "Язык приложения"
 }

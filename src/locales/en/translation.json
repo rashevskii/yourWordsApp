@@ -62,5 +62,7 @@
   "Error deleting group": "Error deleting group",
   "Folder alredy exists": "A folder with this name already exists",
   "Settings": "Settings",
-  "Language being studied": "Language being studied"
+  "Language being studied": "Language being studied",
+  "Native language": "Native language",
+  "Application language": "Application language"
 }

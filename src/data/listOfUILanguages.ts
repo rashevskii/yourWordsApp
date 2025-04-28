@@ -2,7 +2,8 @@ import { FC } from "react";
 import { 
   UkraineIcon,
   UkIcon,
-  RussiaIcon
+  RussiaIcon,
+  PlanetIcon
 } from "../components";
 import i18n from "../locales/i18n";
 
@@ -34,4 +35,11 @@ export const listOfUILanguages: ListOfUILanguagesType = [
     engName: "Russian",
     translatedName: i18n.t("Russian")
   }
-]
+];
+
+export const mockUILanguage: ListOfUILanguagesItemType = {
+  key: "en",
+  icon: PlanetIcon,
+  engName: "Has no value",
+  translatedName: i18n.t("Empty value")
+}

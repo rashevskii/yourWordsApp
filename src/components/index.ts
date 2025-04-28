@@ -33,3 +33,4 @@ export * from "./SelectFolderSheet";
 export * from "./AddNewFolder";
 export * from "./FolderButton";
 export * from "./SettingsItemComponent";
+export * from "./SettingsLanguagesBlockComponent";

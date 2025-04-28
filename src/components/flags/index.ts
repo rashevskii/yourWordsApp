@@ -5,3 +5,4 @@ export * from "./RussiaIcon";
 export * from "./SwedenIcon";
 export * from "./UkIcon";
 export * from "./UkraineIcon";
+export * from "./PlanetIcon";

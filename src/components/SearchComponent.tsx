@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import SearchIcon from "../assets/icons/search.svg";
 import { useTheme } from "../hooks";
@@ -10,7 +10,6 @@ export interface ISearchProps {
 }
 
 export const SearchComponent: FC<ISearchProps> = ({ onChangeText, value }) => {
-  const [query, setQuery] = useState('');
   const { t } = useTranslation();
   const { colors: { border, text } } = useTheme();
 

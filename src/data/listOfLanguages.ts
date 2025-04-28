@@ -4,7 +4,8 @@ import {
   UkIcon,
   FinlandIcon,
   SwedenIcon,
-  NorwayIcon
+  NorwayIcon,
+  PlanetIcon
 } from "../components";
 import i18n from "../locales/i18n";
 
@@ -48,4 +49,11 @@ export const listOfLanguages: ListOfLanguagesType = [
     engName: "Finnish",
     translatedName: i18n.t("Finnish")
   },
-]
+];
+
+export const mockLanguage: ListOfLanguagesItemType = {
+  key: "en",
+  icon: PlanetIcon,
+  engName: "Has no value",
+  translatedName: i18n.t("Empty value")
+}

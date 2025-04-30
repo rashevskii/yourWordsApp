@@ -1,45 +1,84 @@
-import React, { FC, ReactNode } from "react";
+import React, { useState } from "react";
 import { SelectItem, SelectItems } from "../types";
-import SelectDropdown from "react-native-select-dropdown";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { useTheme } from "../hooks";
+import { View, ActivityIndicator } from "react-native";
+import { Menu, Button } from "react-native-paper";
 
 export interface ISelectableProps<T> {
   items: SelectItems<T>;
   onValueChange: (value: SelectItem<T>) => void;
-  renderButton: (selectedItem: SelectItem<T>) => ReactNode;
-  renderItem: (item: SelectItem<T>) => ReactNode;
-  defaultValue?:  SelectItem<T>;
+  renderButton?: (selectedItem: SelectItem<T> | null) => React.ReactNode;
+  renderItem?: (item: SelectItem<T>) => React.ReactNode;
+  defaultValue?: SelectItem<T>;
   disabled?: boolean;
+  loading?: boolean;
 }
 
-export const SelectableComponent = <T,>({ 
+export const SelectableComponent = <T,>({
   items,
+  onValueChange,
   renderButton,
   renderItem,
-  disabled, 
-  onValueChange,
-  defaultValue
+  defaultValue,
+  disabled = false,
+  loading = false,
 }: ISelectableProps<T>) => {
-  const { colors: { background } } = useTheme();
+  const { colors: { text, background } } = useTheme();
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<SelectItem<T> | null>(defaultValue ?? null);
+
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
+
+  const handleSelect = (item: SelectItem<T>) => {
+    onValueChange(item);
+    setSelectedItem(item);
+    closeMenu();
+  };
+
   return (
-    <SelectDropdown 
-      data={items}
-      onSelect={onValueChange}
-      renderButton={renderButton}
-      renderItem={renderItem}
-      defaultValue={defaultValue}
-      disabled={disabled}
-      dropdownStyle={{...styles.container,  backgroundColor: background }}
-    />
+    <View style={styles.wrapper}>
+      <Menu
+        visible={menuVisible}
+        onDismiss={closeMenu}
+        anchor={
+          <Button
+            mode="text"
+            onPress={openMenu}
+            disabled={disabled || loading}
+            contentStyle={{ justifyContent: "space-between", alignItems: "center" }}
+            icon={menuVisible ? "chevron-up" : "chevron-down"}
+          >
+            {
+              loading ? 
+              <ActivityIndicator size="small" /> : 
+              renderButton ? renderButton(selectedItem) : 
+              <Text style={{ color: text }}>{selectedItem?.label}</Text>
+            }
+          </Button>
+        }
+        style={styles.menu}
+        contentStyle={{ backgroundColor: background }}
+      >
+        {items.map((item, index) => (
+          <Menu.Item
+            key={index}
+            onPress={() => handleSelect(item)}
+            title={renderItem ? renderItem(item) : item.label}
+          />
+        ))}
+      </Menu>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderRadius: 10,
-  }
+  wrapper: {
+    alignSelf: "stretch",
+  },
+  menu: {
+    marginTop: 4,
+    borderRadius: 8,
+  },
 });
-

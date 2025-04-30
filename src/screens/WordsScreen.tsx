@@ -116,7 +116,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     }
   }
 
-  const selectButton = (selectedItem: SelectItem<string>) => {
+  const selectButton = (selectedItem: SelectItem<string> | null) => {
     return (
       <View style={[styles.selectButton, { backgroundColor: secondary  }]}>
         <Text style={[styles.selectButtonText, { color: invertedText }]}>

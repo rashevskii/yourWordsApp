@@ -9,6 +9,8 @@ import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from 'react-native-reanimated';
+import { MD3LightTheme, PaperProvider } from 'react-native-paper';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 LogBox.ignoreLogs(['[Reanimated]']);
 
@@ -21,7 +23,14 @@ const Main = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <App />
+        <PaperProvider
+          theme={MD3LightTheme}
+          settings={{
+            icon: (props) => <MaterialCommunityIcons {...props} />,
+          }}
+        >
+          <App />
+        </PaperProvider>
       </PersistGate>
     </Provider>
   );

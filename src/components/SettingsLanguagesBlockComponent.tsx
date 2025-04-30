@@ -71,28 +71,10 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     setAppLanguage(item.value);
   }
 
-  const renderSelectButton = (selectedItem: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>) => {
-    return (
-      <View style={{ padding: 10, borderRadius: 10 }}>
-        <Text>{selectedItem ? selectedItem.label : t("Error empty value")}</Text>
-      </View>
-    );
-  };
-
-  const renderSelectItem = (item: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>) => {
-    return (
-      <View style={{ padding: 10, borderRadius: 10 }}>
-        <Text>{item ? item.label : t("Error empty value")}</Text>
-      </View>
-    );
-  };
-
   const renderStudiedLanguages = () => {
     return (
       <SelectableComponent<ListOfLanguagesItemType>
         items={languages}
-        renderButton={renderSelectButton}
-        renderItem={renderSelectItem}
         onValueChange={onChangeStudiedLanguage}
         defaultValue={languages.find((item) => item.value === studiedLanguage)}
       />
@@ -103,8 +85,6 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     return (
       <SelectableComponent<ListOfUILanguagesItemType>
         items={nativeAndAppLangs}
-        renderButton={renderSelectButton}
-        renderItem={renderSelectItem}
         onValueChange={onChangeNativeLanguage}
         defaultValue={nativeAndAppLangs.find((item) => item.value === nativeLang)}
       />
@@ -115,8 +95,6 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     return (
       <SelectableComponent<ListOfUILanguagesItemType>
         items={nativeAndAppLangs}
-        renderButton={renderSelectButton}
-        renderItem={renderSelectItem}
         onValueChange={onChangeAppLanguage}
         defaultValue={nativeAndAppLangs.find((item) => item.value === appLanguage)}
       />
@@ -125,7 +103,6 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
 
   return (
     <View style={[blockStyles, { borderColor: border }]}>
-    
       <SettingsItemComponent
         Icon={studiedLanguage.icon}
         itemName={t("Language being studied")}

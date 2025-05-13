@@ -8,6 +8,7 @@ import { Menu, Button } from "react-native-paper";
 export interface ISelectableProps<T> {
   items: SelectItems<T>;
   onValueChange: (value: SelectItem<T>) => void;
+  showShevron: boolean;
   renderButton?: (selectedItem: SelectItem<T> | null) => React.ReactNode;
   renderItem?: (item: SelectItem<T>) => React.ReactNode;
   defaultValue?: SelectItem<T>;
@@ -18,6 +19,7 @@ export interface ISelectableProps<T> {
 export const SelectableComponent = <T,>({
   items,
   onValueChange,
+  showShevron,
   renderButton,
   renderItem,
   defaultValue,
@@ -47,8 +49,13 @@ export const SelectableComponent = <T,>({
             mode="text"
             onPress={openMenu}
             disabled={disabled || loading}
-            contentStyle={{ justifyContent: "space-between", alignItems: "center" }}
-            icon={menuVisible ? "chevron-up" : "chevron-down"}
+            style={{ justifyContent: "space-between", alignItems: "center" }}
+            contentStyle={{ flexDirection: "row-reverse" }}
+            icon={
+              showShevron ? 
+              menuVisible ? "chevron-up" : "chevron-down" : 
+              undefined
+            }
           >
             {
               loading ? 

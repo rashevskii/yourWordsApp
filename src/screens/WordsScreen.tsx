@@ -49,7 +49,7 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
     { label: t("Alphabet"), value: "alphabet_desc" }
   ], []);
   const { containerPadding, baseContainer } = globalStyles;
-  const { colors: { background, secondary, invertedText, text } } = useTheme();
+  const { colors: { background, text } } = useTheme();
   const [query, setQuery] = useState('');
   const [selectedSort, setSelectedSort] = useState(sortItems[0]);
   const [translations, setTranslations] = useState<WordsDBResponse>([]);
@@ -118,14 +118,14 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
 
   const selectButton = (selectedItem: SelectItem<string> | null) => {
     return (
-      <View style={[styles.selectButton, { backgroundColor: secondary  }]}>
-        <Text style={[styles.selectButtonText, { color: invertedText }]}>
+      <View style={styles.selectButton}>
+        <Text style={[styles.selectButtonText, { color: text }]}>
           {selectedItem && selectedItem.label}
         </Text>
         {
           selectedItem && selectedItem.value.includes("desc") ? 
-          <ArrowDownIcon width={25} height={25} color={invertedText} /> : 
-          <ArrowUpIcon width={25} height={25} color={invertedText} />
+          <ArrowDownIcon width={25} height={25} color={text} /> : 
+          <ArrowUpIcon width={25} height={25} color={text} />
         }
       </View>
     );
@@ -254,7 +254,8 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
         <View style={styles.sortContainer}>
           <Text style={styles.sortLabel}>{t("Sort by")}</Text>
           <SelectableComponent<string> 
-            items={sortItems} 
+            items={sortItems}
+            showShevron={true}
             renderButton={selectButton}
             renderItem={selectItem}
             onValueChange={onSelectLanguages}
@@ -285,7 +286,8 @@ export const WordsScreen: FC<IWordsProps> = ({ route: { params: {
 const styles = StyleSheet.create({
   sortContainer: {
     flexDirection: "row",
-    marginTop: 10
+    marginTop: 10,
+    alignItems: "center"
   },
   sortLabel: {
     fontSize: 18,
@@ -293,13 +295,9 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   selectButton: { 
-    borderRadius: 20, 
-    paddingHorizontal: 15, 
-    paddingVertical: 5, 
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    width: 180
   },
   selectButtonText: { 
     fontSize: 16 

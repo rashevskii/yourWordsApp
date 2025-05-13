@@ -75,6 +75,7 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     return (
       <SelectableComponent<ListOfLanguagesItemType>
         items={languages}
+        showShevron={true}
         onValueChange={onChangeStudiedLanguage}
         defaultValue={languages.find((item) => item.value === studiedLanguage)}
       />
@@ -85,6 +86,7 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     return (
       <SelectableComponent<ListOfUILanguagesItemType>
         items={nativeAndAppLangs}
+        showShevron={true}
         onValueChange={onChangeNativeLanguage}
         defaultValue={nativeAndAppLangs.find((item) => item.value === nativeLang)}
       />
@@ -95,6 +97,7 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     return (
       <SelectableComponent<ListOfUILanguagesItemType>
         items={nativeAndAppLangs}
+        showShevron={true}
         onValueChange={onChangeAppLanguage}
         defaultValue={nativeAndAppLangs.find((item) => item.value === appLanguage)}
       />

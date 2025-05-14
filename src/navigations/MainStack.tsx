@@ -49,8 +49,8 @@ export const MainStackNavigator: FC = () => {
         options={{ 
           header: ({ route }) => 
             <HeaderComponent 
-              leftIcon={() => <BackIconComponent />}
-              rightIcon={() => <SettingsIconComponent />} 
+              leftIcon={() => <BackIconComponent disabled={false} />}
+              rightIcon={() => <SettingsIconComponent disabled={false} />} 
               title={(route as WordsRouteProp).params.folderName}
             />
          }} 
@@ -61,7 +61,7 @@ export const MainStackNavigator: FC = () => {
         options={{ 
           header: () => 
             <HeaderComponent
-              leftIcon={() => <BackIconComponent />}
+              leftIcon={() => <BackIconComponent disabled={false} />}
               title={t("Settings")}
             />
          }} 

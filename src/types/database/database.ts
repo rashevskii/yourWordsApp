@@ -17,3 +17,13 @@ export type FolderDBResponse = {
 export type FoldersDBResponse = FolderDBResponse[];
 export type WordsDBResponse = WordDBResponse[];
 
+export type NewWordsCollection = {
+  id: number;
+  word: string;
+}[];
+
+export type QueriesCollection = {
+  query: string;
+  params: any[];
+}[];
+

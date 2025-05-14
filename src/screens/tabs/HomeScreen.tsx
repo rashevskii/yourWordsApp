@@ -1,11 +1,9 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { 
   View 
 } from "react-native";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
 import { globalStyles } from "../../styles";
-import { useTheme } from "../../hooks";
+import { useAppSettings, useTheme } from "../../hooks";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { BottomTabsParamList } from "../../navigations";
 import { RouteProp } from "@react-navigation/native";
@@ -20,6 +18,7 @@ import { translateText } from "../../api";
 import { LanguagesType, UILanguagesType } from "../../data";
 import { addWord } from "../../database";
 import { errorHandler } from "../../helpers";
+import { appEventEmitter, events } from "../../events";
 
 type HomeNavigationProp = NativeStackNavigationProp<BottomTabsParamList, "Home">;
 type HomeRouteProp = RouteProp<BottomTabsParamList, "Home">;
@@ -37,13 +36,21 @@ export type Translation = {
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { colors: { background } } = useTheme();
   const { baseContainer, containerPadding } = globalStyles;
-  const { mainLanguage, additionalLanguage, nativeLanguage } = useSelector((state: RootState) => state.appSettings);
+  const { mainLanguage, additionalLanguage, nativeLanguage } = useAppSettings();
   const [sourceLang, setSourceLang] = useState<LanguagesType | UILanguagesType | null>(mainLanguage);
   const [firstTargetLang, setFirstTargetLang] = useState(additionalLanguage || nativeLanguage);
   const [secondTargetLang, setSecondTargetLang] = useState<LanguagesType | UILanguagesType | null>(additionalLanguage ? nativeLanguage : null);
   const [translatedText, setTranslatedText] = useState<Translation[]>([]);
   const [load, setLoad] = useState(false);
   const [sourceWord, setSourceWord] = useState("");
+
+  useEffect(() => {
+    appEventEmitter.addListener(events.MAIN_LANGUAGE_CHANGED, () => {
+      const { mainLanguage } = useAppSettings();
+      setSourceLang(mainLanguage)
+    });
+    return () => appEventEmitter.removeAllListeners();
+  }, []);
 
   const onChangeLanguage = () => {
     if (sourceLang === mainLanguage) {
@@ -143,8 +150,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       containerPadding, 
       { backgroundColor: background }
     ]}>
-      <TranslationInputComponent 
-        additionalLanguage={additionalLanguage}
+      <TranslationInputComponent
         onChangeLanguage={onChangeLanguage}
         currentLang={sourceLang}
         onTranslate={onTranslateText}

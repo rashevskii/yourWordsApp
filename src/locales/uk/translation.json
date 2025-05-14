@@ -65,5 +65,6 @@
   "Language being studied": "Изучаемый язык",
   "Native language": "Родной язык",
   "Application language": "Язык приложения",
-  "Empty value": "Нет данных"
+  "Empty value": "Нет данных",
+  "This action will may take a bit time": "Это действие может занять длительное время. Пожалуйта, дождитесь завершения выполнения операции."
 }

@@ -1,5 +1,11 @@
 import SQLite, { ResultSet, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { FoldersDBResponse, WordDBResponse, WordsDBResponse } from '../types/database';
+import { 
+  FoldersDBResponse, 
+  NewWordsCollection, 
+  QueriesCollection, 
+  WordDBResponse, 
+  WordsDBResponse 
+} from '../types/database';
 import i18n from '../locales/i18n';
 import { dbEventEmitter, events } from '../events';
 import { AppState, AppStateStatus } from 'react-native';
@@ -75,6 +81,36 @@ const executeSql = async (query: string, params: any[] = []): Promise<ResultSet>
           return false;
         }
       );
+    });
+  });
+};
+
+/**
+ * Универсальная функция для выполнения массива SQL-запросов
+ */
+const executeArraySql = async (queries: QueriesCollection): Promise<void> => {
+  const db = await getDBConnection();
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      for (let query of queries) {
+        tx.executeSql(
+          query.query,
+          query.params || [],
+          undefined,
+          (_, error) => {
+            console.error('SQL Error:', query, error);
+            reject(error);
+            return true;
+          }
+        );
+      }
+    },
+    (error) => {
+      console.error("Transaction error:", error);
+      reject(error);
+    },
+    () => {
+      resolve();
     });
   });
 };
@@ -415,6 +451,57 @@ export const updateGroupForWord = async (
     dbEventEmitter.emit(events.WORD_ADDED);
   } catch (error) {
     useToast(i18n.t("Error updating group for word"), 'danger');
+    if (error instanceof Error) {
+      console.error('Error updating group for word:', error.message);
+    } else {
+      console.error('Unknown error in updateGroupForWord:', error);
+    }
+  }
+};
+
+/**
+ * Обновляет слово для заданного id в таблице words
+ * @param {number} wordId - ID слова
+ * @param {string} word - слово
+ * @returns {Promise<void>}
+ */
+export const updateWordById = async (
+  wordId: number,
+  word: string
+): Promise<void> => {
+  try {
+    if (!wordId) throw new Error(i18n.t('Invalid word ID'));
+
+    await executeSql(
+      `UPDATE words SET original_word = ? WHERE id = ?`,
+      [word, wordId]
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error updating group for word:', error.message);
+    } else {
+      console.error('Unknown error in updateGroupForWord:', error);
+    }
+  }
+};
+
+/**
+ * Обновляет слова в массиве для заданного id в таблице words
+ * @param {NewWordsCollection} newWords - массив объектов с id слова и новым словом
+ * @returns {Promise<void>}
+ */
+export const updateWordsById = async (
+  newWords: NewWordsCollection,
+): Promise<void> => {
+  const queries = newWords.map(({ id, word }) => {
+    return {
+      query: `UPDATE words SET original_word = ? WHERE id = ?`,
+      params: [word, id]
+    }
+  });
+  try {
+    await executeArraySql(queries);
+  } catch (error) {
     if (error instanceof Error) {
       console.error('Error updating group for word:', error.message);
     } else {

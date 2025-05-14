@@ -35,8 +35,8 @@ export const BottomTabs: FC = () => {
         options={{ 
           header: () => 
             <HeaderComponent 
-              leftIcon={() => <PlanetIconComponent />} 
-              rightIcon={() => <SettingsIconComponent />} 
+              leftIcon={() => <PlanetIconComponent disabled={false} />} 
+              rightIcon={() => <SettingsIconComponent disabled={false} />} 
               title="WORDS"
               titleStyle={styles.words}
             />
@@ -48,8 +48,8 @@ export const BottomTabs: FC = () => {
         options={{ 
           header: () => 
             <HeaderComponent 
-              leftIcon={() => <PlanetIconComponent />} 
-              rightIcon={() => <SettingsIconComponent />} 
+              leftIcon={() => <PlanetIconComponent disabled={false} />} 
+              rightIcon={() => <SettingsIconComponent disabled={false} />} 
               title={t("My dictionary")} 
             />
         }} 

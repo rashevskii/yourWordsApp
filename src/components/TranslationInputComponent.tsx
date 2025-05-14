@@ -13,14 +13,12 @@ import { useTheme } from "../hooks";
 import { LanguagesType, UILanguagesType } from "../data";
 
 export interface ITranslationInputProps {
-  additionalLanguage: LanguagesType | null;
   onChangeLanguage: () => void;
   currentLang: UILanguagesType | LanguagesType | null;
   onTranslate: (text: string) => Promise<void>;
 }
 
 export const TranslationInputComponent: FC<ITranslationInputProps> = ({ 
-  additionalLanguage, 
   onChangeLanguage, 
   currentLang,
   onTranslate

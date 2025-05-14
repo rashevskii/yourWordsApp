@@ -45,9 +45,7 @@ export const DictionaryScreen: FC<IDictionaryProps> = () => {
     dbEventEmitter.addListener(events.WORD_ADDED, fetchFolders);
     dbEventEmitter.addListener(events.WORD_DELETED, fetchFolders);
     dbEventEmitter.addListener(events.FOLDER_ADDED, fetchFolders);
-    return () => {
-      dbEventEmitter.removeAllListeners();
-    };
+    return () => dbEventEmitter.removeAllListeners();
   }, []);
 
   const fetchFolders = async () => {

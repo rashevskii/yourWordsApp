@@ -6,14 +6,21 @@ import { useNavigation } from "@react-navigation/native";
 import { MainStackParamList } from "../navigations";
 import { StackNavigationProp } from "@react-navigation/stack";
 
+interface SettingsIconComponentProps {
+  disabled?: boolean;
+}
 type MainStackNavProp = StackNavigationProp<MainStackParamList, 'Settings'>;
 
-export const SettingsIconComponent: FC = () => {
+export const SettingsIconComponent: FC<SettingsIconComponentProps> = ({ disabled }) => {
   const { colors: { secondary } } = useTheme();
   const navigation = useNavigation<MainStackNavProp>();
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+    <TouchableOpacity 
+      style={{ opacity: disabled ? 0.5 : 1 }} 
+      disabled={!!disabled} 
+      onPress={() => navigation.navigate("Settings")}
+    >
       <SettingsIcon width={35} height={35} color={secondary} />
     </TouchableOpacity>
   )

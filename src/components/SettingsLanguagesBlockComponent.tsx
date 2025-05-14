@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { SettingsItemComponent } from "./SettingsItemComponent";
 import { useTranslation } from "react-i18next";
 import { useAppSettings, useTheme } from "../hooks";
@@ -14,14 +14,20 @@ import {
 } from "../data";
 import { SelectItem } from "../types";
 import { PlanetIcon } from "../components";
+import { changeAllWords } from "../services";
+import { errorHandler } from "../helpers";
+import { useDispatch } from "react-redux";
+import { setMainLanguage } from "../store";
+import { appEventEmitter, events } from "../events";
 
 export interface SettingsLanguagesBlockProps {
-
+  setLoading: (loading: boolean) => void;
 }
 
-export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = () => {
+export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = ({ setLoading }) => {
   const { colors: { border } } = useTheme();
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const {
     blockStyles,
   } = styles;
@@ -60,7 +66,35 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
   }, []);
 
   const onChangeStudiedLanguage = (item: SelectItem<ListOfLanguagesItemType>) => {
-    setStudiedLanguage(item.value);
+    if (item.value.key !== studiedLanguage.key) {
+      setLoading(true);
+      Alert.alert(
+        t("Attention"),
+        t("This action will may take a bit time"),
+        [
+          {
+            text: t("Cancel"),
+            onPress: () => setLoading(false),
+            style: "cancel"
+          },
+          {
+            text: t("Next"),
+            onPress: async () => {
+              try {
+                setStudiedLanguage(item.value);
+                await changeAllWords(item.value.key);
+                dispatch(setMainLanguage(item.value.key));
+                appEventEmitter.emit(events.MAIN_LANGUAGE_CHANGED);
+              } catch(error: any) {
+                errorHandler(error);
+              } finally {
+                setLoading(false);
+              }
+            }
+          }
+        ]
+      );
+    }
   }
 
   const onChangeNativeLanguage = (item: SelectItem<ListOfUILanguagesItemType>) => {

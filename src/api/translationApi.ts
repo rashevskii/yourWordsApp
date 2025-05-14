@@ -1,20 +1,7 @@
 // const DEEPL_API_URL = 'https://api-free.deepl.com/v2/translate';
 // const DEEPL_API_KEY = '63c18f26-8af1-4d34-8061-822da5cc0a48:fx';
 
-interface TranslationResponse {
-  translations: Translation[];
-}
-
-type Translation = {
-  detected_source_language: string;
-  text: string;
-}
-
-interface TranslationOptions {
-  text: string;
-  targetLang: string;
-  sourceLang?: string;
-}
+import { TranslationOptions, TranslationResponse } from "../types/api";
 
 /**
  * Функция для перевода текста с одного языка на другой
@@ -24,7 +11,7 @@ interface TranslationOptions {
  * @returns Переведенный текст
  */
 export async function translateText(options: TranslationOptions): Promise<TranslationResponse> {
-  const { text, targetLang,sourceLang } = options;
+  const { text, targetLang, sourceLang } = options;
   
   try {
     const res = await fetch("https://your-words-server.onrender.com/translate", {

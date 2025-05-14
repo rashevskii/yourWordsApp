@@ -65,5 +65,6 @@
   "Language being studied": "Language being studied",
   "Native language": "Native language",
   "Application language": "Application language",
-  "Empty value": "No data"
+  "Empty value": "No data",
+  "This action will may take a bit time": "This action may take a long time. Please wait until the operation is completed."
 }

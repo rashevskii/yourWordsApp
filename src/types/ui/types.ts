@@ -6,8 +6,6 @@ export type SelectItem<T> = {
 }
 export type SelectItems<T> = SelectItem<T>[];
 
-export type LanguageItem = "en" | "se" | "fi" | "dk" | "no" | "ru" | "uk" | null;
-
 export type FolderType = FolderDBResponse & {
   count: number;
 }

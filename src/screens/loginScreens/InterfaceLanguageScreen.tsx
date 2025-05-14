@@ -33,7 +33,7 @@ export const InterfaceLanguageScreen: FC<InterfaceLanguageProps> = ({ navigation
   const [selectedLanguage, setSelectedLanguage] = useState(language);
 
   const onBack = () => {
-    dispatch(setMainLanguage(null));
+    dispatch(setMainLanguage("en"));
     navigation.goBack();
   } 
 

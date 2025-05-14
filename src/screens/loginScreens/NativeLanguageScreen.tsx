@@ -28,7 +28,7 @@ export const NativeLanguageScreen: FC<NativeLanguageProps> = ({ navigation }) =>
   const [selectedLanguage, setSelectedLanguage] = useState(nativeLanguage);
 
   const onBack = () => {
-    dispatch(setNativeLanguge(null));
+    dispatch(setNativeLanguge("en"));
     navigation.goBack();
   } 
 

@@ -60,6 +60,7 @@ export const TabBarComponent: FC<TabBarComponentProps> = ({ state, descriptors, 
           } else if (route.name === "Achieveness") {
             return <AchievenessIcon width={45} height={45} />;
           }
+          return <HomeIcon width={45} height={45} />;
         }
 
         const onPress = () => {

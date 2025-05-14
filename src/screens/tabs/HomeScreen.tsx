@@ -38,7 +38,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { baseContainer, containerPadding } = globalStyles;
   const { mainLanguage, additionalLanguage, nativeLanguage } = useAppSettings();
   const [sourceLang, setSourceLang] = useState<LanguagesType | UILanguagesType | null>(mainLanguage);
-  const [firstTargetLang, setFirstTargetLang] = useState(additionalLanguage || nativeLanguage);
+  const [firstTargetLang, setFirstTargetLang] = useState<LanguagesType | UILanguagesType | null>(additionalLanguage || nativeLanguage);
   const [secondTargetLang, setSecondTargetLang] = useState<LanguagesType | UILanguagesType | null>(additionalLanguage ? nativeLanguage : null);
   const [translatedText, setTranslatedText] = useState<Translation[]>([]);
   const [load, setLoad] = useState(false);

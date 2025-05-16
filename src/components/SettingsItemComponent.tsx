@@ -11,7 +11,7 @@ export interface SettingsItemProps {
 export const SettingsItemComponent: FC<SettingsItemProps> = ({
   Icon,
   itemName,
-  Component
+  Component,
 }) => {
   const { colors: { text } } = useTheme();
   const {
@@ -22,11 +22,7 @@ export const SettingsItemComponent: FC<SettingsItemProps> = ({
   return (
     <View style={rowStyles}>
       <View style={rowNameStyles}>
-        {/* без обертки не работает почему-то */}
-        <View>
-          <Icon />
-        </View>
-
+        <Icon />
         <Text style={[nameStyles, { color: text }]}>{itemName}</Text>
       </View>
       <Component />
@@ -47,7 +43,7 @@ const styles = StyleSheet.create({
   },
   nameStyles: {
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 14,
     marginLeft: 10
   }
 });

@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { SettingsItemComponent } from "./SettingsItemComponent";
 import { useTranslation } from "react-i18next";
@@ -13,7 +13,6 @@ import {
   mockUILanguage
 } from "../data";
 import { SelectItem } from "../types";
-import { PlanetIcon } from "../components";
 import { changeAllWords } from "../services";
 import { errorHandler } from "../helpers";
 import { useDispatch } from "react-redux";
@@ -31,11 +30,28 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
   const {
     blockStyles,
   } = styles;
-  const { nativeLanguage } = useAppSettings();
-  const [studiedLanguage, setStudiedLanguage] = useState<ListOfLanguagesItemType>(mockLanguage);
-  const [nativeLang, setNativeLang] = 
-    useState<ListOfUILanguagesItemType | null>(listOfUILanguages.find((lang) => lang.key === nativeLanguage) || null);
-  const [appLanguage, setAppLanguage] = useState<ListOfUILanguagesItemType>(mockUILanguage);
+  const { 
+    nativeLanguage, 
+    mainLanguage, 
+    additionalLanguage, 
+    language 
+  } = useAppSettings();
+  const [
+    studiedLanguage, 
+    setStudiedLanguage
+  ] = useState(listOfLanguages.find((lang) => lang.key === mainLanguage) || mockLanguage);
+  const [
+    additionalLang, 
+    setAdditionalLang
+  ] = useState(listOfLanguages.find((lang) => lang.key === additionalLanguage) || mockLanguage);
+  const [
+    nativeLang, 
+    setNativeLang
+  ] = useState(listOfUILanguages.find((lang) => lang.key === nativeLanguage) || mockUILanguage);
+  const [
+    appLanguage, 
+    setAppLanguage
+  ] = useState(listOfUILanguages.find((lang) => lang.key === language) || mockUILanguage);
   const languages = useMemo(() => {
     return listOfLanguages.map((item) => {
       return {
@@ -53,20 +69,8 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     })
   }, []);
 
-  useEffect(() => {
-    const { mainLanguage, language } = useAppSettings();
-    const currentStudiedLang = listOfLanguages.find((lang) => lang.key === mainLanguage);
-    const currentAppLang = listOfUILanguages.find((lang) => lang.key === language);
-    if (currentStudiedLang) {
-      setStudiedLanguage(currentStudiedLang);
-    }
-    if (currentAppLang) {
-      setAppLanguage(currentAppLang);
-    }
-  }, []);
-
-  const onChangeStudiedLanguage = (item: SelectItem<ListOfLanguagesItemType>) => {
-    if (item.value.key !== studiedLanguage.key) {
+  const onChangeStudiedLanguage = (selectedItem: SelectItem<ListOfLanguagesItemType>) => {
+    if (selectedItem.value.key !== studiedLanguage.key) {
       setLoading(true);
       Alert.alert(
         t("Attention"),
@@ -81,9 +85,9 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
             text: t("Next"),
             onPress: async () => {
               try {
-                setStudiedLanguage(item.value);
-                await changeAllWords(item.value.key);
-                dispatch(setMainLanguage(item.value.key));
+                setStudiedLanguage(selectedItem.value);
+                await changeAllWords(selectedItem.value.key);
+                dispatch(setMainLanguage(selectedItem.value.key));
                 appEventEmitter.emit(events.MAIN_LANGUAGE_CHANGED);
               } catch(error: any) {
                 errorHandler(error);
@@ -95,6 +99,10 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
         ]
       );
     }
+  }
+
+  const onChangeAdditionalLanguage = (item: SelectItem<ListOfLanguagesItemType>) => {
+    setAdditionalLang(item.value);
   }
 
   const onChangeNativeLanguage = (item: SelectItem<ListOfUILanguagesItemType>) => {
@@ -111,7 +119,21 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
         items={languages}
         showShevron={true}
         onValueChange={onChangeStudiedLanguage}
-        defaultValue={languages.find((item) => item.value === studiedLanguage)}
+        defaultValue={languages.find((item) => item.value.key === studiedLanguage.key)}
+      />
+    )
+  }
+
+  const renderAdditionalLanguages = () => {
+    return (
+      <SelectableComponent<ListOfLanguagesItemType>
+        items={languages}
+        showShevron={true}
+        onValueChange={onChangeAdditionalLanguage}
+        defaultValue={
+          languages.find((item) => item.value.key === additionalLang.key) || 
+          {label: additionalLang.translatedName, value: additionalLang}
+        }
       />
     )
   }
@@ -122,7 +144,7 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
         items={nativeAndAppLangs}
         showShevron={true}
         onValueChange={onChangeNativeLanguage}
-        defaultValue={nativeAndAppLangs.find((item) => item.value === nativeLang)}
+        defaultValue={nativeAndAppLangs.find((item) => item.value.key === nativeLang.key)}
       />
     );
   }
@@ -133,7 +155,7 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
         items={nativeAndAppLangs}
         showShevron={true}
         onValueChange={onChangeAppLanguage}
-        defaultValue={nativeAndAppLangs.find((item) => item.value === appLanguage)}
+        defaultValue={nativeAndAppLangs.find((item) => item.value.key === appLanguage.key)}
       />
     );
   }
@@ -147,7 +169,13 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
       />
 
       <SettingsItemComponent
-        Icon={nativeLang?.icon || PlanetIcon}
+        Icon={additionalLang.icon}
+        itemName={t("Additional language")}
+        Component={renderAdditionalLanguages}
+      />
+
+      <SettingsItemComponent
+        Icon={nativeLang.icon}
         itemName={t("Native language")}
         Component={renderNativeLanguages}
       />

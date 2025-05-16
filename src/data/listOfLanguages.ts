@@ -9,14 +9,15 @@ import {
 } from "../components";
 import i18n from "../locales/i18n";
 
-export type LanguagesType = "en" | "sv" | "fi" | "da" | "nb";
+export type LanguagesType = "en" | "sv" | "fi" | "da" | "nb" | "mock";
+export type EmgNamesType = "English" | "Norwegian" | "Swedish" | "Danish" | "Finnish" | "Has no value";
 export type ListOfLanguagesType = Array<ListOfLanguagesItemType>;
 export type ListOfLanguagesItemType = {
-  key: "en" | "sv" | "fi" | "da" | "nb";
+  key: LanguagesType;
   icon: FC;
-  engName: string;
+  engName: EmgNamesType;
   translatedName: string;
-}
+};
 
 export const listOfLanguages: ListOfLanguagesType = [
   {
@@ -52,7 +53,7 @@ export const listOfLanguages: ListOfLanguagesType = [
 ];
 
 export const mockLanguage: ListOfLanguagesItemType = {
-  key: "en",
+  key: "mock",
   icon: PlanetIcon,
   engName: "Has no value",
   translatedName: i18n.t("Empty value")

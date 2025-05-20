@@ -54,6 +54,14 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       setFirstTargetLang(additionalLanguage);
       setSecondTargetLang(nativeLanguage);
     });
+    appEventEmitter.addListener(events.NATIVE_LANGUAGE_CHANGED, () => {
+      const { additionalLanguage, nativeLanguage } = useAppSettings();
+      if (!additionalLanguage) {
+        setFirstTargetLang(nativeLanguage);
+      } else {
+        setSecondTargetLang(nativeLanguage);
+      }
+    });
     return () => appEventEmitter.removeAllListeners();
   }, []);
 

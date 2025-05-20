@@ -1,8 +1,9 @@
 import { translateText } from "../api";
 import { 
   getAllWords, 
-  updateAdditionalWordsById, 
-  updateMainWordsById 
+  updateAdditionalWordsByIds, 
+  updateMainWordsByIds, 
+  updateNativeWordsByIds
 } from "../database"
 import { store } from "../store";
 import { LanguagesType, UILanguagesType } from "../types";
@@ -26,10 +27,15 @@ const translateListOfWords = async (targetLanguage: LanguagesType | UILanguagesT
 
 export const changeAllMainWords = async (newLanguage: LanguagesType) => {
   const newListOfWords = await translateListOfWords(newLanguage);
-  await updateMainWordsById(newListOfWords);
+  await updateMainWordsByIds(newListOfWords);
 };
 
 export const changeAllAdditionalWords = async (newLanguage: LanguagesType) => {
   const newListOfWords = await translateListOfWords(newLanguage);
-  await updateAdditionalWordsById(newListOfWords);
+  await updateAdditionalWordsByIds(newListOfWords);
+};
+
+export const changeAllNativeWords = async (newLanguage: UILanguagesType) => {
+  const newListOfWords = await translateListOfWords(newLanguage);
+  await updateNativeWordsByIds(newListOfWords);
 }

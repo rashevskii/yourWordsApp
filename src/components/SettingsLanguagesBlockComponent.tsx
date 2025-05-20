@@ -13,12 +13,20 @@ import {
 import { 
   ListOfLanguagesItemType, 
   ListOfUILanguagesItemType, 
-  SelectItem 
+  SelectItem,
 } from "../types";
-import { changeAllAdditionalWords, changeAllMainWords } from "../services";
+import { 
+  changeAllAdditionalWords, 
+  changeAllMainWords, 
+  changeAllNativeWords 
+} from "../services";
 import { errorHandler } from "../helpers";
 import { useDispatch } from "react-redux";
-import { setAdditionaLanguage, setMainLanguage } from "../store";
+import { 
+  setAdditionaLanguage, 
+  setMainLanguage, 
+  setNativeLanguge 
+} from "../store";
 import { appEventEmitter, events } from "../events";
 
 export interface SettingsLanguagesBlockProps {
@@ -71,74 +79,104 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     })
   }, []);
 
-  const onChangeStudiedLanguage = (selectedItem: SelectItem<ListOfLanguagesItemType>) => {
-    if (selectedItem.value.key !== studiedLanguage.key) {
-      setLoading(true);
-      Alert.alert(
-        t("Attention"),
-        t("This action will may take a bit time"),
-        [
-          {
-            text: t("Cancel"),
-            onPress: () => setLoading(false),
-            style: "cancel"
-          },
-          {
-            text: t("Next"),
-            onPress: async () => {
-              try {
-                await changeAllMainWords(selectedItem.value.key);
-                setStudiedLanguage(selectedItem.value);
-                dispatch(setMainLanguage(selectedItem.value.key));
-                appEventEmitter.emit(events.MAIN_LANGUAGE_CHANGED);
-              } catch(error: any) {
-                errorHandler(error);
-              } finally {
-                setLoading(false);
+  const changeMainLanguage = async (selectedItem: SelectItem<ListOfLanguagesItemType>) => {
+    await changeAllMainWords(selectedItem.value.key);
+    setStudiedLanguage(selectedItem.value);
+    dispatch(setMainLanguage(selectedItem.value.key));
+    appEventEmitter.emit(events.MAIN_LANGUAGE_CHANGED);
+  }
+
+  const changeAdditionalLanguage = async (selectedItem: SelectItem<ListOfLanguagesItemType>) => {
+    await changeAllAdditionalWords(selectedItem.value.key);
+    setAdditionalLang(selectedItem.value);
+    dispatch(setAdditionaLanguage(selectedItem.value.key));
+    appEventEmitter.emit(events.ADDITIONAL_LANGUAGE_CHANGED);
+  }
+
+  const changeNativeLanguage = async (selectedItem: SelectItem<ListOfUILanguagesItemType>) => {
+    await changeAllNativeWords(selectedItem.value.key);
+    setNativeLang(selectedItem.value);
+    dispatch(setNativeLanguge(selectedItem.value.key));
+    appEventEmitter.emit(events.NATIVE_LANGUAGE_CHANGED);
+  }
+
+  const approveTranslate = (
+    selectedItem: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>, 
+    languageType: "studied" | "additional" | "native"
+  ) => {
+    Alert.alert(
+      t("Attention"),
+      t("This action will may take a bit time"),
+      [
+        {
+          text: t("Cancel"),
+          onPress: () => {},
+          style: "cancel"
+        },
+        {
+          text: t("Next"),
+          onPress: async () => {
+            setLoading(true);
+            try {
+              switch (languageType) {
+                case "studied":
+                  await changeMainLanguage(selectedItem as SelectItem<ListOfLanguagesItemType>);
+                  return;
+                case "additional":
+                  await changeAdditionalLanguage(selectedItem as SelectItem<ListOfLanguagesItemType>);
+                  return;
+                case "native":
+                  await changeNativeLanguage(selectedItem as SelectItem<ListOfUILanguagesItemType>);
+                  return;
               }
+            } catch(error: any) {
+              errorHandler(error);
+            } finally {
+              setLoading(false);
             }
           }
-        ]
-      );
+        }
+      ]
+    );
+  }
+
+  const onChangeLanguage = (
+    selectedItem: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>, 
+    languageType: "studied" | "additional" | "native"
+  ) => {
+    Alert.alert(
+      t("Attention"),
+      t("This action will translate all words"),
+      [
+        {
+          text: t("Cancel"),
+          onPress: () => {},
+          style: "cancel"
+        },
+        {
+          text: t("Next"),
+          onPress: () => approveTranslate(selectedItem, languageType),
+        }
+      ]
+    );
+  }
+
+  const onChangeStudiedLanguage = (selectedItem: SelectItem<ListOfLanguagesItemType>) => {
+    if (selectedItem.value.key !== studiedLanguage.key) {
+      onChangeLanguage(selectedItem, "studied");
     }
   }
 
   const onChangeAdditionalLanguage = (selectedItem: SelectItem<ListOfLanguagesItemType>) => {
     if (selectedItem.value.key !== additionalLang.key) {
-      setLoading(true);
-      Alert.alert(
-        t("Attention"),
-        t("This action will may take a bit time"),
-        [
-          {
-            text: t("Cancel"),
-            onPress: () => setLoading(false),
-            style: "cancel"
-          },
-          {
-            text: t("Next"),
-            onPress: async () => {
-              try {
-                await changeAllAdditionalWords(selectedItem.value.key);
-                setAdditionalLang(selectedItem.value);
-                dispatch(setAdditionaLanguage(selectedItem.value.key));
-                appEventEmitter.emit(events.ADDITIONAL_LANGUAGE_CHANGED);
-              } catch(error: any) {
-                console.log("error: ", error);
-                
-                errorHandler(error);
-              } finally {
-                setLoading(false);
-              }
-            }
-          }
-        ]
-      );
+      onChangeLanguage(selectedItem, "additional");
     }
   }
 
-  const onChangeNativeLanguage = (item: SelectItem<ListOfUILanguagesItemType>) => {
-    setNativeLang(item.value);
+  const onChangeNativeLanguage = (selectedItem: SelectItem<ListOfUILanguagesItemType>) => {
+    if (selectedItem.value.key !== nativeLang.key) {
+      onChangeLanguage(selectedItem, "native");
+    }
   }
 
   const onChangeAppLanguage = (item: SelectItem<ListOfUILanguagesItemType>) => {

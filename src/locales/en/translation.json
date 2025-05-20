@@ -69,5 +69,6 @@
   "Native language": "Native language",
   "Application language": "Application language",
   "Empty value": "No data",
+  "This action will translate all words": "This action will translate all words in the dictionary from the current language to the selected. This action is irreversible!",
   "This action will may take a bit time": "This action may take a long time. Please wait until the operation is completed."
 }

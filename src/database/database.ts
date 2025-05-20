@@ -490,7 +490,7 @@ export const updateWordById = async (
  * @param {NewWordsCollection} newWords - массив объектов с id слова и новым словом
  * @returns {Promise<void>}
  */
-export const updateMainWordsById = async (
+export const updateMainWordsByIds = async (
   newWords: NewWordsCollection,
 ): Promise<void> => {
   const queries = newWords.map(({ id, word }) => {
@@ -515,7 +515,7 @@ export const updateMainWordsById = async (
  * @param {NewWordsCollection} newWords - массив объектов с id слова и новым словом
  * @returns {Promise<void>}
  */
-export const updateAdditionalWordsById = async (
+export const updateAdditionalWordsByIds = async (
   newWords: NewWordsCollection,
 ): Promise<void> => {
   const queries = newWords.map(({ id, word }) => {
@@ -531,6 +531,31 @@ export const updateAdditionalWordsById = async (
       console.error('Error updating list of words:', error.message);
     } else {
       console.error('Unknown error in updateAdditionalWordsById:', error);
+    }
+  }
+};
+
+/**
+ * Обновляет слова родного языка из массива по id в таблице words
+ * @param {NewWordsCollection} newWords - массив объектов с id слова и новым словом
+ * @returns {Promise<void>}
+ */
+export const updateNativeWordsByIds = async (
+  newWords: NewWordsCollection,
+): Promise<void> => {
+  const queries = newWords.map(({ id, word }) => {
+    return {
+      query: `UPDATE words SET native_translation = ? WHERE id = ?`,
+      params: [word, id]
+    }
+  });
+  try {
+    await executeArraySql(queries);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error updating list of words:', error.message);
+    } else {
+      console.error('Unknown error in updateNativeWordsByIds:', error);
     }
   }
 };

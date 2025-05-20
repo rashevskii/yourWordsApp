@@ -486,11 +486,11 @@ export const updateWordById = async (
 };
 
 /**
- * Обновляет слова в массиве для заданного id в таблице words
+ * Обновляет слова основного языка из массива по id в таблице words
  * @param {NewWordsCollection} newWords - массив объектов с id слова и новым словом
  * @returns {Promise<void>}
  */
-export const updateWordsById = async (
+export const updateMainWordsById = async (
   newWords: NewWordsCollection,
 ): Promise<void> => {
   const queries = newWords.map(({ id, word }) => {
@@ -503,9 +503,34 @@ export const updateWordsById = async (
     await executeArraySql(queries);
   } catch (error) {
     if (error instanceof Error) {
-      console.error('Error updating group for word:', error.message);
+      console.error('Error updating list of words:', error.message);
     } else {
-      console.error('Unknown error in updateGroupForWord:', error);
+      console.error('Unknown error in updateMainWordsById:', error);
+    }
+  }
+};
+
+/**
+ * Обновляет слова дополнительного языка из массива по id в таблице words
+ * @param {NewWordsCollection} newWords - массив объектов с id слова и новым словом
+ * @returns {Promise<void>}
+ */
+export const updateAdditionalWordsById = async (
+  newWords: NewWordsCollection,
+): Promise<void> => {
+  const queries = newWords.map(({ id, word }) => {
+    return {
+      query: `UPDATE words SET additional_translation = ? WHERE id = ?`,
+      params: [word, id]
+    }
+  });
+  try {
+    await executeArraySql(queries);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error updating list of words:', error.message);
+    } else {
+      console.error('Unknown error in updateAdditionalWordsById:', error);
     }
   }
 };

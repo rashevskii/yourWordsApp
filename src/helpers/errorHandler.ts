@@ -7,5 +7,9 @@ export interface IErrorParams {
 
 export const errorHandler = ({ error }: IErrorParams) => {
   const t = i18n.t;
-  Alert.alert(t("Error"), String(error))
+  if (error) {
+    Alert.alert(t("Error"), String(error));
+  } else {
+    Alert.alert(t("Error"), t("Unknown error"));
+  }
 }

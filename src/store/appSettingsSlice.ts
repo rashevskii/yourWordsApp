@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LanguagesType, UILanguagesType } from "../data";
+import { LanguagesType, UILanguagesType } from "../types";
 
 interface IAppState {
   isAuthenticated: boolean;

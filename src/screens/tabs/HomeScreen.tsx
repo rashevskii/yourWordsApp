@@ -15,10 +15,10 @@ import {
   TranslationInputComponent,
 } from "../../components";
 import { translateText } from "../../api";
-import { LanguagesType, UILanguagesType } from "../../data";
 import { addWord } from "../../database";
 import { errorHandler } from "../../helpers";
 import { appEventEmitter, events } from "../../events";
+import { LanguagesType, UILanguagesType } from "../../types";
 
 type HomeNavigationProp = NativeStackNavigationProp<BottomTabsParamList, "Home">;
 type HomeRouteProp = RouteProp<BottomTabsParamList, "Home">;
@@ -48,6 +48,11 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
     appEventEmitter.addListener(events.MAIN_LANGUAGE_CHANGED, () => {
       const { mainLanguage } = useAppSettings();
       setSourceLang(mainLanguage)
+    });
+    appEventEmitter.addListener(events.ADDITIONAL_LANGUAGE_CHANGED, () => {
+      const { additionalLanguage, nativeLanguage } = useAppSettings();
+      setFirstTargetLang(additionalLanguage);
+      setSecondTargetLang(nativeLanguage);
     });
     return () => appEventEmitter.removeAllListeners();
   }, []);

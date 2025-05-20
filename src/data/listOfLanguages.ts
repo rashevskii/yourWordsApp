@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { 
   DenamrkIcon,
   UkIcon,
@@ -8,16 +7,10 @@ import {
   PlanetIcon
 } from "../components";
 import i18n from "../locales/i18n";
-
-export type LanguagesType = "en" | "sv" | "fi" | "da" | "nb" | "mock";
-export type EmgNamesType = "English" | "Norwegian" | "Swedish" | "Danish" | "Finnish" | "Has no value";
-export type ListOfLanguagesType = Array<ListOfLanguagesItemType>;
-export type ListOfLanguagesItemType = {
-  key: LanguagesType;
-  icon: FC;
-  engName: EmgNamesType;
-  translatedName: string;
-};
+import { 
+  ListOfLanguagesItemType, 
+  ListOfLanguagesType 
+} from "../types";
 
 export const listOfLanguages: ListOfLanguagesType = [
   {

@@ -6,17 +6,19 @@ import { useAppSettings, useTheme } from "../hooks";
 import { SelectableComponent } from "./SelectableComponent";
 import {
   listOfLanguages,
-  ListOfLanguagesItemType,
   listOfUILanguages,
-  ListOfUILanguagesItemType,
   mockLanguage,
   mockUILanguage
 } from "../data";
-import { SelectItem } from "../types";
-import { changeAllWords } from "../services";
+import { 
+  ListOfLanguagesItemType, 
+  ListOfUILanguagesItemType, 
+  SelectItem 
+} from "../types";
+import { changeAllAdditionalWords, changeAllMainWords } from "../services";
 import { errorHandler } from "../helpers";
 import { useDispatch } from "react-redux";
-import { setMainLanguage } from "../store";
+import { setAdditionaLanguage, setMainLanguage } from "../store";
 import { appEventEmitter, events } from "../events";
 
 export interface SettingsLanguagesBlockProps {
@@ -85,8 +87,8 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
             text: t("Next"),
             onPress: async () => {
               try {
+                await changeAllMainWords(selectedItem.value.key);
                 setStudiedLanguage(selectedItem.value);
-                await changeAllWords(selectedItem.value.key);
                 dispatch(setMainLanguage(selectedItem.value.key));
                 appEventEmitter.emit(events.MAIN_LANGUAGE_CHANGED);
               } catch(error: any) {
@@ -101,8 +103,38 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     }
   }
 
-  const onChangeAdditionalLanguage = (item: SelectItem<ListOfLanguagesItemType>) => {
-    setAdditionalLang(item.value);
+  const onChangeAdditionalLanguage = (selectedItem: SelectItem<ListOfLanguagesItemType>) => {
+    if (selectedItem.value.key !== additionalLang.key) {
+      setLoading(true);
+      Alert.alert(
+        t("Attention"),
+        t("This action will may take a bit time"),
+        [
+          {
+            text: t("Cancel"),
+            onPress: () => setLoading(false),
+            style: "cancel"
+          },
+          {
+            text: t("Next"),
+            onPress: async () => {
+              try {
+                await changeAllAdditionalWords(selectedItem.value.key);
+                setAdditionalLang(selectedItem.value);
+                dispatch(setAdditionaLanguage(selectedItem.value.key));
+                appEventEmitter.emit(events.ADDITIONAL_LANGUAGE_CHANGED);
+              } catch(error: any) {
+                console.log("error: ", error);
+                
+                errorHandler(error);
+              } finally {
+                setLoading(false);
+              }
+            }
+          }
+        ]
+      );
+    }
   }
 
   const onChangeNativeLanguage = (item: SelectItem<ListOfUILanguagesItemType>) => {

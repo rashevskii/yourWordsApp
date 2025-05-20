@@ -6,15 +6,10 @@ import {
   PlanetIcon
 } from "../components";
 import i18n from "../locales/i18n";
-
-export type UILanguagesType = "ru" | "uk" | "en";
-export type ListOfUILanguagesType = Array<ListOfUILanguagesItemType>;
-export type ListOfUILanguagesItemType = {
-  key: UILanguagesType;
-  icon: FC;
-  engName: string;
-  translatedName: string;
-}
+import { 
+  ListOfUILanguagesItemType, 
+  ListOfUILanguagesType 
+} from "../types";
 
 export const listOfUILanguages: ListOfUILanguagesType = [
   {

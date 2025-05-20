@@ -60,6 +60,8 @@
   "Error updating group for word": "Error updating group for word",
   "Error deleting word": "Error deleting word",
   "Error deleting group": "Error deleting group",
+  "Error updating list of words": "Error updating list of words",
+  "Unknown error": "Unknown error",
   "Folder alredy exists": "A folder with this name already exists",
   "Settings": "Settings",
   "Language being studied": "Language being studied",

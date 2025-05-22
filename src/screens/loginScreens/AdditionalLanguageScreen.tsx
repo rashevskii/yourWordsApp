@@ -4,13 +4,14 @@ import { AuthStackParamList } from "../../navigations";
 import { RouteProp } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../hooks";
-import { LanguagesType, listOfLanguages, UILanguagesType } from "../../data";
+import { listOfLanguages } from "../../data";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MainButton, SelectableLanguage, WelcomeSteps } from "../../components";
 import { globalStyles } from "../../styles";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, setAdditionaLanguage } from "../../store";
+import { LanguagesType, UILanguagesType } from "../../types";
 
 type AdditionalLanguageNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'AdditionalLanguage'>;
 type AdditionalLanguageRouteProp = RouteProp<AuthStackParamList, 'AdditionalLanguage'>;

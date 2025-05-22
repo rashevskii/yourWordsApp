@@ -4,7 +4,7 @@ import Checked from "../assets/icons/checked.svg";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useTheme } from "../hooks";
-import { LanguagesType, UILanguagesType } from "../data";
+import { LanguagesType, UILanguagesType } from "../types";
 
 export interface SelectableLanguageProps {
   langKey: UILanguagesType | LanguagesType;

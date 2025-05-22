@@ -32,7 +32,7 @@ i18n
     compatibilityJSON: 'v3',
     resources,
     lng: getLanguage(), // Язык по умолчанию
-    fallbackLng: 'en',
+    fallbackLng: 'ru',
     interpolation: {
       escapeValue: false // Не нужно экранировать в React Native
     }

@@ -10,7 +10,7 @@ import {
 import SearchIcon from "../assets/icons/search.svg";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../hooks";
-import { LanguagesType, UILanguagesType } from "../data";
+import { LanguagesType, UILanguagesType } from "../types";
 
 export interface ITranslationInputProps {
   onChangeLanguage: () => void;

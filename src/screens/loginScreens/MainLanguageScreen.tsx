@@ -13,9 +13,10 @@ import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import { AuthStackParamList } from "../../navigations";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { RouteProp } from "@react-navigation/native";
-import { LanguagesType, listOfLanguages, UILanguagesType } from "../../data";
+import { listOfLanguages } from "../../data";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, setMainLanguage } from "../../store";
+import { LanguagesType, UILanguagesType } from "../../types";
 
 type MainLanguageNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'MainLanguage'>;
 type MainLanguageRouteProp = RouteProp<AuthStackParamList, 'MainLanguage'>;

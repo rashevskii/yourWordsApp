@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { LanguagesType, listOfUILanguages, UILanguagesType } from "../../data";
+import { listOfUILanguages } from "../../data";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { AuthStackParamList } from "../../navigations";
 import { RouteProp } from "@react-navigation/native";
@@ -11,6 +11,7 @@ import { MainButton, SelectableLanguage, WelcomeSteps } from "../../components";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import { globalStyles } from "../../styles";
 import { RootState, setNativeLanguge } from "../../store";
+import { LanguagesType, UILanguagesType } from "../../types";
 
 type NativeLanguageNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'NativeLanguage'>;
 type NativeLanguageRouteProp = RouteProp<AuthStackParamList, 'NativeLanguage'>;

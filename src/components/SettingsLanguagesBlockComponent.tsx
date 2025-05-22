@@ -24,6 +24,7 @@ import { errorHandler } from "../helpers";
 import { useDispatch } from "react-redux";
 import { 
   setAdditionaLanguage, 
+  setLanguage, 
   setMainLanguage, 
   setNativeLanguge 
 } from "../store";
@@ -179,8 +180,11 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     }
   }
 
-  const onChangeAppLanguage = (item: SelectItem<ListOfUILanguagesItemType>) => {
-    setAppLanguage(item.value);
+  const onChangeAppLanguage = (selectedItem: SelectItem<ListOfUILanguagesItemType>) => {
+    if (selectedItem.value.key !== appLanguage.key) {
+      setAppLanguage(selectedItem.value);
+      dispatch(setLanguage(selectedItem.value.key));
+    }
   }
 
   const renderStudiedLanguages = () => {

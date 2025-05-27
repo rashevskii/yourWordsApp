@@ -9,6 +9,7 @@ import {
   BackIconComponent,
   HeaderComponent,
   Loading,
+  SettingsAppBlockComponent,
   SettingsLanguagesBlockComponent
 } from "../../components";
 import { useTranslation } from "react-i18next";
@@ -47,7 +48,7 @@ export const SettingsScreen: FC<SettingsScreenProps> = () => {
       ]}>
         <SettingsLanguagesBlockComponent setLoading={setLoading} />
 
-        <View style={[blockStyles, { borderColor: border }]}></View>
+        <SettingsAppBlockComponent />
 
         <View style={[blockStyles, { borderColor: border }]}></View>
       </View>

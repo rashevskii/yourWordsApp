@@ -34,3 +34,4 @@ export * from "./AddNewFolder";
 export * from "./FolderButton";
 export * from "./SettingsItemComponent";
 export * from "./SettingsLanguagesBlockComponent";
+export * from "./SettingsAppBlockComponent";

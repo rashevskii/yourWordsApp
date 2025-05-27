@@ -5,7 +5,7 @@ import { useTheme } from "../hooks";
 export interface SettingsItemProps {
   Icon: React.ElementType;
   itemName: string;
-  Component: React.ElementType;
+  Component: JSX.Element;
 }
 
 export const SettingsItemComponent: FC<SettingsItemProps> = ({
@@ -25,7 +25,7 @@ export const SettingsItemComponent: FC<SettingsItemProps> = ({
         <Icon />
         <Text style={[nameStyles, { color: text }]}>{itemName}</Text>
       </View>
-      <Component />
+      {Component}
     </View>
   );
 }

@@ -47,22 +47,35 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     additionalLanguage, 
     language 
   } = useAppSettings();
+  
   const [
     studiedLanguage, 
     setStudiedLanguage
-  ] = useState(listOfLanguages.find((lang) => lang.key === mainLanguage) || mockLanguage);
+  ] = useState(
+    listOfLanguages.find((lang) => lang.key === mainLanguage) || mockLanguage
+  );
+
   const [
     additionalLang, 
     setAdditionalLang
-  ] = useState(listOfLanguages.find((lang) => lang.key === additionalLanguage) || mockLanguage);
+  ] = useState(
+    listOfLanguages.find((lang) => lang.key === additionalLanguage) || mockLanguage
+  );
+
   const [
     nativeLang, 
     setNativeLang
-  ] = useState(listOfUILanguages.find((lang) => lang.key === nativeLanguage) || mockUILanguage);
+  ] = useState(
+    listOfUILanguages.find((lang) => lang.key === nativeLanguage) || mockUILanguage
+  );
+
   const [
     appLanguage, 
     setAppLanguage
-  ] = useState(listOfUILanguages.find((lang) => lang.key === language) || mockUILanguage);
+  ] = useState(
+    listOfUILanguages.find((lang) => lang.key === language) || mockUILanguage
+  );
+
   const languages = useMemo(() => {
     return listOfLanguages.map((item) => {
       return {
@@ -71,6 +84,7 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
       };
     });
   }, []);
+
   const nativeAndAppLangs = useMemo(() => {
     return listOfUILanguages.map((lang) => {
       return {

@@ -115,83 +115,105 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
     appEventEmitter.emit(events.NATIVE_LANGUAGE_CHANGED);
   }, [dispatch]);
 
-  const approveTranslate = useCallback((
+  const approveTranslate = useCallback(async (
     selectedItem: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>, 
     languageType: "studied" | "additional" | "native"
   ) => {
-    Alert.alert(
-      t("Attention"),
-      t("This action will may take a bit time"),
-      [
-        {
-          text: t("Cancel"),
-          onPress: () => {},
-          style: "cancel"
-        },
-        {
-          text: t("Next"),
-          onPress: async () => {
-            setLoading(true);
-            try {
-              switch (languageType) {
-                case "studied":
-                  await changeMainLanguage(selectedItem as SelectItem<ListOfLanguagesItemType>);
-                  return;
-                case "additional":
-                  await changeAdditionalLanguage(selectedItem as SelectItem<ListOfLanguagesItemType>);
-                  return;
-                case "native":
-                  await changeNativeLanguage(selectedItem as SelectItem<ListOfUILanguagesItemType>);
-                  return;
-              }
-            } catch(error: any) {
-              errorHandler(error);
-            } finally {
-              setLoading(false);
-            }
+    const success = await new Promise((resolve) => {
+      Alert.alert(
+        t("Attention"),
+        t("This action will may take a bit time"),
+        [
+          {
+            text: t("Cancel"),
+            onPress: () => resolve(false),
+            style: "cancel"
+          },
+          {
+            text: t("Next"),
+            onPress: () => resolve(true),
           }
+        ]
+      );
+    });
+    if (success) {
+      setLoading(true);
+      try {
+        switch (languageType) {
+          case "studied":
+            await changeMainLanguage(selectedItem as SelectItem<ListOfLanguagesItemType>);
+            return true;
+          case "additional":
+            await changeAdditionalLanguage(selectedItem as SelectItem<ListOfLanguagesItemType>);
+            return true;
+          case "native":
+            await changeNativeLanguage(selectedItem as SelectItem<ListOfUILanguagesItemType>);
+            return true;
         }
-      ]
-    );
-  }, [t, setLoading, changeMainLanguage, changeAdditionalLanguage, changeNativeLanguage]);
+      } catch(error: any) {
+        errorHandler(error);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      return false;
+    }
+  }, [
+    t, 
+    setLoading, 
+    changeMainLanguage, 
+    changeAdditionalLanguage, 
+    changeNativeLanguage
+  ]);
 
-  const onChangeLanguage = useCallback((
+  const onChangeLanguage = useCallback(async (
     selectedItem: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>, 
     languageType: "studied" | "additional" | "native"
   ) => {
-    Alert.alert(
-      t("Attention"),
-      t("This action will translate all words"),
-      [
-        {
-          text: t("Cancel"),
-          onPress: () => {},
-          style: "cancel"
-        },
-        {
-          text: t("Next"),
-          onPress: () => approveTranslate(selectedItem, languageType),
-        }
-      ]
-    );
+    const success = await new Promise((resolve) => {
+      Alert.alert(
+        t("Attention"),
+        t("This action will translate all words"),
+        [
+          {
+            text: t("Cancel"),
+            onPress: () => resolve(false),
+            style: "cancel"
+          },
+          {
+            text: t("Next"),
+            onPress: () => resolve(true),
+          }
+        ]
+      );
+    });
+    if (success) {
+      return await approveTranslate(selectedItem, languageType);
+    } else {
+      return false;
+    }
   }, [t, approveTranslate]);
 
-  const onChangeStudiedLanguage = useCallback((selectedItem: SelectItem<ListOfLanguagesItemType>) => {
+  const onChangeStudiedLanguage = useCallback(async (selectedItem: SelectItem<ListOfLanguagesItemType>) => {
     if (selectedItem.value.key !== studiedLanguage.key) {
-      onChangeLanguage(selectedItem, "studied");
+      return await onChangeLanguage(selectedItem, "studied");
     }
+    return false;
   }, [studiedLanguage, onChangeLanguage]);
 
-  const onChangeAdditionalLanguage = useCallback((selectedItem: SelectItem<ListOfLanguagesItemType>) => {
+  const onChangeAdditionalLanguage = useCallback(async (selectedItem: SelectItem<ListOfLanguagesItemType>) => {
     if (selectedItem.value.key !== additionalLang.key) {
-      onChangeLanguage(selectedItem, "additional");
+      return await onChangeLanguage(selectedItem, "additional");
     }
+    return false;
   }, [additionalLang, onChangeLanguage]);
 
-  const onChangeNativeLanguage = useCallback((selectedItem: SelectItem<ListOfUILanguagesItemType>) => {
+  const onChangeNativeLanguage = useCallback(async (selectedItem: SelectItem<ListOfUILanguagesItemType>) => {
     if (selectedItem.value.key !== nativeLang.key) {
-      onChangeLanguage(selectedItem, "native");
+      return await onChangeLanguage(selectedItem, "native");
     }
+    return false;
   }, [nativeLang, onChangeLanguage]);
 
   const onChangeAppLanguage = useCallback((selectedItem: SelectItem<ListOfUILanguagesItemType>) => {
@@ -204,18 +226,30 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
   const renderStudiedLanguages = useMemo(() => {
     return (
       <SelectableComponent<ListOfLanguagesItemType>
-        items={languages}
+        items={
+          languages
+            .filter((lang) => lang.value.key !== additionalLang.key && lang.value.key !== nativeLang.key)
+        }
         showShevron={true}
         onValueChange={onChangeStudiedLanguage}
         defaultValue={languages.find((item) => item.value.key === studiedLanguage.key)}
       />
     )
-  }, [languages, onChangeStudiedLanguage, studiedLanguage]);
+  }, [
+    languages, 
+    onChangeStudiedLanguage, 
+    studiedLanguage,
+    additionalLang,
+    nativeLang
+  ]);
 
   const renderAdditionalLanguages = useMemo(() => {
     return (
       <SelectableComponent<ListOfLanguagesItemType>
-        items={languages}
+        items={
+          languages
+            .filter((lang) => lang.value.key !== studiedLanguage.key && lang.value.key !== nativeLang.key)
+        }
         showShevron={true}
         onValueChange={onChangeAdditionalLanguage}
         defaultValue={
@@ -224,18 +258,33 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
         }
       />
     )
-  }, [languages, onChangeAdditionalLanguage, additionalLang]);
+  }, [
+    languages, 
+    onChangeAdditionalLanguage, 
+    studiedLanguage, 
+    additionalLang,
+    nativeLang
+  ]);
 
   const renderNativeLanguages = useMemo(() => {
     return (
       <SelectableComponent<ListOfUILanguagesItemType>
-        items={nativeAndAppLangs}
+        items={
+          nativeAndAppLangs
+            .filter((lang) => lang.value.key !== studiedLanguage.key && lang.value.key !== additionalLang.key )
+        }
         showShevron={true}
         onValueChange={onChangeNativeLanguage}
         defaultValue={nativeAndAppLangs.find((item) => item.value.key === nativeLang.key)}
       />
     );
-  }, [nativeAndAppLangs, onChangeNativeLanguage, nativeLang]);
+  }, [
+    nativeAndAppLangs, 
+    onChangeNativeLanguage,
+    studiedLanguage,
+    additionalLang, 
+    nativeLang
+  ]);
 
   const renderAppLanguages = useMemo(() => {
     return (
@@ -269,7 +318,7 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
       />
       
       <SettingsItemComponent
-        Icon={appLanguage.icon}
+        Icon={appLanguage.icon} 
         itemName={t("Application language")}
         Component={renderAppLanguages}
       />

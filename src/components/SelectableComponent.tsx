@@ -7,7 +7,7 @@ import { Menu, Button } from "react-native-paper";
 
 export interface ISelectableProps<T> {
   items: SelectItems<T>;
-  onValueChange: (value: SelectItem<T>) => void;
+  onValueChange: (value: SelectItem<T>) => Promise<boolean> | void;
   showShevron: boolean;
   renderButton?: (selectedItem: SelectItem<T> | null) => React.ReactNode;
   renderItem?: (item: SelectItem<T>) => React.ReactNode;
@@ -33,10 +33,12 @@ export const SelectableComponent = <T,>({
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
 
-  const handleSelect = (item: SelectItem<T>) => {
-    onValueChange(item);
-    setSelectedItem(item);
+  const handleSelect = async (item: SelectItem<T>) => {
     closeMenu();
+    const result = await onValueChange(item);
+    if (result) {
+      setSelectedItem(item);
+    }
   };
 
   return (
@@ -71,7 +73,7 @@ export const SelectableComponent = <T,>({
         {items.map((item, index) => (
           <Menu.Item
             key={index}
-            onPress={() => handleSelect(item)}
+            onPress={async () => await handleSelect(item)}
             title={renderItem ? renderItem(item) : item.label}
           />
         ))}

@@ -42,8 +42,8 @@ export const SettingsScreen: FC<SettingsScreenProps> = () => {
   return (
     <>
       <View style={[
-        baseContainer, 
-        containerPadding, 
+        baseContainer,
+        containerPadding,
         { backgroundColor: background }
       ]}>
         <SettingsLanguagesBlockComponent setLoading={setLoading} />

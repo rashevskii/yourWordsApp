@@ -10,23 +10,23 @@ import {
   mockLanguage,
   mockUILanguage
 } from "../data";
-import { 
-  ListOfLanguagesItemType, 
-  ListOfUILanguagesItemType, 
+import {
+  ListOfLanguagesItemType,
+  ListOfUILanguagesItemType,
   SelectItem,
 } from "../types";
-import { 
-  changeAllAdditionalWords, 
-  changeAllMainWords, 
-  changeAllNativeWords 
+import {
+  changeAllAdditionalWords,
+  changeAllMainWords,
+  changeAllNativeWords
 } from "../services";
 import { errorHandler } from "../helpers";
 import { useDispatch } from "react-redux";
-import { 
-  setAdditionaLanguage, 
-  setLanguage, 
-  setMainLanguage, 
-  setNativeLanguge 
+import {
+  setAdditionaLanguage,
+  setLanguage,
+  setMainLanguage,
+  setNativeLanguge
 } from "../store";
 import { appEventEmitter, events } from "../events";
 
@@ -41,36 +41,36 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
   const {
     blockStyles,
   } = styles;
-  const { 
-    nativeLanguage, 
-    mainLanguage, 
-    additionalLanguage, 
-    language 
+  const {
+    nativeLanguage,
+    mainLanguage,
+    additionalLanguage,
+    language
   } = useAppSettings();
-  
+
   const [
-    studiedLanguage, 
+    studiedLanguage,
     setStudiedLanguage
   ] = useState(
     listOfLanguages.find((lang) => lang.key === mainLanguage) || mockLanguage
   );
 
   const [
-    additionalLang, 
+    additionalLang,
     setAdditionalLang
   ] = useState(
     listOfLanguages.find((lang) => lang.key === additionalLanguage) || mockLanguage
   );
 
   const [
-    nativeLang, 
+    nativeLang,
     setNativeLang
   ] = useState(
     listOfUILanguages.find((lang) => lang.key === nativeLanguage) || mockUILanguage
   );
 
   const [
-    appLanguage, 
+    appLanguage,
     setAppLanguage
   ] = useState(
     listOfUILanguages.find((lang) => lang.key === language) || mockUILanguage
@@ -116,7 +116,7 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
   }, [dispatch]);
 
   const approveTranslate = useCallback(async (
-    selectedItem: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>, 
+    selectedItem: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>,
     languageType: "studied" | "additional" | "native"
   ) => {
     const success = await new Promise((resolve) => {
@@ -160,15 +160,15 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
       return false;
     }
   }, [
-    t, 
-    setLoading, 
-    changeMainLanguage, 
-    changeAdditionalLanguage, 
+    t,
+    setLoading,
+    changeMainLanguage,
+    changeAdditionalLanguage,
     changeNativeLanguage
   ]);
 
   const onChangeLanguage = useCallback(async (
-    selectedItem: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>, 
+    selectedItem: SelectItem<ListOfLanguagesItemType | ListOfUILanguagesItemType>,
     languageType: "studied" | "additional" | "native"
   ) => {
     const success = await new Promise((resolve) => {
@@ -236,8 +236,8 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
       />
     )
   }, [
-    languages, 
-    onChangeStudiedLanguage, 
+    languages,
+    onChangeStudiedLanguage,
     studiedLanguage,
     additionalLang,
     nativeLang
@@ -253,15 +253,15 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
         showShevron={true}
         onValueChange={onChangeAdditionalLanguage}
         defaultValue={
-          languages.find((item) => item.value.key === additionalLang.key) || 
+          languages.find((item) => item.value.key === additionalLang.key) ||
           {label: additionalLang.translatedName, value: additionalLang}
         }
       />
     )
   }, [
-    languages, 
-    onChangeAdditionalLanguage, 
-    studiedLanguage, 
+    languages,
+    onChangeAdditionalLanguage,
+    studiedLanguage,
     additionalLang,
     nativeLang
   ]);
@@ -279,10 +279,10 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
       />
     );
   }, [
-    nativeAndAppLangs, 
+    nativeAndAppLangs,
     onChangeNativeLanguage,
     studiedLanguage,
-    additionalLang, 
+    additionalLang,
     nativeLang
   ]);
 
@@ -316,9 +316,9 @@ export const SettingsLanguagesBlockComponent: FC<SettingsLanguagesBlockProps> = 
         itemName={t("Native language")}
         Component={renderNativeLanguages}
       />
-      
+
       <SettingsItemComponent
-        Icon={appLanguage.icon} 
+        Icon={appLanguage.icon}
         itemName={t("Application language")}
         Component={renderAppLanguages}
       />
